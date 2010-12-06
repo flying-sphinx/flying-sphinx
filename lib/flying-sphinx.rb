@@ -1,0 +1,1 @@
+require 'flying_sphinx'
