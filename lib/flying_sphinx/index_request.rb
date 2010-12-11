@@ -16,7 +16,7 @@ class FlyingSphinx::IndexRequest
   private
   
   def update_sphinx_configuration
-    api.put '/app/update', :configuration => sphinx_configuration
+    api.put '/app', :configuration => sphinx_configuration
   end
   
   def sphinx_configuration
@@ -26,6 +26,14 @@ class FlyingSphinx::IndexRequest
     
     riddle_config = ts_config.configuration
     
+    base_path = "/mnt/sphinx/flying-sphinx/#{app_name}"
+    ts_config.searchd_file_path = "#{base_path}/indexes"
+    riddle_config.searchd.pid_file = "#{base_path}/searchd.pid"
+    riddle_config.searchd.log = "#{base_path}/log/searchd.log"
+    riddle_config.searchd.query_log = "#{base_path}/log/searchd.query.log"
+    
+    riddle_config.indexes.clear
+    
     ThinkingSphinx.context.indexed_models.each do |model|
       model = model.constantize
       model.define_indexes
@@ -33,6 +41,8 @@ class FlyingSphinx::IndexRequest
     end
     
     riddle_config.indexes.each do |index|
+      next unless index.respond_to?(:sources)
+      
       index.sources.each do |source|
         source.sql_host = '127.0.0.1'
         source.sql_port = configuration.database_port

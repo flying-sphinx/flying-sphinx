@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{flying-sphinx}
-  s.version = "0.0.5"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pat Allan"]
-  s.date = %q{2010-12-11}
+  s.date = %q{2010-12-12}
   s.description = %q{Hooks Thinking Sphinx into the Flying Sphinx service}
   s.email = %q{pat@freelancing-gods.com}
   s.extra_rdoc_files = [

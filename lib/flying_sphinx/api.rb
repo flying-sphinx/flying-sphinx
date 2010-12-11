@@ -18,6 +18,10 @@ class FlyingSphinx::API
     self.class.post "#{APIServer}#{path}", :body => data.merge(api_options)
   end
   
+  def put(path, data = {})
+    self.class.put "#{APIServer}#{path}", :body => data.merge(api_options)
+  end
+  
   private
   
   def api_options
