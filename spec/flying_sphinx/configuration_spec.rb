@@ -12,7 +12,11 @@ describe FlyingSphinx::Configuration do
     before :each do
       FakeWeb.register_uri(:get,
         "#{api_server}/app?api_key=#{api_key}&heroku_id=#{encoded_heroku_id}",
-        :body => JSON.dump({:server => 'foo.bar.com', :port => 9319})
+        :body => JSON.dump(
+          :server        => 'foo.bar.com',
+          :port          => 9319,
+          :database_port => 10001
+        )
       )
     end
     
@@ -31,6 +35,11 @@ describe FlyingSphinx::Configuration do
     it "sets the port from the server information" do
       config = FlyingSphinx::Configuration.new heroku_id, api_key
       config.port.should == 9319
+    end
+    
+    it "sets the port from the server information" do
+      config = FlyingSphinx::Configuration.new heroku_id, api_key
+      config.database_port.should == 10001
     end
   end
 end

@@ -8,6 +8,7 @@ Jeweler::Tasks.new do |gem|
   
   gem.files     = FileList[
     "lib/**/*.rb",
+    "keys/key",
     "LICENCE",
     "README.textile",
     "VERSION"
