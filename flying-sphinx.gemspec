@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{flying-sphinx}
-  s.version = "0.1.0"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pat Allan"]
-  s.date = %q{2010-12-12}
+  s.date = %q{2010-12-26}
   s.description = %q{Hooks Thinking Sphinx into the Flying Sphinx service}
   s.email = %q{pat@freelancing-gods.com}
   s.extra_rdoc_files = [
@@ -24,7 +24,9 @@ Gem::Specification.new do |s|
     "lib/flying_sphinx.rb",
     "lib/flying_sphinx/api.rb",
     "lib/flying_sphinx/configuration.rb",
+    "lib/flying_sphinx/heroku_shared_adapter.rb",
     "lib/flying_sphinx/index_request.rb",
+    "lib/flying_sphinx/rails.rb",
     "lib/flying_sphinx/railtie.rb",
     "lib/flying_sphinx/tasks.rb",
     "lib/flying_sphinx/tunnel.rb"
