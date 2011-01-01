@@ -1,5 +1,5 @@
 class FlyingSphinx::Configuration
-  attr_reader :heroku_id, :api_key, :host, :port, :database_port
+  attr_reader :heroku_id, :api_key, :host, :port, :database_port, :mem_limit
   
   def initialize(heroku_id = nil, api_key = nil)
     @heroku_id = heroku_id || heroku_id_from_env
@@ -40,6 +40,7 @@ class FlyingSphinx::Configuration
     @host          = json['server']
     @port          = json['port']
     @database_port = json['database_port']
+    @mem_limit     = json['mem_limit']
   end
   
   def base_path
@@ -62,6 +63,7 @@ class FlyingSphinx::Configuration
     ThinkingSphinx.remote_sphinx = true
     
     set_searchd_settings
+    set_indexer_settings
     set_path_settings
   end
   
@@ -76,6 +78,10 @@ class FlyingSphinx::Configuration
   def set_searchd_settings
     thinking_sphinx.port    = port
     thinking_sphinx.address = host
+  end
+  
+  def set_indexer_settings
+    riddle.indexer.mem_limit = mem_limit.to_s + 'M'
   end
   
   def set_database_settings
