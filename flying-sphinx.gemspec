@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{flying-sphinx}
-  s.version = "0.2.6"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pat Allan"]
-  s.date = %q{2011-01-01}
+  s.date = %q{2011-01-02}
   s.description = %q{Hooks Thinking Sphinx into the Flying Sphinx service}
   s.email = %q{pat@freelancing-gods.com}
   s.extra_rdoc_files = [
@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
     "lib/flying_sphinx.rb",
     "lib/flying_sphinx/api.rb",
     "lib/flying_sphinx/configuration.rb",
+    "lib/flying_sphinx/delayed_delta.rb",
+    "lib/flying_sphinx/flag_as_deleted_job.rb",
     "lib/flying_sphinx/heroku_shared_adapter.rb",
     "lib/flying_sphinx/index_request.rb",
     "lib/flying_sphinx/rails.rb",
@@ -37,6 +39,8 @@ Gem::Specification.new do |s|
   s.summary = %q{Sphinx in the Cloud}
   s.test_files = [
     "spec/flying_sphinx/configuration_spec.rb",
+    "spec/flying_sphinx/delayed_delta_spec.rb",
+    "spec/flying_sphinx/flag_as_deleted_job_spec.rb",
     "spec/flying_sphinx/index_request_spec.rb"
   ]
 
@@ -54,6 +58,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rcov>, ["= 0.9.8"])
       s.add_development_dependency(%q<fakeweb>, ["= 1.3.0"])
       s.add_development_dependency(%q<fakeweb-matcher>, ["= 1.2.2"])
+      s.add_development_dependency(%q<delayed_job>, ["= 2.1.2"])
     else
       s.add_dependency(%q<thinking-sphinx>, [">= 0"])
       s.add_dependency(%q<net-ssh>, ["~> 2.0.23"])
@@ -64,6 +69,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rcov>, ["= 0.9.8"])
       s.add_dependency(%q<fakeweb>, ["= 1.3.0"])
       s.add_dependency(%q<fakeweb-matcher>, ["= 1.2.2"])
+      s.add_dependency(%q<delayed_job>, ["= 2.1.2"])
     end
   else
     s.add_dependency(%q<thinking-sphinx>, [">= 0"])
@@ -75,6 +81,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rcov>, ["= 0.9.8"])
     s.add_dependency(%q<fakeweb>, ["= 1.3.0"])
     s.add_dependency(%q<fakeweb-matcher>, ["= 1.2.2"])
+    s.add_dependency(%q<delayed_job>, ["= 2.1.2"])
   end
 end
 
