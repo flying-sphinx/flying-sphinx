@@ -11,4 +11,5 @@ group :development do
   gem 'rcov',            '0.9.8'
   gem 'fakeweb',         '1.3.0'
   gem 'fakeweb-matcher', '1.2.2', :require => 'fakeweb_matcher'
+  gem 'delayed_job',     '2.1.2'
 end

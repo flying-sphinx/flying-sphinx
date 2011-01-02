@@ -1,11 +1,51 @@
 class FlyingSphinx::IndexRequest
-  attr_reader :configuration, :index_id
+  attr_reader :index_id, :indices
   
-  def initialize(configuration)
-    @configuration = configuration
+  # Remove all Delta jobs from the queue. If the
+  # delayed_jobs table does not exist, this method will do nothing.
+  # 
+  def self.cancel_jobs
+    return unless ::Delayed::Job.table_exists?
     
+    ::Delayed::Job.delete_all "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
+  end
+  
+  def initialize(indices = [])
+    @indices = indices
+  end
+  
+  # Shows index name in Delayed::Job#name.
+  # 
+  def display_name
+    "#{self.class.name} for #{indices.join(', ')}"
+  end
+  
+  def update_and_index
     update_sphinx_configuration
-    
+    index
+  end
+  
+  # Runs Sphinx's indexer tool to process the index. Currently assumes Sphinx is
+  # running.
+  # 
+  # @return [Boolean] true
+  # 
+  def perform
+    index
+    true
+  end
+  
+  private
+  
+  def configuration
+    @configuration ||= FlyingSphinx::Configuration.new
+  end
+  
+  def update_sphinx_configuration
+    api.put '/app', :configuration => configuration.sphinx_configuration
+  end
+  
+  def index
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
       
@@ -13,14 +53,8 @@ class FlyingSphinx::IndexRequest
     end
   end
   
-  private
-  
-  def update_sphinx_configuration
-    api.put '/app', :configuration => configuration.sphinx_configuration
-  end
-  
   def begin_request
-    @index_id      = api.post('/app/indices')
+    @index_id      = api.post('/app/indices', :indices => indices.join(','))
     @request_begun = true
   end
   
