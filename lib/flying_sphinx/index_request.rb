@@ -51,6 +51,8 @@ class FlyingSphinx::IndexRequest
       
       !request_complete?
     end
+  rescue Net::SSH::Exception
+    cancel_request
   end
   
   def begin_request
@@ -72,6 +74,12 @@ class FlyingSphinx::IndexRequest
     else
       raise "Unknown index response: #{response}"
     end
+  end
+  
+  def cancel_request
+    return if index_id.nil?
+    
+    api.put "/app/indices/#{index_id}", :status => 'CANCELLED'
   end
   
   def api
