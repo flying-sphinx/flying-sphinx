@@ -79,6 +79,8 @@ class FlyingSphinx::IndexRequest
   def cancel_request
     return if index_id.nil?
     
+    puts "Connecting Flying Sphinx to the Database failed"
+    puts "Cancelling Index Request..."
     api.put "/app/indices/#{index_id}", :status => 'CANCELLED'
   end
   
