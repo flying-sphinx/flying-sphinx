@@ -67,6 +67,17 @@ describe FlyingSphinx::IndexRequest do
       
       index_request.update_and_index
     end
+    
+    context 'delta request without delta support' do
+      it "should explain why the request failed" do
+        api.should_receive(:put).with('/app', conf_params).and_return('ok')
+        api.should_receive(:post).
+          with('/app/indices', index_params).and_return('BLOCKED')
+        index_request.should_receive(:puts).with('Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
+
+        index_request.update_and_index
+      end
+    end
   end
   
   describe '#perform' do
