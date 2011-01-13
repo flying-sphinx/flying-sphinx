@@ -5,7 +5,7 @@ class FlyingSphinx::IndexRequest
   # delayed_jobs table does not exist, this method will do nothing.
   # 
   def self.cancel_jobs
-    return unless ::Delayed::Job.table_exists?
+    return unless defined?(::Delayed) && ::Delayed::Job.table_exists?
     
     ::Delayed::Job.delete_all "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
   end
