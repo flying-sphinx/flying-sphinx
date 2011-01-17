@@ -3,11 +3,11 @@ class FlyingSphinx::API
   
   APIServer = 'http://flying-sphinx.com/heroku'
   
-  attr_reader :api_key, :heroku_id
+  attr_reader :api_key, :identifier
   
-  def initialize(heroku_id, api_key)
+  def initialize(identifier, api_key)
     @api_key   = api_key
-    @heroku_id = heroku_id
+    @identifier = identifier
   end
   
   def get(path, data = {})
@@ -27,7 +27,7 @@ class FlyingSphinx::API
   def api_options
     {
       :api_key   => api_key,
-      :heroku_id => heroku_id
+      :identifier => identifier
     }
   end
 end

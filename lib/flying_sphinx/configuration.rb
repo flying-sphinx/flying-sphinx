@@ -1,20 +1,16 @@
 class FlyingSphinx::Configuration
-  attr_reader :heroku_id, :api_key, :host, :port, :database_port, :mem_limit
+  attr_reader :identifier, :api_key, :host, :port, :database_port, :mem_limit
   
-  def initialize(heroku_id = nil, api_key = nil)
-    @heroku_id = heroku_id || heroku_id_from_env
-    @api_key   = api_key   || api_key_from_env
+  def initialize(identifier = nil, api_key = nil)
+    @identifier = identifier || identifier_from_env
+    @api_key    = api_key    || api_key_from_env
     
     set_from_server
     setup_environment_settings
   end
   
   def api
-    @api ||= FlyingSphinx::API.new(heroku_id, api_key)
-  end
-  
-  def app_name
-    @app_name = heroku_id.split('@').first
+    @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
   
   def sphinx_configuration
@@ -44,7 +40,7 @@ class FlyingSphinx::Configuration
   end
   
   def base_path
-    "/mnt/sphinx/flying-sphinx/#{app_name}"
+    "/mnt/sphinx/flying-sphinx/#{identifier}"
   end
   
   def log_path
@@ -95,8 +91,8 @@ class FlyingSphinx::Configuration
     end
   end
   
-  def heroku_id_from_env
-    ENV['APP_NAME'] + '@heroku.com'
+  def identifier_from_env
+    ENV['FLYING_SPHINX_IDENTIFIER']
   end
   
   def api_key_from_env
