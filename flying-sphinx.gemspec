@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{flying-sphinx}
-  s.version = "0.3.3"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pat Allan"]
-  s.date = %q{2011-01-13}
+  s.date = %q{2011-01-18}
   s.description = %q{Hooks Thinking Sphinx into the Flying Sphinx service}
   s.email = %q{pat@freelancing-gods.com}
   s.extra_rdoc_files = [
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     "lib/flying_sphinx/tasks.rb",
     "lib/flying_sphinx/tunnel.rb"
   ]
-  s.homepage = %q{http://flying-sphinx.com}
+  s.homepage = %q{https://flying-sphinx.com}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Sphinx in the Cloud}
