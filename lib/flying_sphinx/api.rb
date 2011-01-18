@@ -1,7 +1,7 @@
 class FlyingSphinx::API
   include HTTParty
   
-  APIServer = 'http://flying-sphinx.com/heroku'
+  APIServer = 'https://flying-sphinx.com/heroku'
   
   attr_reader :api_key, :identifier
   

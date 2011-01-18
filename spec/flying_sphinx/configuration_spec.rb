@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FlyingSphinx::Configuration do
   describe '#initialize' do
-    let(:api_server) { 'http://flying-sphinx.com/heroku' }
+    let(:api_server) { 'https://flying-sphinx.com/heroku' }
     let(:api_key)    { 'foo-bar-baz' }
     let(:identifier)  { 'app@heroku.com' }
     let(:encoded_identifier) {
