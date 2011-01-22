@@ -49,7 +49,8 @@ describe FlyingSphinx::IndexRequest do
       api.should_receive(:put).with('/app', conf_params).and_return('ok')
       api.should_receive(:post).
         with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').and_return('PENDING')
+      api.should_receive(:get).with('/app/indices/42').
+        and_return(stub(:response, :body => 'PENDING'))
       
       begin
         Timeout::timeout(0.2) {
@@ -63,7 +64,8 @@ describe FlyingSphinx::IndexRequest do
       api.should_receive(:put).with('/app', conf_params).and_return('ok')
       api.should_receive(:post).
         with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').and_return('FINISHED')
+      api.should_receive(:get).with('/app/indices/42').
+        and_return(stub(:response, :body => 'FINISHED'))
       
       index_request.update_and_index
     end
@@ -87,7 +89,8 @@ describe FlyingSphinx::IndexRequest do
     it "makes a new request" do
       api.should_receive(:post).
         with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').and_return('PENDING')
+      api.should_receive(:get).with('/app/indices/42').
+        and_return(stub(:response, :body => 'PENDING'))
       
       begin
         Timeout::timeout(0.2) {
@@ -100,7 +103,8 @@ describe FlyingSphinx::IndexRequest do
     it "should finish when the index request has been completed" do
       api.should_receive(:post).
         with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').and_return('FINISHED')
+      api.should_receive(:get).with('/app/indices/42').
+        and_return(stub(:response, :body => 'FINISHED'))
       
       index_request.perform
     end

@@ -69,14 +69,15 @@ class FlyingSphinx::IndexRequest
   end
   
   def request_complete?
-    case response = api.get("/app/indices/#{index_id}")
+    response = api.get("/app/indices/#{index_id}")
+    case response.body
     when 'FINISHED', 'FAILED'
       puts "Indexing request failed." if response == 'FAILED'
       true
     when 'PENDING'
       false
     else
-      raise "Unknown index response: #{response}"
+      raise "Unknown index response: '#{response.body}'"
     end
   end
   
