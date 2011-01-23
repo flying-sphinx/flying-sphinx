@@ -72,7 +72,7 @@ class FlyingSphinx::IndexRequest
     response = api.get("/app/indices/#{index_id}")
     case response.body
     when 'FINISHED', 'FAILED'
-      puts "Indexing request failed." if response == 'FAILED'
+      puts "Indexing request failed." if response.body == 'FAILED'
       true
     when 'PENDING'
       false
