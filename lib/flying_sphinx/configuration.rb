@@ -31,7 +31,10 @@ class FlyingSphinx::Configuration
   private
   
   def set_from_server
-    json = JSON.parse api.get('/app').body
+    response = api.get('/app')
+    raise 'Invalid Flying Sphinx credentials' if response.code == 403
+    
+    json = JSON.parse response.body
     
     @host          = json['server']
     @port          = json['port']
