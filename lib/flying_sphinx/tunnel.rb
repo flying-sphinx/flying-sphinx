@@ -15,6 +15,7 @@ class FlyingSphinx::Tunnel
       session.forward.remote(
         db_port, db_host, @configuration.database_port, '0.0.0.0'
       )
+      session.loop { !remote_exists?(session) }
       
       yield session
     end
@@ -38,5 +39,11 @@ class FlyingSphinx::Tunnel
     {:keys => [
       File.expand_path('../../../keys/key', __FILE__)
     ]}
+  end
+  
+  def remote_exists?(session)
+    session.forward.active_remotes.include?(
+      [@configuration.database_port, '0.0.0.0']
+    )
   end
 end
