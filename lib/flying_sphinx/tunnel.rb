@@ -24,15 +24,15 @@ class FlyingSphinx::Tunnel
   private
   
   def db_host
-    db_config['host']
+    db_config[:host]
   end
   
   def db_port
-    db_config['port']
+    db_config[:port]
   end
   
   def db_config
-    @db_config ||= YAML.load(File.open(Rails.root.join("heroku_env.yml")))['db']
+    @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config)
   end
   
   def ssh_options
