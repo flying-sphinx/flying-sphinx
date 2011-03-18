@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'thinking-sphinx'
 gem 'net-ssh',  '~> 2.0.23', :require => 'net/ssh'
-gem 'json',     '~> 1.4.6'
+gem 'json',     '>= 1.4.6'
 gem 'httparty', '~> 0.6.1'
 
 group :development do
