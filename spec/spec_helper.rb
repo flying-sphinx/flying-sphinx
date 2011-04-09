@@ -1,12 +1,18 @@
-$:.unshift File.dirname(__FILE__) + '/../lib'
-
 require 'rubygems'
-require 'bundler'
- 
-Bundler.require :default, :development
+begin
+  require 'bundler'
+rescue LoadError
+  puts "although not required, it's recommended you use bundler during development"
+end
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-
+require 'thinking-sphinx'
 require 'flying_sphinx'
+require 'delayed_job'
+
+require 'fakeweb'
+require 'fakeweb_matcher'
 
 Delayed::Worker.backend = :active_record
+
+require 'support/fakeweb'
+require 'support/timeout'

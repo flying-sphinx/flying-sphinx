@@ -1,7 +1,27 @@
 require 'rubygems'
-require 'bundler'
+begin
+  require 'bundler'
+  Bundler::GemHelper.install_tasks
+rescue LoadError
+  puts "although not required, it's recommended you use bundler during development"
+end
 
-Bundler.require :default, :development
+require 'rake'
 
-require "#{File.dirname(__FILE__)}/tasks/distribution"
-require "#{File.dirname(__FILE__)}/tasks/testing"
+task :default => :test
+task :test    => :spec
+
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new do |t|
+  t.pattern = 'spec/**/*_spec.rb'
+end
+
+RSpec::Core::RakeTask.new(:rspec) do |t|
+  t.pattern = 'spec/**/*_spec.rb'
+  t.rcov = true
+  t.rcov_opts = [
+    '--exclude', 'spec',   '--exclude', 'gems',
+    '--exclude', 'riddle', '--exclude', 'ruby'
+  ]
+end
