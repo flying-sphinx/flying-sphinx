@@ -1,33 +1,53 @@
+require 'faraday'
+require 'faraday_middleware'
+
 class FlyingSphinx::API
-  include HTTParty
-  
-  APIServer = 'https://flying-sphinx.com/heroku'
-  
-  attr_reader :api_key, :identifier
-  
-  def initialize(identifier, api_key)
+
+  APIServer = 'https://flying-sphinx.com'
+
+  attr_reader :api_key, :identifier, :adapter
+
+  def initialize(identifier, api_key, adapter = Faraday.default_adapter)
     @api_key   = api_key
     @identifier = identifier
+    @adapter = adapter
   end
-  
+
   def get(path, data = {})
-    self.class.get "#{APIServer}#{path}", :query => data.merge(api_options)
+    connection.get do |req|
+      req.url "/heroku/#{path}", data.merge(api_options)
+    end
   end
-  
+
   def post(path, data = {})
-    self.class.post "#{APIServer}#{path}", :body => data.merge(api_options)
+    connection.post("/heroku/#{path}", data.merge(api_options))
   end
-  
+
   def put(path, data = {})
-    self.class.put "#{APIServer}#{path}", :body => data.merge(api_options)
+    connection.put("/heroku/#{path}", data.merge(api_options))
   end
-  
+
   private
-  
+
   def api_options
     {
       :api_key   => api_key,
       :identifier => identifier
     }
+  end
+
+  def connection
+    options = {
+      :headers => { 'Accept' => "application/json" },
+      :ssl => { :verify => false },
+      :url => APIServer,
+    }
+
+    Faraday.new(options) do |builder|
+      builder.use Faraday::Request::UrlEncoded
+      builder.use Faraday::Response::Rashify
+      builder.use Faraday::Response::ParseJson
+      builder.adapter(adapter)
+    end
   end
 end

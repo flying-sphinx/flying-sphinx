@@ -21,27 +21,25 @@ class FlyingSphinx::Configuration
   end
   
   def start_sphinx
-    api.post('/app/start')
+    api.post('app/start')
   end
   
   def stop_sphinx
-    api.post('/app/stop')
+    api.post('app/stop')
   end
   
   private
   
   def set_from_server
-    response = api.get('/app')
-    raise 'Invalid Flying Sphinx credentials' if response.code == 403
-    
-    json = JSON.parse response.body
-    
-    @host          = json['server']
-    @port          = json['port']
-    @database_port = json['database_port']
-    @mem_limit     = json['mem_limit']
+    response = api.get('app')
+    raise 'Invalid Flying Sphinx credentials' if response.status == 403
+
+    @host          = response.body.server
+    @port          = response.body.port
+    @database_port = response.body.database_port
+    @mem_limit     = response.body.mem_limit
   end
-  
+
   def base_path
     "/mnt/sphinx/flying-sphinx/#{identifier}"
   end
