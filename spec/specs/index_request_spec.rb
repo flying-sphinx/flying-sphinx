@@ -42,8 +42,8 @@ describe FlyingSphinx::IndexRequest do
   
   describe '#update_and_index' do
     let(:index_request) { FlyingSphinx::IndexRequest.new }
-    let(:conf_params)   { {:configuration => 'foo {}'} }
-    let(:index_params)  { {:indices => ''} }
+    let(:conf_params)   { { :configuration => 'foo {}' } }
+    let(:index_params)  { { :indices => '' } }
     
     it "makes a new request" do
       api.should_receive(:put).with('/app', conf_params).and_return('ok')
@@ -84,7 +84,7 @@ describe FlyingSphinx::IndexRequest do
   
   describe '#perform' do
     let(:index_request) { FlyingSphinx::IndexRequest.new ['foo_delta'] }
-    let(:index_params)  { {:indices => 'foo_delta'} }
+    let(:index_params)  { { :indices => 'foo_delta' } }
     
     it "makes a new request" do
       api.should_receive(:post).
