@@ -13,8 +13,8 @@ class FlyingSphinx::API
     @adapter = adapter
   end
 
-  def get(path, data = {})
-    connection(:json => true).get do |req|
+  def get(path, data = {}, json = false)
+    connection(:json => json).get do |req|
       req.url "/heroku/#{path}", data.merge(api_options)
     end
   end
@@ -38,11 +38,10 @@ class FlyingSphinx::API
 
   def connection(connection_options = {})
     options = {
+      :headers => { 'Accept' => "application/json" },
       :ssl => { :verify => false },
       :url => APIServer,
     }
-
-    options[:headers] = { 'Accept' => "application/json" } if connection_options[:json]
 
     Faraday.new(options) do |builder|
       builder.use Faraday::Request::UrlEncoded
