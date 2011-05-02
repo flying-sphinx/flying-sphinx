@@ -46,15 +46,30 @@ class FlyingSphinx::IndexRequest
   end
   
   def index
-    FlyingSphinx::Tunnel.connect(configuration) do
-      begin_request unless request_begun?
-      
-      !request_complete?
+    if FlyingSphinx::Tunnel.required?
+      tunnelled_index
+    else
+      direct_index
     end
   rescue Net::SSH::Exception
     cancel_request
   rescue RuntimeError => err
     puts err.message
+  end
+  
+  def tunnelled_index
+    FlyingSphinx::Tunnel.connect(configuration) do
+      begin_request unless request_begun?
+    
+      !request_complete?
+    end
+  end
+  
+  def direct_index
+    begin_request
+    while !request_complete?
+      sleep 1
+    end
   end
   
   def begin_request

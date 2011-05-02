@@ -6,6 +6,10 @@ class FlyingSphinx::Tunnel
     end
   end
   
+  def self.required?
+    ThinkingSphinx.database_adapter == FlyingSphinx::HerokuSharedAdapter
+  end
+  
   def initialize(configuration)
     @configuration = configuration
   end
