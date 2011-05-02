@@ -7,6 +7,8 @@ describe FlyingSphinx::IndexRequest do
   }
   
   before :each do
+    ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+    
     FlyingSphinx::Configuration.stub!(:new => configuration)
     FlyingSphinx::Tunnel.stub(:connect) { |config, block| block.call }
   end
@@ -70,6 +72,18 @@ describe FlyingSphinx::IndexRequest do
       index_request.update_and_index
     end
     
+    it "should establish an SSH connection" do
+      FlyingSphinx::Tunnel.should_receive(:connect)
+      
+      api.should_receive(:put).with('/app', conf_params).and_return('ok')
+      api.should_receive(:post).
+        with('/app/indices', index_params).and_return(42)
+      api.should_receive(:get).with('/app/indices/42').
+        and_return(stub(:response, :body => 'FINISHED'))
+      
+      index_request.update_and_index
+    end
+    
     context 'delta request without delta support' do
       it "should explain why the request failed" do
         api.should_receive(:put).with('/app', conf_params).and_return('ok')
@@ -77,6 +91,28 @@ describe FlyingSphinx::IndexRequest do
           with('/app/indices', index_params).and_return('BLOCKED')
         index_request.should_receive(:puts).with('Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
 
+        index_request.update_and_index
+      end
+    end
+    
+    context 'request for a MySQL database' do
+      before :each do
+        ThinkingSphinx.database_adapter = nil
+      end
+      
+      after :each do
+        ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+      end
+      
+      it "should not establish an SSH connection" do
+        FlyingSphinx::Tunnel.should_not_receive(:connect)
+        
+        api.should_receive(:put).with('/app', conf_params).and_return('ok')
+        api.should_receive(:post).
+          with('/app/indices', index_params).and_return(42)
+        api.should_receive(:get).with('/app/indices/42').
+          and_return(stub(:response, :body => 'FINISHED'))
+        
         index_request.update_and_index
       end
     end
