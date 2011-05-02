@@ -8,5 +8,7 @@ unless Rails.env.development? || Rails.env.test?
     ThinkingSphinx::Configuration.instance.port    = config.port
   end
 
-  ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+  if ENV['DATABASE_URL'][/^mysql/].nil?
+    ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+  end
 end

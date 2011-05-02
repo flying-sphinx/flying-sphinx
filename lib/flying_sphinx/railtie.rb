@@ -9,6 +9,8 @@ class FlyingSphinx::Railtie < Rails::Railtie
     ThinkingSphinx::Configuration.instance.address = config.host
     ThinkingSphinx::Configuration.instance.port    = config.port
     
-    ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+    if ENV['DATABASE_URL'][/^mysql/].nil?
+      ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+    end
   end unless Rails.env.development? || Rails.env.test?
 end
