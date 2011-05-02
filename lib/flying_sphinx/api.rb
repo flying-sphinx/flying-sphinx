@@ -26,7 +26,7 @@ class FlyingSphinx::API
   
   def api_options
     {
-      :api_key   => api_key,
+      :api_key    => api_key,
       :identifier => identifier
     }
   end

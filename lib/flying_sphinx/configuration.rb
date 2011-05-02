@@ -40,6 +40,11 @@ class FlyingSphinx::Configuration
     @port          = json['port']
     @database_port = json['database_port']
     @mem_limit     = json['mem_limit']
+  rescue
+    # If the central Flying Sphinx server is down, let's use the environment
+    # variables so searching is still going to work.
+    @host = host_from_env
+    @port = port_from_env
   end
   
   def base_path
@@ -100,5 +105,13 @@ class FlyingSphinx::Configuration
   
   def api_key_from_env
     ENV['FLYING_SPHINX_API_KEY']
+  end
+  
+  def host_from_env
+    ENV['FLYING_SPHINX_HOST']
+  end
+  
+  def port_from_env
+    ENV['FLYING_SPHINX_PORT']
   end
 end
