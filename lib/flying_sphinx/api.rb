@@ -38,10 +38,11 @@ class FlyingSphinx::API
 
   def connection(connection_options = {})
     options = {
-      :headers => { 'Accept' => "application/json" },
       :ssl => { :verify => false },
       :url => APIServer,
     }
+
+    options[:headers] = { 'Accept' => 'application/json' } if connection_options[:json]
 
     Faraday.new(options) do |builder|
       builder.use Faraday::Request::UrlEncoded
