@@ -89,6 +89,8 @@ class FlyingSphinx::Configuration
   end
   
   def set_database_settings
+    return unless FlyingSphinx::Tunnel.required?
+    
     riddle.indexes.each do |index|
       next unless index.respond_to?(:sources)
       
