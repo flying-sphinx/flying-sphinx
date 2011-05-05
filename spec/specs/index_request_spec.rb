@@ -14,6 +14,10 @@ describe FlyingSphinx::IndexRequest do
   before :each do
     FlyingSphinx::Configuration.stub!(:new => configuration)
     FlyingSphinx::Tunnel.stub(:connect) { |config, block| block.call }
+    
+    FlyingSphinx::IndexRequest.send(:remove_const, :INDEX_COMPLETE_CHECKING_INTERVAL)
+    
+    FlyingSphinx::IndexRequest::INDEX_COMPLETE_CHECKING_INTERVAL = 0
   end
   
   describe '.cancel_jobs' do

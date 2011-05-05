@@ -1,6 +1,8 @@
 class FlyingSphinx::IndexRequest
   attr_reader :index_id, :indices
 
+  INDEX_COMPLETE_CHECKING_INTERVAL = 10
+
   # Remove all Delta jobs from the queue. If the
   # delayed_jobs table does not exist, this method will do nothing.
   #
@@ -48,7 +50,7 @@ class FlyingSphinx::IndexRequest
   def index
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
-      sleep(1) # we don't want to poll too much
+
       !request_complete?
     end
   rescue Net::SSH::Exception
@@ -71,7 +73,12 @@ class FlyingSphinx::IndexRequest
   end
 
   def request_complete?
+    return false unless check_if_request_complete?
+
     response = api.get("indices/#{index_id}")
+
+    request_complete_checked!
+
     case response.body
     when 'FINISHED', 'FAILED'
       puts "Indexing request failed." if response.body == 'FAILED'
@@ -83,12 +90,22 @@ class FlyingSphinx::IndexRequest
     end
   end
 
+  def request_complete_checked!
+    @request_status_last_checked = Time.now
+  end
+
+  def check_if_request_complete?
+    request_complete_checked! unless @request_status_last_checked
+    (@request_status_last_checked + INDEX_COMPLETE_CHECKING_INTERVAL) < Time.now
+  end
+
   def cancel_request
     return if index_id.nil?
 
     puts "Connecting Flying Sphinx to the Database failed"
     puts "Cancelling Index Request..."
-    api.put "indices/#{index_id}", :status => 'CANCELLED'
+
+    api.put("indices/#{index_id}", :status => 'CANCELLED')
   end
 
   def api
