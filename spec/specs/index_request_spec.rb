@@ -6,6 +6,11 @@ describe FlyingSphinx::IndexRequest do
     stub(:configuration, :api => api, :sphinx_configuration => 'foo {}')
   }
   
+  let(:index_response)    { stub(:response, :body => 42) }
+  let(:pending_response)  { stub(:response, :body => 'PENDING') }
+  let(:finished_response) { stub(:response, :body => 'FINISHED') }
+  let(:blocked_response)  { stub(:response, :body => 'BLOCKED') }
+  
   before :each do
     FlyingSphinx::Configuration.stub!(:new => configuration)
     FlyingSphinx::Tunnel.stub(:connect) { |config, block| block.call }
@@ -44,13 +49,13 @@ describe FlyingSphinx::IndexRequest do
     let(:index_request) { FlyingSphinx::IndexRequest.new }
     let(:conf_params)   { { :configuration => 'foo {}' } }
     let(:index_params)  { { :indices => '' } }
-    
+        
     it "makes a new request" do
-      api.should_receive(:put).with('/app', conf_params).and_return('ok')
+      api.should_receive(:put).with('/', conf_params).and_return('ok')
       api.should_receive(:post).
-        with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').
-        and_return(stub(:response, :body => 'PENDING'))
+        with('indices', index_params).and_return(index_response)
+      api.should_receive(:get).
+        with('indices/42').and_return(pending_response)
       
       begin
         Timeout::timeout(0.2) {
@@ -61,21 +66,23 @@ describe FlyingSphinx::IndexRequest do
     end
     
     it "should finish when the index request has been completed" do
-      api.should_receive(:put).with('/app', conf_params).and_return('ok')
+      api.should_receive(:put).with('/', conf_params).and_return('ok')
       api.should_receive(:post).
-        with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').
-        and_return(stub(:response, :body => 'FINISHED'))
+        with('indices', index_params).and_return(index_response)
+      api.should_receive(:get).
+        with('indices/42').and_return(finished_response)
       
       index_request.update_and_index
     end
     
     context 'delta request without delta support' do
       it "should explain why the request failed" do
-        api.should_receive(:put).with('/app', conf_params).and_return('ok')
+        api.should_receive(:put).
+          with('/', conf_params).and_return('ok')
         api.should_receive(:post).
-          with('/app/indices', index_params).and_return('BLOCKED')
-        index_request.should_receive(:puts).with('Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
+          with('indices', index_params).and_return(blocked_response)
+        index_request.should_receive(:puts).
+          with('Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
 
         index_request.update_and_index
       end
@@ -88,9 +95,9 @@ describe FlyingSphinx::IndexRequest do
     
     it "makes a new request" do
       api.should_receive(:post).
-        with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').
-        and_return(stub(:response, :body => 'PENDING'))
+        with('indices', index_params).and_return(index_response)
+      api.should_receive(:get).with('indices/42').
+        and_return(pending_response)
       
       begin
         Timeout::timeout(0.2) {
@@ -102,9 +109,9 @@ describe FlyingSphinx::IndexRequest do
     
     it "should finish when the index request has been completed" do
       api.should_receive(:post).
-        with('/app/indices', index_params).and_return(42)
-      api.should_receive(:get).with('/app/indices/42').
-        and_return(stub(:response, :body => 'FINISHED'))
+        with('indices', index_params).and_return(index_response)
+      api.should_receive(:get).
+        with('indices/42').and_return(finished_response)
       
       index_request.perform
     end

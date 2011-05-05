@@ -21,17 +21,17 @@ class FlyingSphinx::Configuration
   end
 
   def start_sphinx
-    api.post('app/start')
+    api.post('start')
   end
 
   def stop_sphinx
-    api.post('app/stop')
+    api.post('stop')
   end
 
   private
 
   def set_from_server
-    response = api.get('app', {}, true)
+    response = api.get('/', {}, { :json => true })
     raise 'Invalid Flying Sphinx credentials' if response.status == 403
 
     @host          = response.body.server
