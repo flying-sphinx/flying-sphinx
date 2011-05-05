@@ -61,6 +61,6 @@ class FlyingSphinx::API
   end
 
   def log(method, path, data = {}, option = {})
-    puts "#{path} #{method} request: #{data.inspect}" if ENV['VERBOSE_LOGGING']
+    puts "API : '#{path}' #{method} request: #{data.inspect}" if ENV['VERBOSE_LOGGING']
   end
 end

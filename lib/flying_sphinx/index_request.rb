@@ -1,7 +1,7 @@
 class FlyingSphinx::IndexRequest
   attr_reader :index_id, :indices
 
-  INDEX_COMPLETE_CHECKING_INTERVAL = 10
+  INDEX_COMPLETE_CHECKING_INTERVAL = 3
 
   # Remove all Delta jobs from the queue. If the
   # delayed_jobs table does not exist, this method will do nothing.
@@ -73,7 +73,11 @@ class FlyingSphinx::IndexRequest
   end
 
   def request_complete?
+    log("request_complete? called")
+
     return false unless check_if_request_complete?
+
+    log("checking if request is complete")
 
     response = api.get("indices/#{index_id}")
 
@@ -110,5 +114,9 @@ class FlyingSphinx::IndexRequest
 
   def api
     configuration.api
+  end
+
+  def log(message)
+    puts "Index Request : #{message}" if ENV['VERBOSE_LOGGING']
   end
 end
