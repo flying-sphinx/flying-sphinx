@@ -16,23 +16,25 @@ class FlyingSphinx::API
   end
 
   def get(path, data = {}, options = {})
-    path = nil if path == '/'
     connection(:json => options[:json]).get do |req|
-      req.url "#{APIPath}#{path}", data.merge(api_options)
+      req.url normalize_path(path), data.merge(api_options)
     end
   end
 
   def post(path, data = {})
-    path = nil if path == '/'
-    connection.post("#{APIPath}#{path}", data.merge(api_options))
+    connection.post(normalize_path(path), data.merge(api_options))
   end
 
   def put(path, data = {})
-    path = nil if path == '/'
-    connection.put("#{APIPath}/#{path}", data.merge(api_options))
+    connection.put(normalize_path(path), data.merge(api_options))
   end
 
   private
+
+  def normalize_path(path)
+    path = (path == '/' ? nil : "/#{path}")
+    "#{APIPath}#{path}"
+  end
 
   def api_options
     {
