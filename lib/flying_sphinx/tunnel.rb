@@ -16,8 +16,10 @@ class FlyingSphinx::Tunnel
         db_port, db_host, @configuration.database_port, '0.0.0.0'
       )
 
-      session.on_data do |ch, data|
-        puts "got stdout: #{data}"
+      session.open_channel do |channel|
+        channel.on_data do |ch, data|
+          puts "got stdout: #{data}"
+        end
       end
 
       session.loop { !remote_exists?(session) }
