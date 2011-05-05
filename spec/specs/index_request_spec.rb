@@ -58,7 +58,7 @@ describe FlyingSphinx::IndexRequest do
         with('indices/42').and_return(pending_response)
       
       begin
-        Timeout::timeout(0.2) {
+        Timeout::timeout(1.2) {
           index_request.update_and_index
         }
       rescue Timeout::Error
@@ -100,7 +100,7 @@ describe FlyingSphinx::IndexRequest do
         and_return(pending_response)
       
       begin
-        Timeout::timeout(0.2) {
+        Timeout::timeout(1.2) {
           index_request.perform
         }
       rescue Timeout::Error

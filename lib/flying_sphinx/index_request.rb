@@ -48,7 +48,7 @@ class FlyingSphinx::IndexRequest
   def index
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
-
+      sleep(1) # we don't want to poll too much
       !request_complete?
     end
   rescue Net::SSH::Exception
