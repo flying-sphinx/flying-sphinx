@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<thinking-sphinx>, [">= 0"])
       s.add_runtime_dependency(%q<net-ssh>,         ["~> 2.0.23"])
-      s.add_runtime_dependency(%q<multi_json>,      ["~> 1.0.0"])
+      s.add_runtime_dependency(%q<multi_json>,      ["~> 1.0.1"])
       s.add_runtime_dependency(%q<faraday>,         ["~> 0.6.1"])
       s.add_runtime_dependency(%q<faraday_middleware>, ["~> 0.6.3"])
       s.add_runtime_dependency(%q<rash>,            ["~> 0.3.0"])
