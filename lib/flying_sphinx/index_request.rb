@@ -103,7 +103,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def check_if_request_complete?
-    log("Last Request: #{@request_complete_checked.inspect}")
+    log("Last Request: #{@request_complete_last_checked.inspect}")
     request_complete_checked! unless @request_status_last_checked
     (@request_status_last_checked + INDEX_COMPLETE_CHECKING_INTERVAL) < Time.now
   end
