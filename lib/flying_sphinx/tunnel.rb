@@ -3,7 +3,7 @@ class FlyingSphinx::Tunnel
     tunnel = new configuration
     tunnel.open do |session|
       session.loop do
-        puts "Channel Count: #{session.channels.count}"
+        return false unless session.busy?(true)
         block.call
       end
     end
