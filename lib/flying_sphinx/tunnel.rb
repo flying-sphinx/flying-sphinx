@@ -20,7 +20,8 @@ class FlyingSphinx::Tunnel
     )
 
     session.loop { !remote_exists?(session) }
-
+    
+    log("BUSY: #{session.busy?(true)}")
     yield session
     session.close unless session.closed?
   ensure
