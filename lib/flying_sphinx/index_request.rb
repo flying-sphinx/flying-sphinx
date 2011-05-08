@@ -51,7 +51,9 @@ class FlyingSphinx::IndexRequest
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
 
-      !request_complete?
+      continue = !request_complete?
+      log("Continuing? #{continue}")
+      continue
     end
   rescue Net::SSH::Exception
     cancel_request
@@ -73,7 +75,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def request_complete?
-    # log("request_complete? called")
+    log("request_complete? called")
 
     return false unless check_if_request_complete?
 
@@ -81,7 +83,7 @@ class FlyingSphinx::IndexRequest
 
     response = api.get("indices/#{index_id}")
     
-    log("response: #{response.body}")
+    log("response: '#{response.body}'")
 
     request_complete_checked!
 
