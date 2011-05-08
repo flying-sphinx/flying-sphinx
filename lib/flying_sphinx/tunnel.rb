@@ -2,7 +2,10 @@ class FlyingSphinx::Tunnel
   def self.connect(configuration, &block)
     tunnel = new configuration
     tunnel.open do |session|
-      session.loop &block
+      session.loop do
+        puts "Channel Count: #{session.channels.count}"
+        block.call
+      end
     end
   end
 
