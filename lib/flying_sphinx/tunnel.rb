@@ -11,21 +11,17 @@ class FlyingSphinx::Tunnel
   end
 
   def open(&block)
-    Net::SSH.start(@configuration.host, 'sphinx', ssh_options) do |session|
-      session.forward.remote(
-        db_port, db_host, @configuration.database_port, '0.0.0.0'
-      )
+    session = Net::SSH.start(@configuration.host, 'sphinx', ssh_options)
+    session.forward.remote(
+      db_port, db_host, @configuration.database_port, '0.0.0.0'
+    )
 
-      session.open_channel do |channel|
-        channel.on_data do |ch, data|
-          puts "got stdout: #{data}"
-        end
-      end
+    session.loop { !remote_exists?(session) }
 
-      session.loop { !remote_exists?(session) }
-
-      yield session
-    end
+    yield session
+    session.close
+  ensure
+    session.shutdown unless session.closed?
   end
 
   private
