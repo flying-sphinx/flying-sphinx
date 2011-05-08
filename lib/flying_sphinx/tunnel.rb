@@ -24,7 +24,7 @@ class FlyingSphinx::Tunnel
     yield session
     session.close unless session.closed?
   ensure
-    session.shutdown unless session.closed?
+    session.shutdown! unless session.closed?
   end
 
   private
