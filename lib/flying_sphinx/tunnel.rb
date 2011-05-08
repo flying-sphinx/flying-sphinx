@@ -3,8 +3,7 @@ class FlyingSphinx::Tunnel
     tunnel = new configuration
     tunnel.open do |session|
       session.loop do
-        return false unless session.busy?(true)
-        block.call
+        block.call && session.busy?(true)
       end
     end
   end
