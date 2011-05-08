@@ -49,6 +49,8 @@ class FlyingSphinx::IndexRequest
 
   def index
     FlyingSphinx::Tunnel.connect(configuration) do
+      now = Time.now
+      log("Loop #{now.inspect} - #{now.usec}")
       begin_request unless request_begun?
 
       continue = !request_complete?
