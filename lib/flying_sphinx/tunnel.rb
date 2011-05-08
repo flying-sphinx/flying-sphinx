@@ -19,7 +19,7 @@ class FlyingSphinx::Tunnel
     session.loop { !remote_exists?(session) }
 
     yield session
-    session.close
+    session.close unless session.closed?
   ensure
     session.shutdown unless session.closed?
   end
