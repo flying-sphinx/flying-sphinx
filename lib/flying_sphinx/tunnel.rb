@@ -15,16 +15,19 @@ class FlyingSphinx::Tunnel
   end
   
   def open(&block)
-    Net::SSH.start(@configuration.host, 'sphinx', ssh_options) do |session|
-      session.forward.remote(
-        db_port, db_host, @configuration.database_port, '0.0.0.0'
-      )
-      session.loop { !remote_exists?(session) }
-      
-      yield session
-    end
-  end
+    session = Net::SSH.start(@configuration.host, 'sphinx', ssh_options)
+    session.forward.remote(
+      db_port, db_host, @configuration.database_port, '0.0.0.0'
+    )
+    session.loop { !remote_exists?(session) }
     
+    yield session
+    
+    session.close
+  ensure
+    session.shutdown unless session.closed?
+  end
+  
   private
   
   def db_host
