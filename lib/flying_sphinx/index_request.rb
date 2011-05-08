@@ -73,13 +73,15 @@ class FlyingSphinx::IndexRequest
   end
 
   def request_complete?
-    log("request_complete? called")
+    # log("request_complete? called")
 
     return false unless check_if_request_complete?
 
     log("checking if request is complete")
 
     response = api.get("indices/#{index_id}")
+    
+    log("response: #{response.body}")
 
     request_complete_checked!
 
