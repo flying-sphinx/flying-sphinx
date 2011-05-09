@@ -26,6 +26,20 @@ class FlyingSphinx::IndexRequest
     update_sphinx_configuration
     index
   end
+  
+  def status_message
+    status = request_status
+    case status
+    when 'FINISHED'
+      'Index Request has completed.'
+    when 'FAILED'
+      'Index Request failed.'
+    when 'PENDING'
+      'Index Request is still pending - something has gone wrong.'
+    else
+      "Unknown index response: '#{status}'."
+    end
+  end
 
   # Runs Sphinx's indexer tool to process the index. Currently assumes Sphinx is
   # running.
@@ -50,14 +64,9 @@ class FlyingSphinx::IndexRequest
   def index
     index = 0
     FlyingSphinx::Tunnel.connect(configuration) do
-      index += 1
-      now = Time.now
-      log("Loop #{now.inspect} - #{now.usec} -- #{index}")
       begin_request unless request_begun?
 
-      continue = !request_complete?
-      log("Continuing? #{continue}")
-      continue
+      true
     end
   rescue Net::SSH::Exception
     cancel_request
@@ -66,50 +75,22 @@ class FlyingSphinx::IndexRequest
   end
 
   def begin_request
-    response = api.post('indices', :indices => indices.join(','))
+    response = api.post 'indices',
+      :indices => indices.join(','),
+      :close   => true
 
     @index_id = response.body
     @request_begun = true
 
     raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if @index_id == 'BLOCKED'
   end
-
+  
   def request_begun?
     @request_begun
   end
-
-  def request_complete?
-    log("request_complete? called")
-
-    return false unless check_if_request_complete?
-
-    log("checking if request is complete")
-
-    response = api.get("indices/#{index_id}")
-    
-    log("response: '#{response.body}'")
-
-    request_complete_checked!
-
-    case response.body
-    when 'FINISHED', 'FAILED'
-      puts "Indexing request failed." if response.body == 'FAILED'
-      true
-    when 'PENDING'
-      false
-    else
-      raise "Unknown index response: '#{response.body}'"
-    end
-  end
-
-  def request_complete_checked!
-    @request_status_last_checked = Time.now
-  end
-
-  def check_if_request_complete?
-    log("Last Request: #{@request_status_last_checked.inspect}, #{Time.now.inspect}")
-    request_complete_checked! unless @request_status_last_checked
-    (@request_status_last_checked + INDEX_COMPLETE_CHECKING_INTERVAL) < Time.now
+  
+  def request_status
+    api.get("indices/#{index_id}").body
   end
 
   def cancel_request

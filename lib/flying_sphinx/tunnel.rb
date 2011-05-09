@@ -3,7 +3,7 @@ class FlyingSphinx::Tunnel
     tunnel = new configuration
     tunnel.open do |session|
       session.loop do
-        block.call && session.busy?(true)
+        block.call
       end
     end
   end
@@ -20,11 +20,7 @@ class FlyingSphinx::Tunnel
 
     session.loop { !remote_exists?(session) }
     
-    puts "BUSY: #{session.busy?(true)}"
     yield session
-    session.close unless session.closed?
-  ensure
-    session.shutdown! unless session.closed?
   end
 
   private

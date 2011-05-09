@@ -7,8 +7,6 @@ describe FlyingSphinx::IndexRequest do
   }
   
   let(:index_response)    { stub(:response, :body => 42) }
-  let(:pending_response)  { stub(:response, :body => 'PENDING') }
-  let(:finished_response) { stub(:response, :body => 'FINISHED') }
   let(:blocked_response)  { stub(:response, :body => 'BLOCKED') }
     
   before :each do
@@ -48,31 +46,19 @@ describe FlyingSphinx::IndexRequest do
   describe '#update_and_index' do
     let(:index_request) { FlyingSphinx::IndexRequest.new }
     let(:conf_params)   { { :configuration => 'foo {}' } }
-    let(:index_params)  { { :indices => '' } }
+    let(:index_params)  { { :indices => '', :close => true } }
         
     it "makes a new request" do
       api.should_receive(:put).with('/', conf_params).and_return('ok')
       api.should_receive(:post).
         with('indices', index_params).and_return(index_response)
-      api.should_receive(:get).
-        with('indices/42').and_return(pending_response)
       
       begin
-        Timeout::timeout(1.2) {
+        Timeout::timeout(0.2) {
           index_request.update_and_index
         }
       rescue Timeout::Error
       end
-    end
-    
-    it "should finish when the index request has been completed" do
-      api.should_receive(:put).with('/', conf_params).and_return('ok')
-      api.should_receive(:post).
-        with('indices', index_params).and_return(index_response)
-      api.should_receive(:get).
-        with('indices/42').and_return(finished_response)
-      
-      index_request.update_and_index
     end
     
     context 'delta request without delta support' do
@@ -91,29 +77,54 @@ describe FlyingSphinx::IndexRequest do
   
   describe '#perform' do
     let(:index_request) { FlyingSphinx::IndexRequest.new ['foo_delta'] }
-    let(:index_params)  { { :indices => 'foo_delta' } }
+    let(:index_params)  { { :indices => 'foo_delta', :close => true } }
     
     it "makes a new request" do
       api.should_receive(:post).
         with('indices', index_params).and_return(index_response)
-      api.should_receive(:get).with('indices/42').
-        and_return(pending_response)
       
       begin
-        Timeout::timeout(1.2) {
+        Timeout::timeout(0.2) {
           index_request.perform
         }
       rescue Timeout::Error
       end
     end
+  end
+  
+  describe '#status_message' do
+    let(:index_request)     { FlyingSphinx::IndexRequest.new }
+    let(:finished_response) { stub(:response, :body => 'FINISHED') }
+    let(:failure_response)  { stub(:response, :body => 'FAILED') }
+    let(:pending_response)  { stub(:response, :body => 'PENDING') }
+    let(:unknown_response)  { stub(:response, :body => 'UNKNOWN') }
     
-    it "should finish when the index request has been completed" do
-      api.should_receive(:post).
-        with('indices', index_params).and_return(index_response)
-      api.should_receive(:get).
-        with('indices/42').and_return(finished_response)
+    before :each do
+      api.stub(:post => index_response)
+    end
+    
+    it "returns with a positive message on success" do
+      api.stub(:get => finished_response)
       
-      index_request.perform
+      index_request.status_message.should == 'Index Request has completed.'
+    end
+    
+    it "returns with a failure message on failure" do
+      api.stub(:get => failure_response)
+      
+      index_request.status_message.should == 'Index Request failed.'
+    end
+    
+    it "warns the user if the request is still pending" do
+      api.stub(:get => pending_response)
+      
+      index_request.status_message.should == 'Index Request is still pending - something has gone wrong.'
+    end
+    
+    it "treats all other statuses as unknown" do
+      api.stub(:get => unknown_response)
+      
+      index_request.status_message.should == "Unknown index response: 'UNKNOWN'."
     end
   end
   

@@ -2,8 +2,10 @@ namespace :fs do
   task :index => :environment do
     puts "Starting Index Request"
     FlyingSphinx::IndexRequest.cancel_jobs
-    FlyingSphinx::IndexRequest.new.update_and_index
-    puts "Index Request has completed"
+    request = FlyingSphinx::IndexRequest.new
+    request.update_and_index
+    puts request.status_message
+    
   end
   
   task :start => :environment do
