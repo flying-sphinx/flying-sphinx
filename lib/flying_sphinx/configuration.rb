@@ -75,6 +75,10 @@ class FlyingSphinx::Configuration
   def set_searchd_settings
     thinking_sphinx.port    = port
     thinking_sphinx.address = host
+    
+    if riddle.searchd.respond_to?(:client_key)
+      riddle.searchd.client_key = "#{identifier}:#{api_key}"
+    end
   end
 
   def set_indexer_settings
