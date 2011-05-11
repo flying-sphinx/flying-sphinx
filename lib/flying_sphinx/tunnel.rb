@@ -21,6 +21,9 @@ class FlyingSphinx::Tunnel
     session.loop { !remote_exists?(session) }
     
     yield session
+  rescue IOError
+    # Server closed the connection on us. That's (hopefully) expected, nothing
+    # to worry about.
   end
 
   private

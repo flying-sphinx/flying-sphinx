@@ -69,7 +69,8 @@ class FlyingSphinx::IndexRequest
       true
     end
   rescue Net::SSH::Exception
-    cancel_request
+    # Server closed the connection on us. That's (hopefully) expected, nothing
+    # to worry about.
   rescue RuntimeError => err
     puts err.message
   end
