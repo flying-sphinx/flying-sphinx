@@ -27,6 +27,10 @@ class FlyingSphinx::Configuration
   def stop_sphinx
     api.post('stop')
   end
+  
+  def client_key
+    "#{identifier}:#{api_key}"
+  end
 
   private
 
@@ -77,7 +81,7 @@ class FlyingSphinx::Configuration
     thinking_sphinx.address = host
     
     if riddle.searchd.respond_to?(:client_key)
-      riddle.searchd.client_key = "#{identifier}:#{api_key}"
+      riddle.searchd.client_key = client_key
     end
   end
 

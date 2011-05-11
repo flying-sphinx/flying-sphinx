@@ -8,6 +8,8 @@ class FlyingSphinx::Railtie < Rails::Railtie
     
     ThinkingSphinx::Configuration.instance.address = config.host
     ThinkingSphinx::Configuration.instance.port    = config.port
+    ThinkingSphinx::Configuration.instance.configuration.searchd.client_key =
+      config.client_key
     
     ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
   end unless Rails.env.development? || Rails.env.test?
