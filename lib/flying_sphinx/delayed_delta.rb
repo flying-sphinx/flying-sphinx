@@ -12,6 +12,10 @@ class FlyingSphinx::DelayedDelta < ThinkingSphinx::Deltas::DefaultDelta
   def self.enqueue(object, priority = 0)
     return if duplicates_exist? object
     
+    enqueue_without_duplicates_check object, priority
+  end
+  
+  def self.enqueue_without_duplicates_check(object, priority = 0)
     if defined?(Rails) && Rails.version.to_i <= 2
       ::Delayed::Job.enqueue(object, priority)
     else
@@ -55,11 +59,11 @@ class FlyingSphinx::DelayedDelta < ThinkingSphinx::Deltas::DefaultDelta
       delayed_job_priority
     )
     
-    Delayed::Job.enqueue(
+    self.class.enqueue_without_duplicates_check(
       FlyingSphinx::FlagAsDeletedJob.new(
         model.core_index_names, instance.sphinx_document_id
       ),
-      :priority => delayed_job_priority
+      delayed_job_priority
     ) if instance
     
     true
