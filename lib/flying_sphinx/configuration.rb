@@ -33,7 +33,7 @@ class FlyingSphinx::Configuration
   end
 
   def output_recent_actions
-    api.get('/app/actions').body.each do |action|
+    api.get('actions').body.each do |action|
       puts "#{action.created_at}  #{action.name}"
     end
   end
