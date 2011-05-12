@@ -76,11 +76,9 @@ class FlyingSphinx::IndexRequest
   end
 
   def begin_request
-    response = api.post 'indices',
-      :indices => indices.join(','),
-      :close   => true
+    response = api.post 'indices', :indices => indices.join(',')
 
-    @index_id = response.body
+    @index_id = response.body.id
     @request_begun = true
 
     raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if @index_id == 'BLOCKED'
@@ -91,7 +89,7 @@ class FlyingSphinx::IndexRequest
   end
   
   def request_status
-    api.get("indices/#{index_id}").body
+    api.get("indices/#{index_id}").body.status
   end
 
   def cancel_request
