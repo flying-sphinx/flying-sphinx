@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name        = 'flying-sphinx'
-  s.version     = '0.4.4'
+  s.version     = '0.5.0'
   s.authors     = ['Pat Allan']
   s.email       = 'pat@freelancing-gods.com'
   s.date        = '2011-05-12'
