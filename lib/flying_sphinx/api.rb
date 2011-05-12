@@ -16,20 +16,23 @@ class FlyingSphinx::API
   end
 
   def get(path, data = {})
-    log('get', path, data)
-    connection.get do |request|
-      request.url normalize_path(path), data
+    log('GET', path, data) do
+      connection.get do |request|
+        request.url normalize_path(path), data
+      end
     end
   end
 
   def post(path, data = {})
-    log('post', path, data)
-    connection.post normalize_path(path), data
+    log('POST', path, data) do
+      connection.post normalize_path(path), data
+    end
   end
 
   def put(path, data = {})
-    log('put', path, data)
-    connection.put normalize_path(path), data
+    log('PUT', path, data) do
+      connection.put normalize_path(path), data
+    end
   end
 
   private
@@ -61,7 +64,16 @@ class FlyingSphinx::API
     end
   end
 
-  def log(method, path, data = {}, option = {})
-    puts "API : '#{path}' #{method} request: #{data.inspect}" if ENV['VERBOSE_LOGGING']
+  def log(method, path, data = {}, option = {}, &block)
+    return block.call unless log?
+    
+    puts "API Request: #{method} '#{path}'; params: #{data.inspect}"
+    response = block.call
+    puts "API Response: #{response.body.to_hash.inspect}"
+    return response
+  end
+  
+  def log?
+    ENV['VERBOSE_LOGGING'].present?
   end
 end

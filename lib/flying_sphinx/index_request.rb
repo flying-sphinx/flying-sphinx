@@ -81,7 +81,7 @@ class FlyingSphinx::IndexRequest
     @index_id = response.body.id
     @request_begun = true
 
-    raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if @index_id == 'BLOCKED'
+    raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if response.body.status == 'BLOCKED'
   end
   
   def request_begun?
@@ -103,9 +103,5 @@ class FlyingSphinx::IndexRequest
 
   def api
     configuration.api
-  end
-
-  def log(message)
-    puts "Index Request : #{message}" if ENV['VERBOSE_LOGGING']
   end
 end
