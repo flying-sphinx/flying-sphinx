@@ -1,50 +1,72 @@
 class FlyingSphinx::IndexRequest
   attr_reader :index_id, :indices
-  
+
+  INDEX_COMPLETE_CHECKING_INTERVAL = 3
+
   # Remove all Delta jobs from the queue. If the
   # delayed_jobs table does not exist, this method will do nothing.
-  # 
+  #
   def self.cancel_jobs
     return unless defined?(::Delayed) && ::Delayed::Job.table_exists?
-    
+
     ::Delayed::Job.delete_all "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
   end
-  
+
+  def self.output_last_index
+    index = FlyingSphinx::Configuration.new.api.get('indices/last').body
+    puts "Index Job Status: #{index.status}"
+    puts "Index Log:\n#{index.log}"
+  end
+
   def initialize(indices = [])
     @indices = indices
   end
-  
+
   # Shows index name in Delayed::Job#name.
-  # 
+  #
   def display_name
     "#{self.class.name} for #{indices.join(', ')}"
   end
-  
+
   def update_and_index
     update_sphinx_configuration
     index
   end
   
+  def status_message
+    status = request_status
+    case status
+    when 'FINISHED'
+      'Index Request has completed.'
+    when 'FAILED'
+      'Index Request failed.'
+    when 'PENDING'
+      'Index Request is still pending - something has gone wrong.'
+    else
+      "Unknown index response: '#{status}'."
+    end
+  end
+
   # Runs Sphinx's indexer tool to process the index. Currently assumes Sphinx is
   # running.
-  # 
+  #
   # @return [Boolean] true
-  # 
+  #
   def perform
     index
     true
   end
-  
+
   private
-  
+
   def configuration
     @configuration ||= FlyingSphinx::Configuration.new
   end
-  
+
   def update_sphinx_configuration
-    api.put '/app', :configuration => configuration.sphinx_configuration
+    api.put('/', :configuration => configuration.sphinx_configuration)
   end
-  
+
   def index
     if FlyingSphinx::Tunnel.required?
       tunnelled_index
@@ -52,7 +74,8 @@ class FlyingSphinx::IndexRequest
       direct_index
     end
   rescue Net::SSH::Exception
-    cancel_request
+    # Server closed the connection on us. That's (hopefully) expected, nothing
+    # to worry about.
   rescue RuntimeError => err
     puts err.message
   end
@@ -61,7 +84,7 @@ class FlyingSphinx::IndexRequest
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
     
-      !request_complete?
+      true
     end
   end
   
@@ -73,10 +96,12 @@ class FlyingSphinx::IndexRequest
   end
   
   def begin_request
-    @index_id      = api.post('/app/indices', :indices => indices.join(','))
+    response = api.post 'indices', :indices => indices.join(',')
+
+    @index_id = response.body.id
     @request_begun = true
-    
-    raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if @index_id == 'BLOCKED'
+
+    raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if response.body.status == 'BLOCKED'
   end
   
   def request_begun?
@@ -84,10 +109,8 @@ class FlyingSphinx::IndexRequest
   end
   
   def request_complete?
-    response = api.get("/app/indices/#{index_id}")
-    case response.body
+    case request_status
     when 'FINISHED', 'FAILED'
-      puts "Indexing request failed." if response.body == 'FAILED'
       true
     when 'PENDING'
       false
@@ -96,14 +119,19 @@ class FlyingSphinx::IndexRequest
     end
   end
   
+  def request_status
+    api.get("indices/#{index_id}").body.status
+  end
+
   def cancel_request
     return if index_id.nil?
-    
+
     puts "Connecting Flying Sphinx to the Database failed"
     puts "Cancelling Index Request..."
-    api.put "/app/indices/#{index_id}", :status => 'CANCELLED'
+
+    api.put("indices/#{index_id}", :status => 'CANCELLED')
   end
-  
+
   def api
     configuration.api
   end

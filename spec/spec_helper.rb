@@ -1,12 +1,23 @@
-$:.unshift File.dirname(__FILE__) + '/../lib'
-
 require 'rubygems'
-require 'bundler'
- 
-Bundler.require :default, :development
+begin
+  require 'bundler'
+rescue LoadError
+  puts "although not required, it's recommended you use bundler during development"
+end
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+require 'timeout'
 
+require 'thinking-sphinx'
 require 'flying_sphinx'
+require 'delayed_job'
+
+require 'fakeweb'
+require 'fakeweb_matcher'
+
+FakeWeb.allow_net_connect = false
 
 Delayed::Worker.backend = :active_record
+
+# we don't want a checking of interval in testing
+FlyingSphinx::IndexRequest.send(:remove_const, :INDEX_COMPLETE_CHECKING_INTERVAL)
+FlyingSphinx::IndexRequest::INDEX_COMPLETE_CHECKING_INTERVAL = 0

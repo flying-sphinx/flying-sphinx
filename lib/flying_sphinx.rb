@@ -2,7 +2,6 @@ module FlyingSphinx
   #
 end
 
-require 'httparty'
 require 'net/ssh'
 require 'riddle/0.9.9'
 
