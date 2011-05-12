@@ -12,7 +12,11 @@ class FlyingSphinx::DelayedDelta < ThinkingSphinx::Deltas::DefaultDelta
   def self.enqueue(object, priority = 0)
     return if duplicates_exist? object
     
-    ::Delayed::Job.enqueue(object, :priority => priority)
+    if defined?(Rails) && Rails.version.to_i <= 2
+      ::Delayed::Job.enqueue(object, priority)
+    else
+      ::Delayed::Job.enqueue(object, :priority => priority)
+    end
   end
   
   # Checks whether a given job already exists in the queue.
