@@ -35,7 +35,7 @@ class FlyingSphinx::Configuration
   private
 
   def set_from_server
-    response = api.get('/', {}, { :json => true })
+    response = api.get '/'
     raise 'Invalid Flying Sphinx credentials' if response.status == 403
 
     @host          = response.body.server
