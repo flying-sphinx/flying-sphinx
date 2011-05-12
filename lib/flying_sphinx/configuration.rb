@@ -32,6 +32,12 @@ class FlyingSphinx::Configuration
     "#{identifier}:#{api_key}"
   end
 
+  def output_recent_actions
+    api.get('/app/actions').body.each do |action|
+      puts "#{action.created_at}  #{action.name}"
+    end
+  end
+  
   private
 
   def set_from_server

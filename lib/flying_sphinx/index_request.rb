@@ -12,6 +12,12 @@ class FlyingSphinx::IndexRequest
     ::Delayed::Job.delete_all "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
   end
 
+  def self.output_last_index
+    index = FlyingSphinx::Configuration.new.api.get('app/indices/last').body
+    puts "Index Job Status: #{index.status}"
+    puts "Index Log:\n#{index.log}"
+  end
+
   def initialize(indices = [])
     @indices = indices
   end
