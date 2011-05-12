@@ -3,7 +3,7 @@ begin
   require 'bundler'
   Bundler::GemHelper.install_tasks
 rescue LoadError
-  puts "although not required, it's recommended you use bundler during development"
+  puts "Although not required, it's recommended you use bundler during development"
 end
 
 require 'rake'
