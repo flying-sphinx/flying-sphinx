@@ -137,6 +137,8 @@ describe FlyingSphinx::IndexRequest do
     
     before :each do
       api.stub(:post => index_response)
+      
+      index_request.instance_variable_set :@index_id, 42
     end
     
     it "returns with a positive message on success" do
@@ -161,6 +163,14 @@ describe FlyingSphinx::IndexRequest do
       api.stub(:get => unknown_response)
       
       index_request.status_message.should == "Unknown index response: 'UNKNOWN'."
+    end
+    
+    it "raises a warning if the index id isn't set" do
+      index_request.instance_variable_set :@index_id, nil
+      
+      lambda {
+        index_request.status_message
+      }.should raise_error
     end
   end
   

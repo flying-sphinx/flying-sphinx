@@ -34,6 +34,8 @@ class FlyingSphinx::IndexRequest
   end
   
   def status_message
+    raise "Index Request failed to start. Something's not right!" if @index_id.nil?
+    
     status = request_status
     case status
     when 'FINISHED'
