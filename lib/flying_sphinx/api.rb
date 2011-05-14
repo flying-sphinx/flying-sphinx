@@ -69,7 +69,7 @@ class FlyingSphinx::API
     
     puts "API Request: #{method} '#{path}'; params: #{data.inspect}"
     response = block.call
-    puts "API Response: #{response.body.to_hash.inspect}"
+    puts "API Response: #{response.body.inspect}"
     return response
   end
   
