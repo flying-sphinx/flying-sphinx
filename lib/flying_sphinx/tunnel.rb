@@ -37,7 +37,7 @@ class FlyingSphinx::Tunnel
   end
 
   def db_port
-    db_config[:port]
+    db_config[:port] || 5432
   end
 
   def db_config
