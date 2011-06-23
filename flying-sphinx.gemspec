@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.6.3']
   s.add_runtime_dependency 'rash',               ['~> 0.3.0']
   
+  s.add_development_dependency 'rake',            ['0.8.7']
   s.add_development_dependency 'yajl-ruby',       ['~> 0.8.2']
   s.add_development_dependency 'rspec',           ['~> 2.5.0']
   s.add_development_dependency 'rcov',            ['~> 0.9.9']
