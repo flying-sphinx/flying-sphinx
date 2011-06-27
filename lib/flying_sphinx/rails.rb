@@ -10,7 +10,7 @@ unless Rails.env.development? || Rails.env.test?
       config.client_key
   end
 
-  if ENV['DATABASE_URL'][/^mysql/].nil?
+  if ENV['DATABASE_URL'] && ENV['DATABASE_URL'][/^mysql/].nil?
     ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
   end
 end
