@@ -126,13 +126,14 @@ class FlyingSphinx::Configuration
   
   def set_wordforms
     riddle.indexes.each do |index|
+      next unless index.respond_to?(:wordforms)
       index.wordforms = wordform_file_pairs[index.wordforms]
     end
   end
   
   def wordform_sources
     @wordform_sources ||= riddle.indexes.collect { |index|
-      index.try(:wordforms)
+      index.respond_to?(:wordforms) ? index.wordforms : nil
     }.flatten.compact.uniq
   end
 
