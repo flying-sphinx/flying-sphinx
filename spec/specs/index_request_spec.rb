@@ -3,7 +3,8 @@ require 'spec_helper'
 describe FlyingSphinx::IndexRequest do
   let(:api)           { FlyingSphinx::API.new 'foo', 'bar' }
   let(:configuration) {
-    stub(:configuration, :api => api, :sphinx_configuration => 'foo {}')
+    stub(:configuration, :api => api, :sphinx_configuration => 'foo {}',
+      :wordform_file_pairs => {})
   }
   
   let(:index_response)    {
@@ -64,6 +65,32 @@ describe FlyingSphinx::IndexRequest do
           index_request.update_and_index
         }
       rescue Timeout::Error
+      end
+    end
+    
+    context 'with wordforms' do
+      let(:file_params) {
+        {:setting => 'wordforms', :file_name => 'bar.txt', :content => 'baz'}
+      }
+      
+      before :each do
+        configuration.stub!(:wordform_file_pairs => {'foo.txt' => 'bar.txt'})
+        index_request.stub!(:open => double('file', :read => 'baz'))
+      end
+      
+      it "sends the wordform file" do
+        api.should_receive(:put).with('/', conf_params).and_return('ok')
+        api.should_receive(:post).with('/add_file', file_params).
+          and_return('ok')
+        api.should_receive(:post).
+          with('indices', index_params).and_return(index_response)
+        
+        begin
+          Timeout::timeout(0.2) {
+            index_request.update_and_index
+          }
+        rescue Timeout::Error
+        end
       end
     end
     

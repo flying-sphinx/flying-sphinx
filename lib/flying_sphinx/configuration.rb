@@ -16,8 +16,19 @@ class FlyingSphinx::Configuration
   def sphinx_configuration
     thinking_sphinx.generate
     set_database_settings
+    set_wordforms
 
     riddle.render
+  end
+  
+  def wordform_file_pairs
+    @wordform_file_pairs ||= begin
+      pairs = {}
+      wordform_sources.each_with_index do |source, index|
+        pairs[source] = "#{base_path}/wordforms/#{index}.txt"
+      end
+      pairs
+    end
   end
 
   def start_sphinx
@@ -111,6 +122,18 @@ class FlyingSphinx::Configuration
         source.sql_port = database_port
       end
     end
+  end
+  
+  def set_wordforms
+    riddle.indexes.each do |index|
+      index.wordforms = wordform_file_pairs[index.wordforms]
+    end
+  end
+  
+  def wordform_sources
+    @wordform_sources ||= riddle.indexes.collect { |index|
+      index.try(:wordforms)
+    }.flatten.compact.uniq
   end
 
   def identifier_from_env

@@ -30,6 +30,7 @@ class FlyingSphinx::IndexRequest
 
   def update_and_index
     update_sphinx_configuration
+    update_sphinx_reference_files
     index
   end
   
@@ -67,6 +68,15 @@ class FlyingSphinx::IndexRequest
 
   def update_sphinx_configuration
     api.put('/', :configuration => configuration.sphinx_configuration)
+  end
+  
+  def update_sphinx_reference_files
+    configuration.wordform_file_pairs.each do |local, remote|
+      api.post '/add_file',
+        :setting   => 'wordforms',
+        :file_name => remote.split('/').last,
+        :content   => open(local).read
+    end
   end
 
   def index
