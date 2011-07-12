@@ -1,3 +1,34 @@
 h1. Flying Sphinx
 
-Coming soon - well, with a bit of luck.
+This library is the code behind the @flying-sphinx@ gem. Its sole purpose is to connect Thinking Sphinx to the "Flying Sphinx Heroku addon":http://addons.heroku.com/flying_sphinx - and so you can just use Thinking Sphinx as normal on Heroku-hosted sites.
+
+h2. Installation and Usage
+
+This is all covered pretty well on "the Flying Sphinx site":http://flying-sphinx.com/docs, but if you're reading this on Github, you're probably keen on using this repository as the source instead of the gem. Here's the code snippet for your @Gemfile@:
+
+<pre><code>gem 'flying-sphinx',
+  :git => 'git://github.com/flying-sphinx/flying-sphinx.git'</code></pre>
+
+h2. Compatibility and Limitations
+
+Flying Sphinx is built with support for Rails 2.3.6 and beyond. Sadly, earlier versions of Rails aren't supported due to a requirement of a recent version of Rack deep in the dependency tree. It's not tested against Rails 3.1 at this time, but in theory should work fine. Let me know if I'm wrong!
+
+It works with Rails 1.8.7 and 1.9.2, and on both Heroku's Bamboo and Cedar stacks. You _do_ need to use it with Heroku at this point - allowing others hosting elsewhere to use Flying Sphinx is something I'm considering, but it's not possible right now.
+
+There are limitations with Heroku's setup and Sphinx/Thinking Sphinx functionality - again, the official documentation "covers this":http://flying-sphinx.com/docs#limitations, so have a read there.
+
+h2. Contributing
+
+Patches are indeed welcome - though I understand it's a little tricky to test them thoroughly. It's best to give your changes a spin on your Heroku app that's running Flying Sphinx (and if you don't have one of those, I'm a little confused as to why you're contributing).
+
+API documentation is required - consider this paragraph a placeholder for that.
+
+In the meantime, please keep in mind the following:
+
+* Write tests using RSpec
+* Keep your commits in a separate branch
+* Don't change the version (or if you must, keep a copy of your changes without your custom version number in a branch, so I can merge it in easily).
+
+h2. Licence
+
+Copyright &copy; 2011 Pat Allan, released under an MIT licence.
