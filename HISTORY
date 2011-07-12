@@ -1,0 +1,47 @@
+Edge
+* This history file now exists (pre-populated).
+* An actual README, courtesy of some prodding by Mislav.
+* Added support for wordforms (automatically sent through to the server).
+* Don't presume that ENV['DATABASE_URL'] exists - it won't in non-Heroku environments.
+
+0.5.1 - 23rd June 2011
+* Adding rake as a development dependency, just for Travis CI.
+* Have a default database port - Cedar stack doesn't set it by default.
+* Allow for newer net-ssh gem versions (including 2.1).
+* Sinatra loader (equivalent of a Railtie).
+* Fixed bug for handling JSON always as a Hash (sometimes it's an Array).
+* Better error checking when index requests don't get created as expected.
+
+0.5.0 - 12th May 2011
+* Rake tasks for latest actions and last index log.
+* Switching to version 2 of the API.
+* Adding default rake task for Travis CI.
+* Allow for Rails 2 versions of Delayed Job.
+* Set client_key for connections, configuration if supported by Riddle and Thinking Sphinx.
+* Allow server to automatically close SSH connections.
+* Adding logging on API calls (Josh Kalderimis).
+* Allow for non-tunnelled index requests (for RDS).
+* Don't use custom database adapter if the database is MySQL.
+* Fall back to environment variables for connection settings.
+* Switching from JSON and HTTParty to MultiJSON and Faraday (Josh Kalderimis).
+* Using Bundler as gem driver instead of Jeweler (Josh Kalderimis).
+* More flexible JSON dependency.
+
+0.4.4 - 7th February 2011
+* Using ActiveRecord's connection information, as we can't rely on heroku_env.yml to be around.
+
+0.4.3 - 4th February 2011
+* Wait until the SSH session and forward is prepared before making the index request.
+* If credentials are invalid, raise an appropriate error instead of letting the JSON parsing fail.
+
+0.4.2 - 29th January 2011
+* Set the Thinking Sphinx database adapter when loaded, instead of requiring the Rails dispatcher to setup.
+
+0.4.1 - 24th January 2011
+* Comparing against response bodies for consistency (and avoiding HTTParty magic).
+
+0.4.0 - 18th January 2011
+* Using HTTPS for API calls.
+* Using Flying Sphinx server's account identifier instead of the heroku id from the environment (the latter being unreliable and not part of any official Heroku add-on documentation).
+
+Note: Any releases before this were most definitely experimental and pre-alpha.

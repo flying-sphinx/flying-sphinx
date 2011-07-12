@@ -27,7 +27,11 @@ In the meantime, please keep in mind the following:
 
 * Write tests using RSpec
 * Keep your commits in a separate branch
-* Don't change the version (or if you must, keep a copy of your changes without your custom version number in a branch, so I can merge it in easily).
+* Don't change the version or History file in your feature branch - makes merging changes much easier.
+
+h2. Contributors
+
+* "Josh Kalderimis":http://blog.cookiestack.com/ for switching the API calls to Faraday, improving the specs, a ton of debugging, and encouraging a versioned API.
 
 h2. Licence
 
