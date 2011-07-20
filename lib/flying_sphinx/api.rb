@@ -74,6 +74,6 @@ class FlyingSphinx::API
   end
   
   def log?
-    ENV['VERBOSE_LOGGING'].present?
+    ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
 end

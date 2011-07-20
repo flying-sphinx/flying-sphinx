@@ -88,7 +88,7 @@ class FlyingSphinx::IndexRequest
   rescue Net::SSH::Exception => err
     # Server closed the connection on us. That's (hopefully) expected, nothing
     # to worry about.
-    puts "SSH/Indexing Error: #{err.message}" if ENV['VERBOSE_LOGGING'].present?
+    puts "SSH/Indexing Error: #{err.message}" if log?
   rescue RuntimeError => err
     puts err.message
   end
@@ -147,5 +147,9 @@ class FlyingSphinx::IndexRequest
 
   def api
     configuration.api
+  end
+  
+  def log?
+    ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
 end
