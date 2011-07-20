@@ -1,4 +1,5 @@
 Edge
+* Log SSH exceptions during indexing (when we're being verbose).
 * This history file now exists (pre-populated).
 * An actual README, courtesy of some prodding by Mislav.
 * Added support for wordforms (automatically sent through to the server).

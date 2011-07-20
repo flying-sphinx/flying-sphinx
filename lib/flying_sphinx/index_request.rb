@@ -85,9 +85,10 @@ class FlyingSphinx::IndexRequest
     else
       direct_index
     end
-  rescue Net::SSH::Exception
+  rescue Net::SSH::Exception => err
     # Server closed the connection on us. That's (hopefully) expected, nothing
     # to worry about.
+    puts "SSH/Indexing Error: #{err.message}" if ENV['VERBOSE_LOGGING'].present?
   rescue RuntimeError => err
     puts err.message
   end
