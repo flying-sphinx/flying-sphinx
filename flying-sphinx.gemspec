@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name        = 'flying-sphinx'
-  s.version     = '0.5.1'
+  s.version     = '0.5.2'
   s.authors     = ['Pat Allan']
   s.email       = 'pat@freelancing-gods.com'
-  s.date        = '2011-05-12'
   s.summary     = 'Sphinx in the Cloud'
   s.description = 'Hooks Thinking Sphinx into the Flying Sphinx service'
   s.homepage    = 'https://flying-sphinx.com'

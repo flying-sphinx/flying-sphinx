@@ -1,4 +1,4 @@
-Edge
+0.5.2 - 28th July 2011
 * Log SSH exceptions during indexing (when we're being verbose).
 * This history file now exists (pre-populated).
 * An actual README, courtesy of some prodding by Mislav.
