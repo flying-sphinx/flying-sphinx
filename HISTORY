@@ -1,3 +1,7 @@
+Edge
+* Version in a separate file.
+* Support for all file-based Sphinx settings: stopwords, wordforms, exceptions, and mysql ssl settings for SQL sources.
+
 0.5.2 - 28th July 2011
 * Log SSH exceptions during indexing (when we're being verbose).
 * This history file now exists (pre-populated).

@@ -1,7 +1,10 @@
 # -*- encoding: utf-8 -*-
+$:.push File.expand_path('../lib', __FILE__)
+require 'flying_sphinx/version'
+
 Gem::Specification.new do |s|
   s.name        = 'flying-sphinx'
-  s.version     = '0.5.2'
+  s.version     = FlyingSphinx::Version
   s.authors     = ['Pat Allan']
   s.email       = 'pat@freelancing-gods.com'
   s.summary     = 'Sphinx in the Cloud'

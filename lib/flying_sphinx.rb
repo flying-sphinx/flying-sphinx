@@ -12,6 +12,7 @@ require 'flying_sphinx/flag_as_deleted_job'
 require 'flying_sphinx/heroku_shared_adapter'
 require 'flying_sphinx/index_request'
 require 'flying_sphinx/tunnel'
+require 'flying_sphinx/version'
 
 if defined?(Rails) && defined?(Rails::Railtie)
   require 'flying_sphinx/railtie'
