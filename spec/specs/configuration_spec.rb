@@ -113,9 +113,7 @@ describe FlyingSphinx::Configuration do
   
   describe '#sphinx_configuration' do
     let(:config)    { FlyingSphinx::Configuration.new 'ident' }
-    let(:riddle)    { double('riddle configuration', :render => '',
-      :searchd => double('searchd').as_null_object,
-      :indexer => double('indexer').as_null_object) }
+    let(:riddle)    { double('riddle configuration').as_null_object }
     let(:base_path) { '/mnt/sphinx/flying-sphinx/ident' }
     let(:source)    { double('source') }
     
@@ -146,7 +144,8 @@ describe FlyingSphinx::Configuration do
         double('index', :wordforms => '/path/to/wordforms-foo.txt',
           :sources => [double('source'), double('source')]),
         double('index', :wordforms => '/path/to/wordforms-bar.txt',
-          :sources => [double('source'), double('source')])
+          :sources => [double('source'), double('source')]),
+        double('distributed index')
       ]
       
       riddle.indexes[0].should_receive(:wordforms=).
@@ -166,7 +165,8 @@ describe FlyingSphinx::Configuration do
         double('index', :sources => [
           double('source', :mysql_ssl_cert => '/path/to/cert-baz.txt'),
           double('source', :mysql_ssl_cert => nil)
-        ])
+        ]),
+        double('distributed index')
       ]
       
       riddle.indexes[0].sources[0].should_receive(:mysql_ssl_cert=).

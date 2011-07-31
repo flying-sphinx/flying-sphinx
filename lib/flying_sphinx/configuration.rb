@@ -152,9 +152,16 @@ class FlyingSphinx::Configuration
   def file_setting_sources(setting)
     @file_setting_sources ||= {}
     @file_setting_sources[setting] ||= riddle.indexes.collect { |index|
-      Array(file_setting_for(index, setting)) +
-      index.sources.collect { |source| file_setting_for(source, setting) }
+      file_settings_for_index(index, setting)
     }.flatten.compact.uniq
+  end
+  
+  def file_settings_for_index(index, setting)
+    settings = Array(file_setting_for(index, setting))
+    settings += index.sources.collect { |source|
+      file_setting_for(source, setting)
+    } if index.respond_to?(:sources)
+    settings
   end
   
   def file_setting_for(object, setting)
