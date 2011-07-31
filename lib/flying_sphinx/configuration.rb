@@ -28,7 +28,7 @@ class FlyingSphinx::Configuration
     @file_setting_pairs[setting] ||= begin
       pairs = {}
       file_setting_sources(setting).each_with_index do |source, index|
-        pairs[source] = "#{base_path}/#{setting}/#{index.txt}"
+        pairs[source] = "#{base_path}/#{setting}/#{index}.txt"
       end
       pairs
     end
