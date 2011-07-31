@@ -68,31 +68,36 @@ describe FlyingSphinx::IndexRequest do
       end
     end
     
-    context 'with wordforms' do
-      let(:file_params) {
-        {:setting => 'wordforms', :file_name => 'bar.txt', :content => 'baz'}
-      }
-      
-      before :each do
-        configuration.stub!(:file_setting_pairs => {})
-        index_request.stub!(:open => double('file', :read => 'baz'))
-      end
-      
-      it "sends the wordform file" do
-        api.should_receive(:put).with('/', conf_params).and_return('ok')
-        api.should_receive(:post).with('/add_file', file_params).
-          and_return('ok')
-        api.should_receive(:post).
-          with('indices', index_params).and_return(index_response)
+    [
+      :stopwords, :wordforms, :exceptions, :mysql_ssl_cert, :mysql_ssl_key,
+      :mysql_ssl_ca
+    ].each do |setting|
+      context "with #{setting}" do
+        let(:file_params) {
+          {:setting => setting.to_s, :file_name => 'bar.txt', :content => 'baz'}
+        }
         
-        configuration.should_receive(:file_setting_pairs).
-          with(:wordforms).and_return({'foo.txt' => 'bar.txt'})
+        before :each do
+          configuration.stub!(:file_setting_pairs => {})
+          index_request.stub!(:open => double('file', :read => 'baz'))
+        end
         
-        begin
-          Timeout::timeout(0.2) {
-            index_request.update_and_index
-          }
-        rescue Timeout::Error
+        it "sends the #{setting} file" do
+          api.should_receive(:put).with('/', conf_params).and_return('ok')
+          api.should_receive(:post).with('/add_file', file_params).
+            and_return('ok')
+          api.should_receive(:post).
+            with('indices', index_params).and_return(index_response)
+          
+          configuration.should_receive(:file_setting_pairs).
+            with(setting).and_return({'foo.txt' => 'bar.txt'})
+          
+          begin
+            Timeout::timeout(0.2) {
+              index_request.update_and_index
+            }
+          rescue Timeout::Error
+          end
         end
       end
     end
