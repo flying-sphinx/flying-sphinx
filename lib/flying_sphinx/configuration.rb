@@ -1,5 +1,7 @@
 class FlyingSphinx::Configuration
   attr_reader :identifier, :api_key, :host, :port, :database_port, :mem_limit
+  
+  FileSettings = [:wordforms]
 
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
@@ -16,16 +18,17 @@ class FlyingSphinx::Configuration
   def sphinx_configuration
     thinking_sphinx.generate
     set_database_settings
-    set_wordforms
+    set_file_settings
 
     riddle.render
   end
   
-  def wordform_file_pairs
-    @wordform_file_pairs ||= begin
+  def file_setting_pairs(setting)
+    @file_setting_pairs ||= {}
+    @file_setting_pairs[setting] ||= begin
       pairs = {}
-      wordform_sources.each_with_index do |source, index|
-        pairs[source] = "#{base_path}/wordforms/#{index}.txt"
+      file_setting_sources(setting).each_with_index do |source, index|
+        pairs[source] = "#{base_path}/#{setting}/#{index.txt}"
       end
       pairs
     end
@@ -124,19 +127,23 @@ class FlyingSphinx::Configuration
     end
   end
   
-  def set_wordforms
+  def set_file_settings
     riddle.indexes.each do |index|
-      next unless index.respond_to?(:wordforms)
-      index.wordforms = wordform_file_pairs[index.wordforms]
+      FileSettings.each do |setting|
+        next unless index.respond_to?(setting)
+        index.send "#{setting}=",
+          file_setting_pairs(setting)[index.send(setting)]
+      end
     end
   end
   
-  def wordform_sources
-    @wordform_sources ||= riddle.indexes.collect { |index|
-      index.respond_to?(:wordforms) ? index.wordforms : nil
+  def file_setting_sources(setting)
+    @file_setting_sources ||= {}
+    @file_setting_sources[setting] ||= riddle.indexes.collect { |index|
+      index.respond_to?(setting) ? index.send(setting) : nil
     }.flatten.compact.uniq
   end
-
+  
   def identifier_from_env
     ENV['FLYING_SPHINX_IDENTIFIER']
   end

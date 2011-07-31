@@ -4,7 +4,7 @@ describe FlyingSphinx::IndexRequest do
   let(:api)           { FlyingSphinx::API.new 'foo', 'bar' }
   let(:configuration) {
     stub(:configuration, :api => api, :sphinx_configuration => 'foo {}',
-      :wordform_file_pairs => {})
+      :file_setting_pairs => {})
   }
   
   let(:index_response)    {
@@ -74,7 +74,7 @@ describe FlyingSphinx::IndexRequest do
       }
       
       before :each do
-        configuration.stub!(:wordform_file_pairs => {'foo.txt' => 'bar.txt'})
+        configuration.stub!(:file_setting_pairs => {})
         index_request.stub!(:open => double('file', :read => 'baz'))
       end
       
@@ -84,6 +84,9 @@ describe FlyingSphinx::IndexRequest do
           and_return('ok')
         api.should_receive(:post).
           with('indices', index_params).and_return(index_response)
+        
+        configuration.should_receive(:file_setting_pairs).
+          with(:wordforms).and_return({'foo.txt' => 'bar.txt'})
         
         begin
           Timeout::timeout(0.2) {

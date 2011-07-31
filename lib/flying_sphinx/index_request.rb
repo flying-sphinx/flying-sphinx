@@ -71,11 +71,13 @@ class FlyingSphinx::IndexRequest
   end
   
   def update_sphinx_reference_files
-    configuration.wordform_file_pairs.each do |local, remote|
-      api.post '/add_file',
-        :setting   => 'wordforms',
-        :file_name => remote.split('/').last,
-        :content   => open(local).read
+    FlyingSphinx::Configuration::FileSettings.each do |setting|
+      configuration.file_setting_pairs(setting).each do |local, remote|
+        api.post '/add_file',
+          :setting   => setting.to_s,
+          :file_name => remote.split('/').last,
+          :content   => open(local).read
+      end
     end
   end
 
