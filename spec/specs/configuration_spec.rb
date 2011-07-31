@@ -124,6 +124,7 @@ describe FlyingSphinx::Configuration do
         :generate      => nil,
         :configuration => riddle
       )
+      FlyingSphinx::Tunnel.stub! :required? => false
     end
     
     it "sets database settings to match Flying Sphinx port forward" do
