@@ -1,3 +1,6 @@
+Edge
+* Updating faraday_middleware version requirement, to play nicely with OmniAuth (Paolo Perrotta)
+
 0.6.0 - 31st July 2011
 * Version in a separate file.
 * Support for all file-based Sphinx settings: stopwords, wordforms, exceptions, and mysql ssl settings for SQL sources.
