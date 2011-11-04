@@ -1,4 +1,6 @@
-Edge
+0.6.1 - 4th November 2011
+* Adding Riddle dependency requirement.
+* Updating indexes (index plural) references to indices.
 * Updating faraday_middleware version requirement, to play nicely with OmniAuth (Paolo Perrotta)
 
 0.6.0 - 31st July 2011
