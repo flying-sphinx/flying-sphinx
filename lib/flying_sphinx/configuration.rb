@@ -1,6 +1,6 @@
 class FlyingSphinx::Configuration
   attr_reader :identifier, :api_key, :host, :port, :database_port, :mem_limit
-  
+
   FileIndexSettings  = [:stopwords, :wordforms, :exceptions]
   FileSourceSettings = [:mysql_ssl_cert, :mysql_ssl_key, :mysql_ssl_ca]
   FileSettings       = FileIndexSettings + FileSourceSettings
@@ -24,7 +24,7 @@ class FlyingSphinx::Configuration
 
     riddle.render
   end
-  
+
   def file_setting_pairs(setting)
     @file_setting_pairs ||= {}
     @file_setting_pairs[setting] ||= begin
@@ -43,7 +43,7 @@ class FlyingSphinx::Configuration
   def stop_sphinx
     api.post('stop')
   end
-  
+
   def client_key
     "#{identifier}:#{api_key}"
   end
@@ -53,7 +53,7 @@ class FlyingSphinx::Configuration
       puts "#{action.created_at}  #{action.name}"
     end
   end
-  
+
   private
 
   def set_from_server
@@ -106,7 +106,7 @@ class FlyingSphinx::Configuration
   def set_searchd_settings
     thinking_sphinx.port    = port
     thinking_sphinx.address = host
-    
+
     if riddle.searchd.respond_to?(:client_key)
       riddle.searchd.client_key = client_key
     end
@@ -118,8 +118,8 @@ class FlyingSphinx::Configuration
 
   def set_database_settings
     return unless FlyingSphinx::Tunnel.required?
-    
-    riddle.indexes.each do |index|
+
+    riddle.indices.each do |index|
       next unless index.respond_to?(:sources)
 
       index.sources.each do |source|
@@ -128,19 +128,19 @@ class FlyingSphinx::Configuration
       end
     end
   end
-  
+
   def set_file_settings
-    riddle.indexes.each do |index|
+    riddle.indices.each do |index|
       set_file_settings_for index, FileIndexSettings
-      
+
       next unless index.respond_to?(:sources)
-            
+
       index.sources.each do |source|
         set_file_settings_for source, FileSourceSettings
       end
     end
   end
-  
+
   def set_file_settings_for(object, settings)
     settings.each do |setting|
       next unless object.respond_to?(setting)
@@ -148,14 +148,14 @@ class FlyingSphinx::Configuration
         file_setting_pairs(setting)[object.send(setting)]
     end
   end
-  
+
   def file_setting_sources(setting)
     @file_setting_sources ||= {}
-    @file_setting_sources[setting] ||= riddle.indexes.collect { |index|
+    @file_setting_sources[setting] ||= riddle.indices.collect { |index|
       file_settings_for_index(index, setting)
     }.flatten.compact.uniq
   end
-  
+
   def file_settings_for_index(index, setting)
     settings = Array(file_setting_for(index, setting))
     settings += index.sources.collect { |source|
@@ -163,11 +163,11 @@ class FlyingSphinx::Configuration
     } if index.respond_to?(:sources)
     settings
   end
-  
+
   def file_setting_for(object, setting)
     object.respond_to?(setting) ? object.send(setting) : nil
   end
-  
+
   def identifier_from_env
     ENV['FLYING_SPHINX_IDENTIFIER']
   end
@@ -175,11 +175,11 @@ class FlyingSphinx::Configuration
   def api_key_from_env
     ENV['FLYING_SPHINX_API_KEY']
   end
-  
+
   def host_from_env
     ENV['FLYING_SPHINX_HOST']
   end
-  
+
   def port_from_env
     ENV['FLYING_SPHINX_PORT']
   end
