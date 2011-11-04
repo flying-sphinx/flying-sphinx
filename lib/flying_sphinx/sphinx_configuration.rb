@@ -1,12 +1,12 @@
 class FlyingSphinx::SphinxConfiguration
-  def initialize(thinking_sphinx = ThinkingSphinx::Configuration.instance)
-    @thinking_sphinx = thinking_sphinx
+  def initialize(configuration = ThinkingSphinx::Configuration.instance)
+    @configuration = configuration
   end
 
   def upload_to(api)
     api.put '/',
       :configuration  => content,
-      :sphinx_version => thinking_sphinx.version
+      :sphinx_version => '2.0.4'
   end
 
   def upload_file_to(api, path)
@@ -17,14 +17,11 @@ class FlyingSphinx::SphinxConfiguration
 
   private
 
-  attr_reader :thinking_sphinx
-
   def content
     @content ||= begin
-      thinking_sphinx.generate
-      thinking_sphinx.configuration.searchd.client_key =
+      @configuration.searchd.client_key =
         FlyingSphinx::Configuration.new.client_key
-      thinking_sphinx.configuration.render
+      @configuration.render
     end
   end
 end

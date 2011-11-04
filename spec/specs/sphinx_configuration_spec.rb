@@ -4,12 +4,9 @@ require 'flying_sphinx/sphinx_configuration'
 describe FlyingSphinx::SphinxConfiguration do
   let(:configuration) { FlyingSphinx::SphinxConfiguration.new ts_config }
   let(:ts_config)     { fire_double('ThinkingSphinx::Configuration',
-    :configuration => riddle_config, :version => '2.1.0-dev',
-    :generate => true) }
+    :render => 'foo {}', :searchd => searchd) }
   let(:searchd)       { fire_double('Riddle::Configuration::Searchd',
     :client_key= => true) }
-  let(:riddle_config) { fire_double('Riddle::Configuration',
-    :render => 'foo {}', :searchd => searchd) }
   let(:fs_config)     { fire_double('FlyingSphinx::Configuration',
     :client_key => 'foo:bar') }
 
@@ -20,12 +17,6 @@ describe FlyingSphinx::SphinxConfiguration do
 
     let(:api) { fire_double('FlyingSphinx::API', :put => true) }
 
-    it "generates the Sphinx configuration" do
-      ts_config.should_receive(:generate)
-
-      configuration.upload_to api
-    end
-
     it "sets the client key" do
       searchd.should_receive(:client_key=).with('foo:bar')
 
@@ -34,7 +25,7 @@ describe FlyingSphinx::SphinxConfiguration do
 
     it "sends the configuration to the API" do
       api.should_receive(:put).with('/', :configuration => 'foo {}',
-        :sphinx_version => '2.1.0-dev')
+        :sphinx_version => '2.0.4')
 
       configuration.upload_to api
     end

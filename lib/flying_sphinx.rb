@@ -16,13 +16,5 @@ require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinx_configuration'
 require 'flying_sphinx/version'
 
-if defined?(ThinkingSphinx)
-  require 'flying_sphinx/delayed_delta'
-  require 'flying_sphinx/heroku_shared_adapter'
-end
-
-if defined?(Rails) && defined?(Rails::Railtie)
-  require 'flying_sphinx/railtie'
-elsif defined?(Rails)
-  require 'flying_sphinx/rails'
-end
+require 'flying_sphinx/delayed_delta' if defined?(ThinkingSphinx)
+require 'flying_sphinx/railtie'       if defined?(Rails)

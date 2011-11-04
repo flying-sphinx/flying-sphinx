@@ -7,83 +7,35 @@ class FlyingSphinx::DelayedDelta < ThinkingSphinx::Deltas::DefaultDelta
   # the same YAML value.
   #
   # @param [Object] object The job, which must respond to the #perform method.
-  # @param [Integer] priority (0)
   #
-  def self.enqueue(object, priority = 0)
-    return if duplicates_exist? object
+  def self.enqueue_unless_duplicates(object)
+    return if Delayed::Job.where(
+      :handler   => object.to_yaml,
+      :locked_at => nil
+    ).count > 0
 
-    enqueue_without_duplicates_check object, priority
+    Delayed::Job.enqueue object, :priority => priority
   end
 
-  def self.enqueue_without_duplicates_check(object, priority = 0)
-    if defined?(Rails) && Rails.version.to_i <= 2
-      ::Delayed::Job.enqueue(object, priority)
-    else
-      ::Delayed::Job.enqueue(object, :priority => priority)
-    end
+  def self.priority
+    ThinkingSphinx::Configuration.instance.settings['delayed_job_priority'] || 0
   end
 
-  # Checks whether a given job already exists in the queue.
-  #
-  # @param [Object] object The job
-  # @return [Boolean] True if a duplicate of the job already exists in the queue
-  #
-  def self.duplicates_exist?(object)
-    ::Delayed::Job.count(
-      :conditions => {
-        :handler    => object.to_yaml,
-        :locked_at  => nil
-      }
-    ) > 0
-  end
-
-  # Adds a job to the queue for processing the given model's delta index. A job
-  # for hiding the instance in the core index is also created, if an instance is
-  # provided.
-  #
-  # Neither job will be queued if updates or deltas are disabled, or if the
-  # instance (when given) is not toggled to be in the delta index. The first two
-  # options are controlled via ThinkingSphinx.updates_enabled? and
-  # ThinkingSphinx.deltas_enabled?.
-  #
-  # @param [Class] model the ActiveRecord model to index.
-  # @param [ActiveRecord::Base] instance the instance of the given model that
-  #   has changed. Optional.
-  # @return [Boolean] true
-  #
-  def index(model, instance = nil)
-    return true if skip? instance
-
-    self.class.enqueue(
-      FlyingSphinx::IndexRequest.new(model.delta_index_names, true),
-      delayed_job_priority
-    )
-
-    self.class.enqueue_without_duplicates_check(
+  def delete(index, instance)
+    Delayed::Job.enqueue(
       FlyingSphinx::FlagAsDeletedJob.new(
-        model.core_index_names, instance.sphinx_document_id
-      ),
-      delayed_job_priority
-    ) if instance
-
-    true
+        index.name, index.document_id_for_key(instance.id)
+      ), :priority => self.class.priority
+    )
   end
 
-  private
-
-  def delayed_job_priority
-    ThinkingSphinx::Configuration.instance.delayed_job_priority
-  end
-
-  # Checks whether jobs should be enqueued. Only true if updates and deltas are
-  # enabled, and the instance (if there is one) is toggled.
+  # Adds a job to the queue for processing the given model's delta index.
   #
-  # @param [ActiveRecord::Base, NilClass] instance
-  # @return [Boolean]
+  # @param [Class] index the Thinking Sphinx index object.
   #
-  def skip?(instance)
-    !ThinkingSphinx.updates_enabled? ||
-    !ThinkingSphinx.deltas_enabled?  ||
-    (instance && !toggled(instance))
+  def index(index)
+    self.class.enqueue_unless_duplicates(
+      FlyingSphinx::IndexRequest.new(index.name, true)
+    )
   end
 end

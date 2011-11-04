@@ -6,14 +6,9 @@ class FlyingSphinx::Railtie < Rails::Railtie
   initializer "flying_sphinx.set_sphinx_host_and_port" do |app|
     config = FlyingSphinx::Configuration.new
 
-    ThinkingSphinx.remote_sphinx = true
-    ThinkingSphinx::Configuration.instance.address = config.host
-    ThinkingSphinx::Configuration.instance.port    = config.port
-    ThinkingSphinx::Configuration.instance.configuration.searchd.client_key =
+    ThinkingSphinx::Configuration.instance.searchd.address    = config.host
+    ThinkingSphinx::Configuration.instance.searchd.port       = config.port
+    ThinkingSphinx::Configuration.instance.searchd.client_key =
       config.client_key
-
-    if ENV['DATABASE_URL'] && ENV['DATABASE_URL'][/^mysql/].nil?
-      ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
-    end
   end if ENV['FLYING_SPHINX_IDENTIFIER'] || ENV['STAGED_SPHINX_IDENTIFIER']
 end
