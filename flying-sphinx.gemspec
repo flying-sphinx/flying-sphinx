@@ -19,11 +19,12 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
 
   s.add_runtime_dependency 'thinking-sphinx',    ['>= 0']
+  s.add_runtime_dependency 'riddle',             ['>= 1.5.0']
   s.add_runtime_dependency 'net-ssh',            ['>= 2.0.23']
   s.add_runtime_dependency 'multi_json',         ['~> 1.0.1']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7.0']
   s.add_runtime_dependency 'rash',               ['~> 0.3.0']
-  
+
   s.add_development_dependency 'rake',            ['0.8.7']
   s.add_development_dependency 'yajl-ruby',       ['~> 0.8.2']
   s.add_development_dependency 'rspec',           ['~> 2.5.0']
@@ -31,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'fakeweb',         ['~> 1.3.0']
   s.add_development_dependency 'fakeweb-matcher', ['~> 1.2.2']
   s.add_development_dependency 'delayed_job',     ['~> 2.1.4']
-  
+
   s.post_install_message = <<-MESSAGE
 If you're upgrading, you should rebuild your Sphinx setup when deploying:
 
