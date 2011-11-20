@@ -33,10 +33,10 @@ class FlyingSphinx::IndexRequest
     update_sphinx_reference_files
     index
   end
-  
+
   def status_message
     raise "Index Request failed to start. Something's not right!" if @index_id.nil?
-    
+
     status = request_status
     case status
     when 'FINISHED'
@@ -67,9 +67,11 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_sphinx_configuration
-    api.put('/', :configuration => configuration.sphinx_configuration)
+    api.put '/',
+      :configuration  => configuration.sphinx_configuration,
+      :sphinx_version => ThinkingSphinx::Configuration.instance.version
   end
-  
+
   def update_sphinx_reference_files
     FlyingSphinx::Configuration::FileSettings.each do |setting|
       configuration.file_setting_pairs(setting).each do |local, remote|
@@ -94,22 +96,22 @@ class FlyingSphinx::IndexRequest
   rescue RuntimeError => err
     puts err.message
   end
-  
+
   def tunnelled_index
     FlyingSphinx::Tunnel.connect(configuration) do
       begin_request unless request_begun?
-    
+
       true
     end
   end
-  
+
   def direct_index
     begin_request
     while !request_complete?
       sleep 1
     end
   end
-  
+
   def begin_request
     response = api.post 'indices', :indices => indices.join(',')
 
@@ -118,11 +120,11 @@ class FlyingSphinx::IndexRequest
 
     raise RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.' if response.body.status == 'BLOCKED'
   end
-  
+
   def request_begun?
     @request_begun
   end
-  
+
   def request_complete?
     case request_status
     when 'FINISHED', 'FAILED'
@@ -133,7 +135,7 @@ class FlyingSphinx::IndexRequest
       raise "Unknown index response: '#{response.body}'"
     end
   end
-  
+
   def request_status
     api.get("indices/#{index_id}").body.status
   end
@@ -150,7 +152,7 @@ class FlyingSphinx::IndexRequest
   def api
     configuration.api
   end
-  
+
   def log?
     ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
