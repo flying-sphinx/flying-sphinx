@@ -1,3 +1,6 @@
+Edge
+* Load Flying Sphinx when ENV['FLYING_SPHINX_IDENTIFIER'] exists, instead of for any Rails environment that isn't development or test.
+
 0.6.2 - 2nd January 2012
 * Pass Sphinx version through to Flying Sphinx servers.
 
