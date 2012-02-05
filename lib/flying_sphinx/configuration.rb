@@ -37,11 +37,11 @@ class FlyingSphinx::Configuration
   end
 
   def start_sphinx
-    api.post('start')
+    api.post('start').status == 200
   end
 
   def stop_sphinx
-    api.post('stop')
+    api.post('stop').status == 200
   end
 
   def client_key
