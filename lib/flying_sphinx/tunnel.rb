@@ -7,11 +7,12 @@ class FlyingSphinx::Tunnel
       end
     end
   end
-  
+
   def self.required?
+    ENV['FLYING_SPHINX_INGRESS'].blank? &&
     ThinkingSphinx.database_adapter == FlyingSphinx::HerokuSharedAdapter
   end
-  
+
   def initialize(configuration)
     @configuration = configuration
   end
@@ -23,13 +24,13 @@ class FlyingSphinx::Tunnel
     )
 
     session.loop { !remote_exists?(session) }
-    
+
     yield session
   rescue IOError
     # Server closed the connection on us. That's (hopefully) expected, nothing
     # to worry about.
   end
-  
+
   private
 
   def db_host
