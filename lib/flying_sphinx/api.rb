@@ -66,13 +66,17 @@ class FlyingSphinx::API
 
   def log(method, path, data = {}, option = {}, &block)
     return block.call unless log?
-    
-    puts "API Request: #{method} '#{path}'; params: #{data.inspect}"
+
+    log_message "API Request: #{method} '#{path}'; params: #{data.inspect}"
     response = block.call
-    puts "API Response: #{response.body.inspect}"
+    log_message "API Response: #{response.body.inspect}"
     return response
   end
-  
+
+  def log_message(message)
+    puts "[#{Time.zone.now.to_s}] #{message}"
+  end
+
   def log?
     ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
