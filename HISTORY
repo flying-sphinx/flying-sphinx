@@ -1,4 +1,8 @@
 Edge
+* Slow down polling for direct indexing from every 1 second to every 3 seconds.
+* Verbose logging now has timestamps.
+* Allow direct database access when FLYING_SPHINX_INGRESS is set.
+* Use dups of ENV variables so the values can be modified.
 * Report if Sphinx wasn't able to start.
 * Load Flying Sphinx when ENV['FLYING_SPHINX_IDENTIFIER'] exists, instead of for any Rails environment that isn't development or test.
 

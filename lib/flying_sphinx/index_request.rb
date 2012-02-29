@@ -108,7 +108,7 @@ class FlyingSphinx::IndexRequest
   def direct_index
     begin_request
     while !request_complete?
-      sleep 1
+      sleep 3
     end
   end
 
