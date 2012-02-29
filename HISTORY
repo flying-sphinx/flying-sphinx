@@ -1,4 +1,4 @@
-Edge
+0.6.3 - 1st March 2012
 * Slow down polling for direct indexing from every 1 second to every 3 seconds.
 * Verbose logging now has timestamps.
 * Allow direct database access when FLYING_SPHINX_INGRESS is set.
