@@ -169,7 +169,7 @@ class FlyingSphinx::Configuration
   end
 
   def identifier_from_env
-    ENV['STAGED_SPHINX_IDENTIFER'] || ENV['FLYING_SPHINX_IDENTIFIER']
+    ENV['STAGED_SPHINX_IDENTIFIER'] || ENV['FLYING_SPHINX_IDENTIFIER']
   end
 
   def api_key_from_env
