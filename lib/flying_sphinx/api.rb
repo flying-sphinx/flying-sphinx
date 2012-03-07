@@ -3,9 +3,10 @@ require 'faraday_middleware'
 
 class FlyingSphinx::API
 
-  APIServer  = 'https://flying-sphinx.com'
-  APIPath    = "/api/my/app"
-  APIVersion = 2
+  APIServer        = 'https://flying-sphinx.com'
+  APIStagingServer = 'https://staging.flying-sphinx.com'
+  APIPath          = "/api/my/app"
+  APIVersion       = 2
 
   attr_reader :api_key, :identifier, :adapter
 
@@ -52,7 +53,7 @@ class FlyingSphinx::API
   def connection(connection_options = {})
     options = {
       :ssl     => {:verify => false},
-      :url     => APIServer,
+      :url     => (ENV['STAGED_SPHINX_API_KEY'] ? APIStagingServer : APIServer),
       :headers => api_headers
     }
 

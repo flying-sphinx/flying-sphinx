@@ -169,18 +169,18 @@ class FlyingSphinx::Configuration
   end
 
   def identifier_from_env
-    ENV['FLYING_SPHINX_IDENTIFIER']
+    ENV['STAGED_SPHINX_IDENTIFER'] || ENV['FLYING_SPHINX_IDENTIFIER']
   end
 
   def api_key_from_env
-    ENV['FLYING_SPHINX_API_KEY']
+    ENV['STAGED_SPHINX_API_KEY'] || ENV['FLYING_SPHINX_API_KEY']
   end
 
   def host_from_env
-    ENV['FLYING_SPHINX_HOST'].dup
+    (ENV['STAGED_SPHINX_HOST'] || ENV['FLYING_SPHINX_HOST']).dup
   end
 
   def port_from_env
-    ENV['FLYING_SPHINX_PORT'].dup
+    (ENV['STAGED_SPHINX_PORT'] || ENV['FLYING_SPHINX_PORT']).dup
   end
 end

@@ -1,3 +1,6 @@
+Edge:
+* Support for staging.flying-sphinx.com.
+
 0.6.4 - 3rd March 2012
 * Fix for Rails 2 with API verbose logging.
 

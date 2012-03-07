@@ -1,6 +1,6 @@
 require 'action_controller/dispatcher'
 
-if ENV['FLYING_SPHINX_IDENTIFIER']
+if ENV['FLYING_SPHINX_IDENTIFIER'] || ENV['STAGED_SPHINX_IDENTIFER']
   ActionController::Dispatcher.to_prepare :flying_sphinx do
     config = FlyingSphinx::Configuration.new
 

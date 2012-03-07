@@ -14,5 +14,5 @@ class FlyingSphinx::Railtie < Rails::Railtie
     if ENV['DATABASE_URL'] && ENV['DATABASE_URL'][/^mysql/].nil?
       ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
     end
-  end if ENV['FLYING_SPHINX_IDENTIFIER']
+  end if ENV['FLYING_SPHINX_IDENTIFIER'] || ENV['STAGED_SPHINX_IDENTIFER']
 end
