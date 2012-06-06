@@ -1,3 +1,6 @@
+Edge:
+* Relaxing the faraday_middleware dependency to allow 0.8 releases (Matthew Zikherman).
+
 0.6.5 - 3rd May 2012
 * Relaxing the multi_json dependency to allow for higher versions.
 * Support for staging.flying-sphinx.com.

@@ -32,7 +32,7 @@ In the meantime, please keep in mind the following:
 h2. Contributors
 
 * "Josh Kalderimis":http://blog.cookiestack.com/ for switching the API calls to Faraday, improving the specs, a ton of debugging, and encouraging a versioned API.
-* "Paolo Perrotta":http://ducktypo.blogspot.com/ for updating dependencies for faraday_middleware.
+* "Paolo Perrotta":http://ducktypo.blogspot.com/ and "Matthew Zikherman":https://github.com/mzikherman for updating dependencies for faraday_middleware.
 
 h2. Licence
 
