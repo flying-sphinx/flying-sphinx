@@ -1,4 +1,5 @@
-Edge:
+0.6.6 - 14th July 2012
+* Don't complain about 201s for starting/stopping Sphinx.
 * Relaxing the faraday_middleware dependency to allow 0.8 releases (Matthew Zikherman).
 
 0.6.5 - 3rd May 2012
