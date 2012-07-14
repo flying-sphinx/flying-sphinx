@@ -73,14 +73,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_sphinx_reference_files
-    FlyingSphinx::Configuration::FileSettings.each do |setting|
-      configuration.file_setting_pairs(setting).each do |local, remote|
-        api.post '/add_file',
-          :setting   => setting.to_s,
-          :file_name => remote.split('/').last,
-          :content   => open(local).read
-      end
-    end
+    FlyingSphinx::SettingFiles.new.upload_to api
   end
 
   def index

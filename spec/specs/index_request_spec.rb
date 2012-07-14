@@ -1,11 +1,15 @@
-require 'spec_helper'
+require 'light_spec_helper'
+require 'net/ssh/errors'
+require 'timeout'
+require 'flying_sphinx/index_request'
 
 describe FlyingSphinx::IndexRequest do
-  let(:api)           { FlyingSphinx::API.new 'foo', 'bar' }
+  let(:api)           { fire_double('FlyingSphinx::API') }
   let(:configuration) {
-    stub(:configuration, :api => api, :sphinx_configuration => 'foo {}',
-      :file_setting_pairs => {})
+    stub(:configuration, :api => api, :sphinx_configuration => 'foo {}')
   }
+  let(:tunnel_class)  { fire_class_double('FlyingSphinx::Tunnel').
+    as_replaced_constant }
 
   let(:index_response)    {
     stub(:response, :body => stub(:body, :id => 42, :status => 'OK'))
@@ -15,34 +19,36 @@ describe FlyingSphinx::IndexRequest do
   }
 
   before :each do
-    ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
-
-    FlyingSphinx::Configuration.stub!(:new => configuration)
-    FlyingSphinx::Tunnel.stub(:connect) { |config, block| block.call }
+    stub_const 'FlyingSphinx::Configuration', double(:new => configuration)
   end
 
   describe '.cancel_jobs' do
+    let(:job_class) { fire_class_double('Delayed::Job').as_replaced_constant }
+
     before :each do
-      Delayed::Job.stub!(:delete_all => true)
+      job_class.stub :delete_all => true
     end
 
     it "should not delete any rows if the delayed_jobs table does not exist" do
-      Delayed::Job.stub!(:table_exists? => false)
-      Delayed::Job.should_not_receive(:delete_all)
+      job_class.stub :table_exists? => false
+
+      job_class.should_not_receive(:delete_all)
 
       FlyingSphinx::IndexRequest.cancel_jobs
     end
 
     it "should delete rows if the delayed_jobs table does exist" do
-      Delayed::Job.stub!(:table_exists? => true)
-      Delayed::Job.should_receive(:delete_all)
+      job_class.stub :table_exists? => true
+
+      job_class.should_receive(:delete_all)
 
       FlyingSphinx::IndexRequest.cancel_jobs
     end
 
     it "should delete only Thinking Sphinx jobs" do
-      Delayed::Job.stub!(:table_exists? => true)
-      Delayed::Job.should_receive(:delete_all) do |sql|
+      job_class.stub :table_exists? => true
+
+      job_class.should_receive(:delete_all) do |sql|
         sql.should match(/handler LIKE '--- !ruby\/object:FlyingSphinx::\%'/)
       end
 
@@ -56,15 +62,22 @@ describe FlyingSphinx::IndexRequest do
       :sphinx_version => '2.1.0-dev' } }
     let(:index_params)  { { :indices => '' } }
     let(:ts_config)     { double('config', :version => '2.1.0-dev') }
+    let(:setting_files) { fire_double('FlyingSphinx::SettingFiles',
+      :upload_to => true) }
 
     before :each do
-      ThinkingSphinx::Configuration.stub :instance => ts_config
+      stub_const 'FlyingSphinx::SettingFiles', double(:new => setting_files)
+      stub_const 'ThinkingSphinx::Configuration',
+        double(:instance => ts_config)
+
+      api.stub :put => true, :post => index_response
+
+      tunnel_class.stub :required? => true
+      tunnel_class.stub(:connect).and_yield
     end
 
-    it "makes a new request" do
+    it "uploads the configuration file" do
       api.should_receive(:put).with('/', conf_params).and_return('ok')
-      api.should_receive(:post).
-        with('indices', index_params).and_return(index_response)
 
       begin
         Timeout::timeout(0.2) {
@@ -74,37 +87,26 @@ describe FlyingSphinx::IndexRequest do
       end
     end
 
-    [
-      :stopwords, :wordforms, :exceptions, :mysql_ssl_cert, :mysql_ssl_key,
-      :mysql_ssl_ca
-    ].each do |setting|
-      context "with #{setting}" do
-        let(:file_params) {
-          {:setting => setting.to_s, :file_name => 'bar.txt', :content => 'baz'}
+    it "uploads setting files" do
+      setting_files.should_receive(:upload_to).with(api)
+
+      begin
+        Timeout::timeout(0.2) {
+          index_request.update_and_index
         }
+      rescue Timeout::Error
+      end
+    end
 
-        before :each do
-          configuration.stub!(:file_setting_pairs => {})
-          index_request.stub!(:open => double('file', :read => 'baz'))
-        end
+    it "makes a new request" do
+      api.should_receive(:post).
+        with('indices', index_params).and_return(index_response)
 
-        it "sends the #{setting} file" do
-          api.should_receive(:put).with('/', conf_params).and_return('ok')
-          api.should_receive(:post).with('/add_file', file_params).
-            and_return('ok')
-          api.should_receive(:post).
-            with('indices', index_params).and_return(index_response)
-
-          configuration.should_receive(:file_setting_pairs).
-            with(setting).and_return({'foo.txt' => 'bar.txt'})
-
-          begin
-            Timeout::timeout(0.2) {
-              index_request.update_and_index
-            }
-          rescue Timeout::Error
-          end
-        end
+      begin
+        Timeout::timeout(0.2) {
+          index_request.update_and_index
+        }
+      rescue Timeout::Error
       end
     end
 
@@ -123,11 +125,7 @@ describe FlyingSphinx::IndexRequest do
 
     context 'request for a MySQL database' do
       before :each do
-        ThinkingSphinx.database_adapter = nil
-      end
-
-      after :each do
-        ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
+        tunnel_class.stub :required? => false
       end
 
       it "should not establish an SSH connection" do
@@ -147,6 +145,11 @@ describe FlyingSphinx::IndexRequest do
   describe '#perform' do
     let(:index_request) { FlyingSphinx::IndexRequest.new ['foo_delta'] }
     let(:index_params)  { { :indices => 'foo_delta' } }
+
+    before :each do
+      tunnel_class.stub :required? => true
+      tunnel_class.stub(:connect).and_yield
+    end
 
     it "makes a new request" do
       api.should_receive(:post).

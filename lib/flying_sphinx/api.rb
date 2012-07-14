@@ -6,7 +6,7 @@ class FlyingSphinx::API
   APIServer        = 'https://flying-sphinx.com'
   APIStagingServer = 'https://staging.flying-sphinx.com'
   APIPath          = "/api/my/app"
-  APIVersion       = 2
+  APIVersion       = 3
 
   attr_reader :api_key, :identifier, :adapter
 

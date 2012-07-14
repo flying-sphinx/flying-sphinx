@@ -11,6 +11,7 @@ require 'flying_sphinx/delayed_delta'
 require 'flying_sphinx/flag_as_deleted_job'
 require 'flying_sphinx/heroku_shared_adapter'
 require 'flying_sphinx/index_request'
+require 'flying_sphinx/setting_files'
 require 'flying_sphinx/tunnel'
 require 'flying_sphinx/version'
 
