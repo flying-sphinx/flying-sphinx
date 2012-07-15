@@ -2,11 +2,10 @@ require 'faraday'
 require 'faraday_middleware'
 
 class FlyingSphinx::API
-
-  APIServer        = 'https://flying-sphinx.com'
-  APIStagingServer = 'https://staging.flying-sphinx.com'
-  APIPath          = "/api/my/app"
-  APIVersion       = 3
+  SERVER         = 'https://flying-sphinx.com'
+  STAGING_SERVER = 'https://staging.flying-sphinx.com'
+  PATH           = "/api/my/app"
+  VERSION        = 3
 
   attr_reader :api_key, :identifier, :adapter
 
@@ -40,20 +39,21 @@ class FlyingSphinx::API
 
   def normalize_path(path)
     path = (path == '/' ? nil : "/#{path}")
-    "#{APIPath}#{path}"
+    "#{PATH}#{path}"
   end
 
   def api_headers
     {
-      'Accept' => "application/vnd.flying-sphinx-v#{APIVersion}+json",
-      'X-Flying-Sphinx-Token' => "#{identifier}:#{api_key}"
+      'Accept' => "application/vnd.flying-sphinx-v#{VERSION}+json",
+      'X-Flying-Sphinx-Token'   => "#{identifier}:#{api_key}",
+      'X-Flying-Sphinx-Version' => FlyingSphinx::Version
     }
   end
 
   def connection(connection_options = {})
     options = {
       :ssl     => {:verify => false},
-      :url     => (ENV['STAGED_SPHINX_API_KEY'] ? APIStagingServer : APIServer),
+      :url     => (ENV['STAGED_SPHINX_API_KEY'] ? STAGING_SERVER : SERVER),
       :headers => api_headers
     }
 
