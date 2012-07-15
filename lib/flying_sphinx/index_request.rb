@@ -29,8 +29,9 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_and_index
-    update_sphinx_configuration
-    update_sphinx_reference_files
+    FlyingSphinx::SphinxConfiguration.new.upload_to api
+    FlyingSphinx::SettingFiles.new.upload_to api
+
     index
   end
 
@@ -64,14 +65,6 @@ class FlyingSphinx::IndexRequest
 
   def configuration
     @configuration ||= FlyingSphinx::Configuration.new
-  end
-
-  def update_sphinx_configuration
-    FlyingSphinx::SphinxConfiguration.new.upload_to api
-  end
-
-  def update_sphinx_reference_files
-    FlyingSphinx::SettingFiles.new.upload_to api
   end
 
   def index
