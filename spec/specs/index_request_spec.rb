@@ -20,6 +20,9 @@ describe FlyingSphinx::IndexRequest do
 
   before :each do
     stub_const 'FlyingSphinx::Configuration', double(:new => configuration)
+
+    stub_const 'FlyingSphinx::IndexRequest::INDEX_COMPLETE_CHECKING_INTERVAL',
+      0
   end
 
   describe '.cancel_jobs' do
