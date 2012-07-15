@@ -2,6 +2,8 @@ module FlyingSphinx
   #
 end
 
+require 'faraday'
+require 'faraday_middleware'
 require 'net/ssh'
 require 'riddle/0.9.9'
 

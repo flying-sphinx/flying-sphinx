@@ -1,13 +1,8 @@
-require 'faraday'
-require 'faraday_middleware'
-
 class FlyingSphinx::API
   SERVER         = 'https://flying-sphinx.com'
   STAGING_SERVER = 'https://staging.flying-sphinx.com'
   PATH           = "/api/my/app"
   VERSION        = 3
-
-  attr_reader :api_key, :identifier, :adapter
 
   def initialize(identifier, api_key, adapter = Faraday.default_adapter)
     @api_key    = api_key
@@ -37,8 +32,10 @@ class FlyingSphinx::API
 
   private
 
+  attr_reader :api_key, :identifier, :adapter
+
   def normalize_path(path)
-    path = (path == '/' ? nil : "/#{path}")
+    path = (path == '/' ? '' : "/#{path.gsub(/^\//, '')}")
     "#{PATH}#{path}"
   end
 
