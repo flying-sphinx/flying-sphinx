@@ -6,6 +6,7 @@ class FlyingSphinx::Railtie < Rails::Railtie
   initializer "flying_sphinx.set_sphinx_host_and_port" do |app|
     config = FlyingSphinx::Configuration.new
 
+    ThinkingSphinx.remote_sphinx = true
     ThinkingSphinx::Configuration.instance.address = config.host
     ThinkingSphinx::Configuration.instance.port    = config.port
     ThinkingSphinx::Configuration.instance.configuration.searchd.client_key =

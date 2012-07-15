@@ -6,7 +6,6 @@ class FlyingSphinx::Configuration
     @api_key    = api_key    || api_key_from_env
 
     set_from_server
-    setup_environment_settings
   end
 
   def api
@@ -53,17 +52,6 @@ class FlyingSphinx::Configuration
 
   def thinking_sphinx
     ThinkingSphinx::Configuration.instance
-  end
-
-  def setup_environment_settings
-    ThinkingSphinx.remote_sphinx = true
-
-    thinking_sphinx.port    = port
-    thinking_sphinx.address = host
-
-    if thinking_sphinx.configuration.searchd.respond_to?(:client_key)
-      thinking_sphinx.configuration.searchd.client_key = client_key 
-    end
   end
 
   def identifier_from_env

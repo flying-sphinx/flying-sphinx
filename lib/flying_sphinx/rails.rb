@@ -4,6 +4,7 @@ if ENV['FLYING_SPHINX_IDENTIFIER'] || ENV['STAGED_SPHINX_IDENTIFIER']
   ActionController::Dispatcher.to_prepare :flying_sphinx do
     config = FlyingSphinx::Configuration.new
 
+    ThinkingSphinx.remote_sphinx = true
     ThinkingSphinx::Configuration.instance.address = config.host
     ThinkingSphinx::Configuration.instance.port    = config.port
     ThinkingSphinx::Configuration.instance.configuration.searchd.client_key =
