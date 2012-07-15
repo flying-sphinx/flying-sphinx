@@ -67,9 +67,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_sphinx_configuration
-    api.put '/',
-      :configuration  => configuration.sphinx_configuration,
-      :sphinx_version => ThinkingSphinx::Configuration.instance.version
+    FlyingSphinx::SphinxConfiguration.new.upload_to api
   end
 
   def update_sphinx_reference_files

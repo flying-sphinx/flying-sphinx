@@ -12,11 +12,6 @@ class FlyingSphinx::Configuration
     @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
 
-  def sphinx_configuration
-    thinking_sphinx.generate
-    thinking_sphinx.configuration.render
-  end
-
   def start_sphinx
     api.post('start').success?
   end
@@ -48,10 +43,6 @@ class FlyingSphinx::Configuration
     # variables so searching is still going to work.
     @host = host_from_env
     @port = port_from_env
-  end
-
-  def thinking_sphinx
-    ThinkingSphinx::Configuration.instance
   end
 
   def identifier_from_env

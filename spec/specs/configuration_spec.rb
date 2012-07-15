@@ -2,9 +2,9 @@ require 'light_spec_helper'
 require 'flying_sphinx/configuration'
 
 describe FlyingSphinx::Configuration do
-  let(:api)       { fire_double('FlyingSphinx::API',
+  let(:api)  { fire_double('FlyingSphinx::API',
     :get => double(:body => body, :status => 200)) }
-  let(:body)      { double(:server => 'foo.bar.com', :port => 9319) }
+  let(:body) { double(:server => 'foo.bar.com', :port => 9319) }
 
   before :each do
     fire_class_double('FlyingSphinx::API', :new => api).as_replaced_constant

@@ -5,9 +5,7 @@ require 'flying_sphinx/index_request'
 
 describe FlyingSphinx::IndexRequest do
   let(:api)           { fire_double('FlyingSphinx::API') }
-  let(:configuration) {
-    stub(:configuration, :api => api, :sphinx_configuration => 'foo {}')
-  }
+  let(:configuration) { stub(:configuration, :api => api) }
   let(:tunnel_class)  { fire_class_double('FlyingSphinx::Tunnel').
     as_replaced_constant }
 
@@ -64,23 +62,23 @@ describe FlyingSphinx::IndexRequest do
     let(:conf_params)   { { :configuration => 'foo {}',
       :sphinx_version => '2.1.0-dev' } }
     let(:index_params)  { { :indices => '' } }
-    let(:ts_config)     { double('config', :version => '2.1.0-dev') }
+    let(:sphinx)        { fire_double('FlyingSphinx::SphinxConfiguration',
+      :upload_to => true)}
     let(:setting_files) { fire_double('FlyingSphinx::SettingFiles',
       :upload_to => true) }
 
     before :each do
       stub_const 'FlyingSphinx::SettingFiles', double(:new => setting_files)
-      stub_const 'ThinkingSphinx::Configuration',
-        double(:instance => ts_config)
+      stub_const 'FlyingSphinx::SphinxConfiguration', double(:new => sphinx)
 
-      api.stub :put => true, :post => index_response
+      api.stub :post => index_response
 
       tunnel_class.stub :required? => true
       tunnel_class.stub(:connect).and_yield
     end
 
     it "uploads the configuration file" do
-      api.should_receive(:put).with('/', conf_params).and_return('ok')
+      sphinx.should_receive(:upload_to).with(api)
 
       begin
         Timeout::timeout(0.2) {
@@ -115,8 +113,6 @@ describe FlyingSphinx::IndexRequest do
 
     context 'delta request without delta support' do
       it "should explain why the request failed" do
-        api.should_receive(:put).
-          with('/', conf_params).and_return('ok')
         api.should_receive(:post).
           with('indices', index_params).and_return(blocked_response)
         index_request.should_receive(:puts).
@@ -134,7 +130,6 @@ describe FlyingSphinx::IndexRequest do
       it "should not establish an SSH connection" do
         FlyingSphinx::Tunnel.should_not_receive(:connect)
 
-        api.should_receive(:put).with('/', conf_params).and_return('ok')
         api.should_receive(:post).
           with('indices', index_params).and_return(index_response)
         api.should_receive(:get).with('indices/42').
