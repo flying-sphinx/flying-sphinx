@@ -18,7 +18,7 @@ class FlyingSphinx::Tunnel
   end
 
   def open(&block)
-    session = Net::SSH.start(@configuration.host, 'sphinx', ssh_options)
+    session = Net::SSH.start(@configuration.ssh_server, 'sphinx', ssh_options)
     session.forward.remote(
       db_port, db_host, @configuration.database_port, '0.0.0.0'
     )

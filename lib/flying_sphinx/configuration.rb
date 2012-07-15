@@ -1,5 +1,5 @@
 class FlyingSphinx::Configuration
-  attr_reader :identifier, :api_key, :host, :port
+  attr_reader :host, :port, :ssh_server, :database_port
 
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
@@ -32,12 +32,16 @@ class FlyingSphinx::Configuration
 
   private
 
+  attr_reader :identifier, :api_key
+
   def set_from_server
     response = api.get '/'
     raise 'Invalid Flying Sphinx credentials' if response.status == 403
 
     @host          = response.body.server
     @port          = response.body.port
+    @ssh_server    = response.body.ssh_server
+    @database_port = response.body.database_port
   rescue
     # If the central Flying Sphinx server is down, let's use the environment
     # variables so searching is still going to work.
