@@ -78,7 +78,7 @@ describe FlyingSphinx::IndexRequest do
     end
 
     it "uploads the configuration file" do
-      sphinx.should_receive(:upload_to).with(api)
+      sphinx.should_receive(:upload_to).with(api, true)
 
       begin
         Timeout::timeout(0.2) {

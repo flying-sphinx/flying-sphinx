@@ -3,10 +3,11 @@ class FlyingSphinx::SphinxConfiguration
     @thinking_sphinx = thinking_sphinx
   end
 
-  def upload_to(api)
+  def upload_to(api, tunnel = false)
     api.put '/',
       :configuration  => content,
-      :sphinx_version => thinking_sphinx.version
+      :sphinx_version => thinking_sphinx.version,
+      :tunnel         => tunnel.to_s
   end
 
   private

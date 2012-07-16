@@ -29,7 +29,8 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_and_index
-    FlyingSphinx::SphinxConfiguration.new.upload_to api
+    FlyingSphinx::SphinxConfiguration.new.upload_to api,
+      FlyingSphinx::Tunnel.required?
     FlyingSphinx::SettingFiles.new.upload_to api
 
     index
