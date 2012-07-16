@@ -11,7 +11,7 @@ This is all covered pretty well on "the Flying Sphinx site":http://flying-sphinx
 
 h2. Compatibility and Limitations
 
-Flying Sphinx is built with support for Rails 2.3.6 and beyond. Sadly, earlier versions of Rails aren't supported due to a requirement of a recent version of Rack deep in the dependency tree. It's not tested against Rails 3.1 at this time, but in theory should work fine. Let me know if I'm wrong!
+Flying Sphinx is built with support for Rails 2.3.6 and beyond. Sadly, earlier versions of Rails aren't supported due to a requirement of a recent version of Rack deep in the dependency tree.
 
 It works with Rails 1.8.7 and 1.9.2, and on both Heroku's Bamboo and Cedar stacks. You _do_ need to use it with Heroku at this point - allowing others hosting elsewhere to use Flying Sphinx is something I'm considering, but it's not possible right now.
 
