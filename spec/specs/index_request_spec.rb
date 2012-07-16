@@ -61,7 +61,7 @@ describe FlyingSphinx::IndexRequest do
     let(:index_request) { FlyingSphinx::IndexRequest.new }
     let(:conf_params)   { { :configuration => 'foo {}',
       :sphinx_version => '2.1.0-dev' } }
-    let(:index_params)  { { :indices => '' } }
+    let(:index_params)  { { :indices => '', :tunnel => 'true' } }
     let(:sphinx)        { fire_double('FlyingSphinx::SphinxConfiguration',
       :upload_to => true)}
     let(:setting_files) { fire_double('FlyingSphinx::SettingFiles',
@@ -131,7 +131,8 @@ describe FlyingSphinx::IndexRequest do
         FlyingSphinx::Tunnel.should_not_receive(:connect)
 
         api.should_receive(:post).
-          with('indices', index_params).and_return(index_response)
+          with('indices', index_params.merge(:tunnel => 'false')).
+          and_return(index_response)
         api.should_receive(:get).with('indices/42').
           and_return(stub(:response, :body => stub(:body, :status => 'FINISHED')))
 
@@ -142,7 +143,7 @@ describe FlyingSphinx::IndexRequest do
 
   describe '#perform' do
     let(:index_request) { FlyingSphinx::IndexRequest.new ['foo_delta'] }
-    let(:index_params)  { { :indices => 'foo_delta' } }
+    let(:index_params)  { { :indices => 'foo_delta', :tunnel => 'true' } }
 
     before :each do
       tunnel_class.stub :required? => true

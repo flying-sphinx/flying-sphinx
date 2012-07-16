@@ -97,7 +97,8 @@ class FlyingSphinx::IndexRequest
   end
 
   def begin_request
-    response = api.post 'indices', :indices => indices.join(',')
+    response = api.post 'indices', :indices => indices.join(','),
+      :tunnel => FlyingSphinx::Tunnel.required?.to_s
 
     @index_id = response.body.id
     @request_begun = true
