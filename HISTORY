@@ -1,3 +1,10 @@
+0.7.0 - 16th July 2012
+* Print the indexing log.
+* Distinguish between search server and SSH/indexing server, which allows for load balancers as the former.
+* Send the gem version through as a header on API calls.
+* Let flying-sphinx.com wrangle the Sphinx configuration.
+* Use v3 of the flying-sphinx.com API
+
 0.6.6 - 14th July 2012
 * Don't complain about 201s for starting/stopping Sphinx.
 * Relaxing the faraday_middleware dependency to allow 0.8 releases (Matthew Zikherman).
