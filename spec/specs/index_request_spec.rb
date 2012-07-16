@@ -165,7 +165,8 @@ describe FlyingSphinx::IndexRequest do
   describe '#status_message' do
     let(:index_request)     { FlyingSphinx::IndexRequest.new }
     let(:finished_response) {
-      stub(:response, :body => stub(:body, :status => 'FINISHED'))
+      stub(:response, :body => stub(:body, :status => 'FINISHED',
+        :log => 'Sphinx log'))
     }
     let(:failure_response)  {
       stub(:response, :body => stub(:body, :status => 'FAILED'))
@@ -186,7 +187,7 @@ describe FlyingSphinx::IndexRequest do
     it "returns with a positive message on success" do
       api.stub(:get => finished_response)
 
-      index_request.status_message.should == 'Index Request has completed.'
+      index_request.status_message.should == "Index Request has completed:\nSphinx log"
     end
 
     it "returns with a failure message on failure" do

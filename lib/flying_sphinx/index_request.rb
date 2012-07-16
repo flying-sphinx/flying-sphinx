@@ -29,8 +29,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_and_index
-    FlyingSphinx::SphinxConfiguration.new.upload_to api,
-      FlyingSphinx::Tunnel.required?
+    FlyingSphinx::SphinxConfiguration.new.upload_to api, tunnel?
     FlyingSphinx::SettingFiles.new.upload_to api
 
     index
@@ -42,7 +41,7 @@ class FlyingSphinx::IndexRequest
     status = request_status
     case status
     when 'FINISHED'
-      'Index Request has completed.'
+      "Index Request has completed:\n#{request_log}"
     when 'FAILED'
       'Index Request failed.'
     when 'PENDING'
@@ -69,7 +68,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def index
-    if FlyingSphinx::Tunnel.required?
+    if tunnel?
       tunnelled_index
     else
       direct_index
@@ -121,8 +120,17 @@ class FlyingSphinx::IndexRequest
     end
   end
 
+  def request_log
+    @request.log
+  end
+
   def request_status
-    api.get("indices/#{index_id}").body.status
+    @request = api.get("indices/#{index_id}").body
+    @request.status
+  end
+
+  def tunnel?
+    FlyingSphinx::Tunnel.required?
   end
 
   def cancel_request

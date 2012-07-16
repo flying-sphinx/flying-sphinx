@@ -5,7 +5,6 @@ namespace :fs do
     request = FlyingSphinx::IndexRequest.new
     request.update_and_index
     puts request.status_message
-
   end
 
   task :start => :environment do
