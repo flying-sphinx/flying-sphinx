@@ -53,48 +53,27 @@ describe FlyingSphinx::IndexRequest do
     end
   end
 
-  describe '#update_and_index' do
+  describe '#index' do
     let(:index_request) { FlyingSphinx::IndexRequest.new }
-    let(:conf_params)   { { :configuration => 'foo {}',
-      :sphinx_version => '2.1.0-dev' } }
     let(:index_params)  { { :indices => '' } }
-    let(:sphinx)        { fire_double('FlyingSphinx::SphinxConfiguration',
-      :upload_to => true)}
-    let(:setting_files) { fire_double('FlyingSphinx::SettingFiles',
-      :upload_to => true) }
     let(:status_response) { stub(:response,
       :body => stub(:body, :status => 'FINISHED')) }
 
     before :each do
-      stub_const 'FlyingSphinx::SettingFiles', double(:new => setting_files)
-      stub_const 'FlyingSphinx::SphinxConfiguration', double(:new => sphinx)
-
       api.stub :post => index_response, :get => status_response
-    end
-
-    it "uploads the configuration file" do
-      sphinx.should_receive(:upload_to).with(api)
-
-      index_request.update_and_index
-    end
-
-    it "uploads setting files" do
-      setting_files.should_receive(:upload_to).with(api)
-
-      index_request.update_and_index
     end
 
     it "makes a new request" do
       api.should_receive(:post).
         with('indices', index_params).and_return(index_response)
 
-      index_request.update_and_index
+      index_request.index
     end
 
     it "checks the status of the request" do
       api.should_receive(:get).with('indices/42').and_return(status_response)
 
-      index_request.update_and_index
+      index_request.index
     end
 
     context 'delta request without delta support' do
@@ -103,7 +82,7 @@ describe FlyingSphinx::IndexRequest do
           with('indices', index_params).and_return(blocked_response)
 
         lambda {
-          index_request.update_and_index
+          index_request.index
         }.should raise_error(RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
       end
     end

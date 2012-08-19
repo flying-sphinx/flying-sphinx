@@ -1,30 +1,23 @@
 namespace :fs do
   task :index => :environment do
-    puts "Starting Index Request"
-    FlyingSphinx::IndexRequest.cancel_jobs
-    request = FlyingSphinx::IndexRequest.new
-    request.update_and_index
-    puts request.status_message
+    FlyingSphinx::CLI.new('setup').run
   end
 
   task :start => :environment do
-    puts "Starting Sphinx..."
-
-    if FlyingSphinx::Configuration.new.start_sphinx
-      puts "Started Sphinx"
-    else
-      puts "Sphinx failed to start... have you indexed first?"
-    end
+    FlyingSphinx::CLI.new('start').run
   end
 
   task :stop  => :environment do
-    puts "Stopping Sphinx..."
-    FlyingSphinx::Configuration.new.stop_sphinx
-    puts "Stopped Sphinx"
+    FlyingSphinx::CLI.new('stop').run
   end
 
-  task :restart => [:environment, :stop, :start]
-  task :rebuild => [:environment, :stop, :index, :start]
+  task :restart => :environment do
+    FlyingSphinx::CLI.new('restart').run
+  end
+
+  task :rebuild => :environment do
+    FlyingSphinx::CLI.new('rebuild').run
+  end
 
   task :index_log => :environment do
     FlyingSphinx::IndexRequest.output_last_index

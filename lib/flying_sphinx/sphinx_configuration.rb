@@ -9,6 +9,12 @@ class FlyingSphinx::SphinxConfiguration
       :sphinx_version => thinking_sphinx.version
   end
 
+  def upload_file_to(api, path)
+    api.put '/',
+      :configuration  => File.read(path),
+      :sphinx_version => '2.0.4'
+  end
+
   private
 
   attr_reader :thinking_sphinx

@@ -28,11 +28,11 @@ class FlyingSphinx::IndexRequest
     "#{self.class.name} for #{indices.join(', ')}"
   end
 
-  def update_and_index
-    FlyingSphinx::SphinxConfiguration.new.upload_to api
-    FlyingSphinx::SettingFiles.new.upload_to api
-
-    index
+  def index
+    begin_request
+    while !request_complete?
+      sleep 3
+    end
   end
 
   def status_message
@@ -65,13 +65,6 @@ class FlyingSphinx::IndexRequest
 
   def configuration
     @configuration ||= FlyingSphinx::Configuration.new
-  end
-
-  def index
-    begin_request
-    while !request_complete?
-      sleep 3
-    end
   end
 
   def begin_request

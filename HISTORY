@@ -1,4 +1,6 @@
 Edge:
+* Making the executable the main command entry point.
+* Adding a 'flying-sphinx' executable to match Python and Node.js clients.
 * Removing support for accessing Heroku's shared databases through an SSH tunnel.
 
 0.7.0 - 16th July 2012

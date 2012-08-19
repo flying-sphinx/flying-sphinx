@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+# -*- mode: ruby -*-
+
+require 'flying_sphinx'
+FlyingSphinx::CLI.new(ARGV.first, ARGV[1..-1]).run
