@@ -20,16 +20,9 @@ describe FlyingSphinx::SphinxConfiguration do
 
     it "sends the configuration to the API" do
       api.should_receive(:put).with('/', :configuration => 'foo {}',
-        :sphinx_version => '2.1.0-dev', :tunnel => 'false')
+        :sphinx_version => '2.1.0-dev')
 
       configuration.upload_to api
-    end
-
-    it "informs the API when tunnelling will be required" do
-      api.should_receive(:put).with('/', :configuration => 'foo {}',
-        :sphinx_version => '2.1.0-dev', :tunnel => 'true')
-
-      configuration.upload_to api, true
     end
   end
 end

@@ -1,13 +1,10 @@
 require 'light_spec_helper'
-require 'net/ssh/errors'
 require 'timeout'
 require 'flying_sphinx/index_request'
 
 describe FlyingSphinx::IndexRequest do
   let(:api)           { fire_double('FlyingSphinx::API') }
   let(:configuration) { stub(:configuration, :api => api) }
-  let(:tunnel_class)  { fire_class_double('FlyingSphinx::Tunnel').
-    as_replaced_constant }
 
   let(:index_response)    {
     stub(:response, :body => stub(:body, :id => 42, :status => 'OK'))
@@ -18,7 +15,6 @@ describe FlyingSphinx::IndexRequest do
 
   before :each do
     stub_const 'FlyingSphinx::Configuration', double(:new => configuration)
-
     stub_const 'FlyingSphinx::IndexRequest::INDEX_COMPLETE_CHECKING_INTERVAL',
       0
   end
@@ -66,98 +62,49 @@ describe FlyingSphinx::IndexRequest do
       :upload_to => true)}
     let(:setting_files) { fire_double('FlyingSphinx::SettingFiles',
       :upload_to => true) }
+    let(:status_response) { stub(:response,
+      :body => stub(:body, :status => 'FINISHED')) }
 
     before :each do
       stub_const 'FlyingSphinx::SettingFiles', double(:new => setting_files)
       stub_const 'FlyingSphinx::SphinxConfiguration', double(:new => sphinx)
 
-      api.stub :post => index_response
-
-      tunnel_class.stub :required? => true
-      tunnel_class.stub(:connect).and_yield
+      api.stub :post => index_response, :get => status_response
     end
 
     it "uploads the configuration file" do
-      sphinx.should_receive(:upload_to).with(api, true)
+      sphinx.should_receive(:upload_to).with(api)
 
-      begin
-        Timeout::timeout(0.2) {
-          index_request.update_and_index
-        }
-      rescue Timeout::Error
-      end
+      index_request.update_and_index
     end
 
     it "uploads setting files" do
       setting_files.should_receive(:upload_to).with(api)
 
-      begin
-        Timeout::timeout(0.2) {
-          index_request.update_and_index
-        }
-      rescue Timeout::Error
-      end
+      index_request.update_and_index
     end
 
     it "makes a new request" do
       api.should_receive(:post).
         with('indices', index_params).and_return(index_response)
 
-      begin
-        Timeout::timeout(0.2) {
-          index_request.update_and_index
-        }
-      rescue Timeout::Error
-      end
+      index_request.update_and_index
+    end
+
+    it "checks the status of the request" do
+      api.should_receive(:get).with('indices/42').and_return(status_response)
+
+      index_request.update_and_index
     end
 
     context 'delta request without delta support' do
       it "should explain why the request failed" do
         api.should_receive(:post).
           with('indices', index_params).and_return(blocked_response)
-        index_request.should_receive(:puts).
-          with('Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
 
-        index_request.update_and_index
-      end
-    end
-
-    context 'request for a MySQL database' do
-      before :each do
-        tunnel_class.stub :required? => false
-      end
-
-      it "should not establish an SSH connection" do
-        FlyingSphinx::Tunnel.should_not_receive(:connect)
-
-        api.should_receive(:post).
-          with('indices', index_params).and_return(index_response)
-        api.should_receive(:get).with('indices/42').
-          and_return(stub(:response, :body => stub(:body, :status => 'FINISHED')))
-
-        index_request.update_and_index
-      end
-    end
-  end
-
-  describe '#perform' do
-    let(:index_request) { FlyingSphinx::IndexRequest.new ['foo_delta'] }
-    let(:index_params)  { { :indices => 'foo_delta' } }
-
-    before :each do
-      tunnel_class.stub :required? => true
-      tunnel_class.stub(:connect).and_yield
-    end
-
-    it "makes a new request" do
-      api.should_receive(:post).
-        with('indices', index_params).and_return(index_response)
-
-      begin
-        Timeout::timeout(0.2) {
-          index_request.perform
-        }
-      rescue Timeout::Error
+        lambda {
+          index_request.update_and_index
+        }.should raise_error(RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
       end
     end
   end

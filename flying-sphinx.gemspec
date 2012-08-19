@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'thinking-sphinx',    ['>= 0']
   s.add_runtime_dependency 'riddle',             ['>= 1.5.0']
-  s.add_runtime_dependency 'net-ssh',            ['>= 2.0.23']
   s.add_runtime_dependency 'multi_json',         ['>= 1.0.1']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7']
   s.add_runtime_dependency 'rash',               ['~> 0.3.0']

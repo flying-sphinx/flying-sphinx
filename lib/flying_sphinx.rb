@@ -4,7 +4,6 @@ end
 
 require 'faraday'
 require 'faraday_middleware'
-require 'net/ssh'
 require 'riddle/0.9.9'
 
 require 'flying_sphinx/api'
@@ -15,7 +14,6 @@ require 'flying_sphinx/heroku_shared_adapter'
 require 'flying_sphinx/index_request'
 require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinx_configuration'
-require 'flying_sphinx/tunnel'
 require 'flying_sphinx/version'
 
 if defined?(Rails) && defined?(Rails::Railtie)

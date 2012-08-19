@@ -29,7 +29,7 @@ class FlyingSphinx::IndexRequest
   end
 
   def update_and_index
-    FlyingSphinx::SphinxConfiguration.new.upload_to api, tunnel?
+    FlyingSphinx::SphinxConfiguration.new.upload_to api
     FlyingSphinx::SettingFiles.new.upload_to api
 
     index
@@ -68,28 +68,6 @@ class FlyingSphinx::IndexRequest
   end
 
   def index
-    if tunnel?
-      tunnelled_index
-    else
-      direct_index
-    end
-  rescue Net::SSH::Exception => err
-    # Server closed the connection on us. That's (hopefully) expected, nothing
-    # to worry about.
-    puts "SSH/Indexing Error: #{err.message}" if log?
-  rescue RuntimeError => err
-    puts err.message
-  end
-
-  def tunnelled_index
-    FlyingSphinx::Tunnel.connect(configuration) do
-      begin_request unless request_begun?
-
-      true
-    end
-  end
-
-  def direct_index
     begin_request
     while !request_complete?
       sleep 3
@@ -129,24 +107,7 @@ class FlyingSphinx::IndexRequest
     @request.status
   end
 
-  def tunnel?
-    FlyingSphinx::Tunnel.required?
-  end
-
-  def cancel_request
-    return if index_id.nil?
-
-    puts "Connecting Flying Sphinx to the Database failed"
-    puts "Cancelling Index Request..."
-
-    api.put("indices/#{index_id}", :status => 'CANCELLED')
-  end
-
   def api
     configuration.api
-  end
-
-  def log?
-    ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
 end
