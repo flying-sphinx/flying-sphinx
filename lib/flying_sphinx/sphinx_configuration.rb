@@ -22,6 +22,8 @@ class FlyingSphinx::SphinxConfiguration
   def content
     @content ||= begin
       thinking_sphinx.generate
+      thinking_sphinx.configuration.searchd.client_key =
+        FlyingSphinx::Configuration.new.client_key
       thinking_sphinx.configuration.render
     end
   end
