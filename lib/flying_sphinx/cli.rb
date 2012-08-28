@@ -6,7 +6,7 @@ class FlyingSphinx::CLI
     'start'     => [:start],
     'stop'      => [:stop],
     'restart'   => [:stop, :start],
-    'rebuild'   => [:stop, :index, :start]
+    'rebuild'   => [:stop, :configure, :index, :start]
   }
 
   def initialize(command, arguments = [])

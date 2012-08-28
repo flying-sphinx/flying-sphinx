@@ -1,3 +1,6 @@
+Edge
+* Rebuild command now sends the new configuration up, as before.
+
 0.8.0 - 25th August 2012
 * Making the executable the main command entry point.
 * Adding a 'flying-sphinx' executable to match Python and Node.js clients.
