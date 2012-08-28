@@ -72,7 +72,7 @@ class FlyingSphinx::API
   end
 
   def log_message(message)
-    time = Time.zone ? Time.zone.now : Time.now.utc
+    time = (Time.respond_to?(:zone) && Time.zone) ? Time.zone.now : Time.now.utc
     puts "[#{time.to_s}] #{message}"
   end
 
