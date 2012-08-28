@@ -28,6 +28,7 @@ class FlyingSphinx::CLI
 
   def configure
     if @arguments.empty?
+      require 'thinking_sphinx'
       FlyingSphinx::SphinxConfiguration.new.upload_to configuration.api
       FlyingSphinx::SettingFiles.new.upload_to configuration.api
     else
