@@ -28,7 +28,7 @@ class FlyingSphinx::CLI
 
   def configure
     if @arguments.empty?
-      require 'thinking_sphinx'
+      load_rails
       FlyingSphinx::SphinxConfiguration.new.upload_to configuration.api
       FlyingSphinx::SettingFiles.new.upload_to configuration.api
     else
@@ -48,6 +48,14 @@ class FlyingSphinx::CLI
     puts request.status_message
 
     true
+  end
+
+  def load_rails
+    return unless ENV['RAILS_ENV']
+
+    require File.expand_path('config/boot', Dir.pwd)
+    require File.expand_path('config/application', Dir.pwd)
+    Rails.application.require_environment!
   end
 
   def start
