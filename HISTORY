@@ -1,3 +1,6 @@
+Edge:
+* Load the Delta class when loading Rails.
+
 0.8.3 - 17th September 2012
 * Requires Rails 3 or better (if you're using Rails).
 * Load Rails when configuring.
