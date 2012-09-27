@@ -1,5 +1,5 @@
 class FlyingSphinx::IndexRequest
-  attr_reader :index_id, :indices
+  attr_reader :index_id, :indices, :async
 
   INDEX_COMPLETE_CHECKING_INTERVAL = 3
 
@@ -18,8 +18,8 @@ class FlyingSphinx::IndexRequest
     puts "Index Log:\n#{index.log}"
   end
 
-  def initialize(indices = [])
-    @indices = indices
+  def initialize(indices = [], async = false)
+    @indices, @async = indices, async
   end
 
   # Shows index name in Delayed::Job#name.
@@ -30,6 +30,8 @@ class FlyingSphinx::IndexRequest
 
   def index
     begin_request
+    return if async
+
     while !request_complete?
       sleep 3
     end
@@ -68,7 +70,9 @@ class FlyingSphinx::IndexRequest
   end
 
   def begin_request
-    response = api.post 'indices', :indices => indices.join(',')
+    path = 'indices'
+    path << '/unique' if async
+    response = api.post path, :indices => indices.join(',')
 
     @index_id = response.body.id
     @request_begun = true

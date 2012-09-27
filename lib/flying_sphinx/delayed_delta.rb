@@ -55,7 +55,7 @@ class FlyingSphinx::DelayedDelta < ThinkingSphinx::Deltas::DefaultDelta
     return true if skip? instance
 
     self.class.enqueue(
-      FlyingSphinx::IndexRequest.new(model.delta_index_names),
+      FlyingSphinx::IndexRequest.new(model.delta_index_names, true),
       delayed_job_priority
     )
 

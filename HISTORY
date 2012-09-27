@@ -1,3 +1,6 @@
+Edge:
+* Make delta indexing jobs asynchronous - no need to wait for the result. Also, with the different URL, flying-sphinx.com will not queue up duplicate delta jobs within the last 20 minutes if there's a indexing job still pending.
+
 0.8.4 - 22nd September 2012
 * Load the Delta class when loading Rails.
 

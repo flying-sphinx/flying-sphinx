@@ -86,6 +86,23 @@ describe FlyingSphinx::IndexRequest do
         }.should raise_error(RuntimeError, 'Your account does not support delta indexing. Upgrading plans is probably the best way around this.')
       end
     end
+
+    context 'asynchronous' do
+      let(:index_request) { FlyingSphinx::IndexRequest.new [], true }
+
+      it "makes a new request" do
+        api.should_receive(:post).
+          with('indices/unique', index_params).and_return(index_response)
+
+        index_request.index
+      end
+
+      it "does not check the status" do
+        api.should_not_receive(:get)
+
+        index_request.index
+      end
+    end
   end
 
   describe '#status_message' do
