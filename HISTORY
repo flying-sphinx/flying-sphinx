@@ -1,3 +1,6 @@
+0.7.1 - 10th December 2012
+* Daemon actions (start/stop) are now asynchronous.
+
 0.7.0 - 16th July 2012
 * Print the indexing log.
 * Distinguish between search server and SSH/indexing server, which allows for load balancers as the former.
