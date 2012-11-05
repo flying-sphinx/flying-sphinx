@@ -1,5 +1,5 @@
 class FlyingSphinx::Configuration
-  attr_reader :host, :port, :ssh_server, :database_port
+  attr_reader :host, :port, :ssh_server, :database_port, :identifier, :api_key
 
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
@@ -31,8 +31,6 @@ class FlyingSphinx::Configuration
   end
 
   private
-
-  attr_reader :identifier, :api_key
 
   def set_from_server
     response = api.get '/'
