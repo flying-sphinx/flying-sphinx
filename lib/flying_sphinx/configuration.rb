@@ -20,10 +20,6 @@ class FlyingSphinx::Configuration
     api.post('stop').success?
   end
 
-  def client_key
-    "#{identifier}:#{api_key}"
-  end
-
   def output_recent_actions
     api.get('actions').body.each do |action|
       puts "#{action.created_at}  #{action.name}"

@@ -18,10 +18,6 @@ class FlyingSphinx::SphinxConfiguration
   private
 
   def content
-    @content ||= begin
-      @configuration.searchd.client_key =
-        FlyingSphinx::Configuration.new.client_key
-      @configuration.render
-    end
+    @content ||= @configuration.render
   end
 end
