@@ -4,7 +4,7 @@ class FlyingSphinx::SettingFiles
 
   def initialize(indices = nil)
     @indices = indices ||
-      ThinkingSphinx::Configuration.instance.configuration.indices
+      ThinkingSphinx::Configuration.instance.indices
   end
 
   def upload_to(api)
