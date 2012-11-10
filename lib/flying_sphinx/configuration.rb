@@ -1,21 +1,25 @@
 class FlyingSphinx::Configuration
-  attr_reader :host, :port
-
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
     @api_key    = api_key    || api_key_from_env
-
-    set_from_server
   end
 
   def api
     @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
 
+  def host
+    @host ||= response_body.server rescue host_from_env
+  end
+
   def output_recent_actions
     api.get('actions').body.each do |action|
       puts "#{action.created_at}  #{action.name}"
     end
+  end
+
+  def port
+    @port ||= response_body.port rescue port_from_env
   end
 
   def username
@@ -26,17 +30,12 @@ class FlyingSphinx::Configuration
 
   attr_reader :identifier, :api_key
 
-  def set_from_server
-    response = api.get '/'
-    raise 'Invalid Flying Sphinx credentials' if response.status == 403
-
-    @host = response.body.server
-    @port = response.body.port
-  rescue
-    # If the central Flying Sphinx server is down, let's use the environment
-    # variables so searching is still going to work.
-    @host = host_from_env
-    @port = port_from_env
+  def response_body
+    @response_body ||= begin
+      response = api.get '/'
+      raise 'Invalid Flying Sphinx credentials' if response.status == 403
+      response.body
+    end
   end
 
   def identifier_from_env
