@@ -12,12 +12,6 @@ class FlyingSphinx::Configuration
     @host ||= response_body.server rescue host_from_env
   end
 
-  def output_recent_actions
-    api.get('actions').body.each do |action|
-      puts "#{action.created_at}  #{action.name}"
-    end
-  end
-
   def port
     @port ||= response_body.port rescue port_from_env
   end
