@@ -40,14 +40,12 @@ class FlyingSphinx::CLI
     true
   end
 
+  def controller
+    @controller ||= FlyingSphinx::Controller.new configuration.api
+  end
+
   def index
-    FlyingSphinx::IndexRequest.cancel_jobs
-
-    request = FlyingSphinx::IndexRequest.new @arguments
-    request.index
-    puts request.status_message
-
-    true
+    controller.index @arguments
   end
 
   def load_rails
@@ -61,18 +59,10 @@ class FlyingSphinx::CLI
   end
 
   def start
-    if configuration.start_sphinx
-      puts "Started Sphinx"
-      true
-    else
-      puts "Sphinx failed to start... have you indexed first?"
-      false
-    end
+    controller.start
   end
 
   def stop
-    configuration.stop_sphinx
-    puts "Stopped Sphinx"
-    true
+    controller.stop
   end
 end

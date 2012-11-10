@@ -12,18 +12,14 @@ class FlyingSphinx::Configuration
     @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
 
-  def start_sphinx
-    api.post('start').success?
-  end
-
-  def stop_sphinx
-    api.post('stop').success?
-  end
-
   def output_recent_actions
     api.get('actions').body.each do |action|
       puts "#{action.created_at}  #{action.name}"
     end
+  end
+
+  def username
+    "#{api_key}#{identifier}"
   end
 
   private
