@@ -45,7 +45,8 @@ class FlyingSphinx::CLI
   end
 
   def index
-    controller.index @arguments + [{:verbose => true}]
+    indices = @arguments + [{:verbose => true}]
+    controller.index *indices
   end
 
   def load_rails
