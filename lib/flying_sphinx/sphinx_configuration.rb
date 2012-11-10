@@ -1,9 +1,11 @@
 class FlyingSphinx::SphinxConfiguration
-  def initialize(configuration = ThinkingSphinx::Configuration.instance)
-    @configuration = configuration
+  def initialize(thinking_sphinx = nil)
+    @thinking_sphinx = thinking_sphinx
   end
 
   def upload_to(api)
+    @thinking_sphinx ||= ThinkingSphinx::Configuration.instance
+
     api.put '/',
       :configuration  => content,
       :sphinx_version => '2.0.4'
@@ -18,6 +20,6 @@ class FlyingSphinx::SphinxConfiguration
   private
 
   def content
-    @content ||= @configuration.render
+    @content ||= @thinking_sphinx.render
   end
 end
