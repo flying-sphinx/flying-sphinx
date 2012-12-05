@@ -17,7 +17,7 @@ class FlyingSphinx::Configuration
   end
 
   def username
-    "#{api_key}#{identifier}"
+    "#{identifier}#{api_key}"
   end
 
   private
