@@ -16,22 +16,26 @@ class FlyingSphinx::Controller
   end
 
   def start(options = {})
-    if api.post('start').success?
-      puts "Started Sphinx"
-      true
-    else
-      puts "Sphinx failed to start... have you indexed first?"
-      false
-    end
+    change 'starting', 'started'
   end
 
   def stop
-    api.post('stop').success?
-    puts "Stopped Sphinx"
-    true
+    change 'stopping', 'stopped'
   end
 
   private
 
   attr_reader :api
+
+  def change(initial, expected)
+    api.post(initial)
+
+    response = api.get('daemon')
+    while response.body.status == initial
+      sleep 0.5
+      response = api.get('daemon')
+    end
+
+    response.body.status == expected
+  end
 end
