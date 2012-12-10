@@ -13,11 +13,11 @@ class FlyingSphinx::Configuration
   end
 
   def start_sphinx
-    api.post('start').success?
+    change 'starting', 'started'
   end
 
   def stop_sphinx
-    api.post('stop').success?
+    change 'stopping', 'stopped'
   end
 
   def client_key
@@ -33,6 +33,18 @@ class FlyingSphinx::Configuration
   private
 
   attr_reader :identifier, :api_key
+  
+  def change(initial, expected)
+    api.post(initial)
+
+    response = api.get('daemon')
+    while response.body.status == initial
+      sleep 0.5
+      response = api.get('daemon')
+    end
+
+    response.body.status == expected
+  end
 
   def set_from_server
     response = api.get '/'
