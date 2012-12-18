@@ -5,10 +5,11 @@ class FlyingSphinx::Controller
 
   def index(*indices)
     options = indices.last.is_a?(Hash) ? indices.pop : {}
+    async   = indices.any? && !options[:verbose]
 
     FlyingSphinx::IndexRequest.cancel_jobs
 
-    request = FlyingSphinx::IndexRequest.new indices
+    request = FlyingSphinx::IndexRequest.new indices, async
     request.index
     puts request.status_message if options[:verbose]
 
