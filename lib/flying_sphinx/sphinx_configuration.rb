@@ -16,7 +16,6 @@ class FlyingSphinx::SphinxConfiguration
 
   def content
     @content ||= begin
-      thinking_sphinx.reset
       thinking_sphinx.generate
       thinking_sphinx.configuration.render
     end
