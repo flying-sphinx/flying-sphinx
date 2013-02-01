@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.executables   = ['flying-sphinx']
 
-  s.add_runtime_dependency 'thinking-sphinx',    ['>= 0']
+  s.add_runtime_dependency 'thinking-sphinx',    ['>= 0', '< 3.0.0']
   s.add_runtime_dependency 'riddle',             ['>= 1.5.0']
   s.add_runtime_dependency 'multi_json',         ['>= 1.0.1']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7']
