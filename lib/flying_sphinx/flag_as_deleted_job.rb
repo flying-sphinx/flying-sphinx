@@ -24,18 +24,14 @@ class FlyingSphinx::FlagAsDeletedJob
   # @return [Boolean] true
   #
   def perform
-    indices.each do |index|
-      client.update index, ['sphinx_deleted'], {@document_id => [1]}
+    ThinkingSphinx::Connection.take do |client|
+      indices.each do |index|
+        client.update index, ['sphinx_deleted'], {@document_id => [1]}
+      end
     end
   rescue Riddle::ConnectionError
     # If it fails here, so be it.
   ensure
     true
-  end
-
-  private
-
-  def client
-    @client ||= ThinkingSphinx::Configuration.instance.client
   end
 end
