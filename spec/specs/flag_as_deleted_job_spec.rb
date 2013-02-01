@@ -2,12 +2,13 @@ require 'spec_helper'
 
 describe FlyingSphinx::FlagAsDeletedJob do
   describe '#perform' do
-    let(:config) { ThinkingSphinx::Configuration.instance }
     let(:client) { stub('client', :update => true) }
     let(:job)    { FlyingSphinx::FlagAsDeletedJob.new(['foo_core'], 12) }
+    let(:connection) { double }
 
     before :each do
-      config.stub!(:client => client)
+      stub_const 'ThinkingSphinx::Connection', connection
+      connection.stub(:take).and_yield(client)
     end
 
     it "should update the specified index" do
