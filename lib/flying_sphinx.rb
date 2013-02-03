@@ -16,6 +16,7 @@ module FlyingSphinx
   end
 end
 
+require 'multi_json'
 require 'faraday'
 require 'faraday_middleware'
 require 'riddle'
