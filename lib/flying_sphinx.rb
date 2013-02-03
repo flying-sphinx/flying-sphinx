@@ -1,12 +1,30 @@
+require 'logger'
+
 module FlyingSphinx
-  #
+  @logger       = Logger.new(STDOUT)
+  @logger.level = Logger::INFO
+  if ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'] == 'true'
+    @logger.level = Logger::DEBUG
+  end
+
+  def self.logger
+    @logger
+  end
+
+  def self.logger=(logger)
+    @logger = logger
+  end
 end
 
 require 'faraday'
 require 'faraday_middleware'
 require 'riddle'
 require 'riddle/0.9.9'
+require 'pusher-client'
 
+PusherClient.logger = FlyingSphinx.logger
+
+require 'flying_sphinx/action'
 require 'flying_sphinx/api'
 require 'flying_sphinx/cli'
 require 'flying_sphinx/configuration'
