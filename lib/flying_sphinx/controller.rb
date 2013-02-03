@@ -1,42 +1,71 @@
 class FlyingSphinx::Controller
+  @index_timeout = 60 * 60 * 3 # 3 hours
+
+  def self.index_timeout
+    @index_timeout
+  end
+
+  def self.index_timeout=(index_timeout)
+    @index_timeout = index_timeout
+  end
+
   def initialize(api)
     @api = api
+  end
+
+  def configure
+    FlyingSphinx::Action.perform do
+      api.put 'configure', configuration_options
+    end
   end
 
   def index(*indices)
     options = indices.last.is_a?(Hash) ? indices.pop : {}
     async   = indices.any? && !options[:verbose]
+    options[:indices] = indices.join(',')
 
-    FlyingSphinx::IndexRequest.cancel_jobs
+    if async
+      api.post 'indices/unique', options
+    else
+      FlyingSphinx::IndexRequest.cancel_jobs
 
-    request = FlyingSphinx::IndexRequest.new indices, async
-    request.index
-    puts request.status_message if options[:verbose]
+      FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
+        api.post 'indices', options
+      end
+    end
 
     true
   end
 
+  def rebuild
+    FlyingSphinx::Action.perform api.identifier do
+      api.put 'rebuild', configuration_options
+    end
+  end
+
+  def restart
+    FlyingSphinx::Action.perform api.identifier do
+      api.post 'restart'
+    end
+  end
+
   def start(options = {})
-    change 'starting', 'started'
+    FlyingSphinx::Action.perform(api.identifier) { api.post 'start' }
   end
 
   def stop
-    change 'stopping', 'stopped'
+    FlyingSphinx::Action.perform(api.identifier) { api.post 'stop' }
   end
 
   private
 
   attr_reader :api
 
-  def change(initial, expected)
-    api.post(initial)
-
-    response = api.get('daemon')
-    while response.body.status == initial
-      sleep 0.5
-      response = api.get('daemon')
-    end
-
-    response.body.status == expected
+  def configuration_options
+    {
+      :configuration => FlyingSphinx::SettingFiles.new.to_hash.merge(
+        'sphinx' => ThinkingSphinx::Configuration.instance.render
+      )
+    }
   end
 end
