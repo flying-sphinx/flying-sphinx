@@ -1,8 +1,16 @@
 class FlyingSphinx::API
-  SERVER         = 'https://flying-sphinx.com'
-  STAGING_SERVER = 'https://staging.flying-sphinx.com'
-  PATH           = "/api/my/app"
-  VERSION        = 3
+  unless ENV['STAGED_SPHINX_API_KEY']
+    SERVER     = 'https://flying-sphinx.com'
+    PUSHER_KEY = 'a8518107ea8a18fe5559'
+  else
+    SERVER     = 'https://staging.flying-sphinx.com'
+    PUSHER_KEY = 'c5602d4909b5144321ce'
+  end
+
+  PATH    = '/api/my/app'
+  VERSION = 4
+
+  attr_reader :api_key, :identifier
 
   def initialize(identifier, api_key, adapter = Faraday.default_adapter)
     @api_key    = api_key
@@ -32,7 +40,7 @@ class FlyingSphinx::API
 
   private
 
-  attr_reader :api_key, :identifier, :adapter
+  attr_reader :adapter
 
   def normalize_path(path)
     path = (path == '/' ? '' : "/#{path.gsub(/^\//, '')}")
@@ -50,7 +58,7 @@ class FlyingSphinx::API
   def connection(connection_options = {})
     options = {
       :ssl     => {:verify => false},
-      :url     => (ENV['STAGED_SPHINX_API_KEY'] ? STAGING_SERVER : SERVER),
+      :url     => SERVER,
       :headers => api_headers
     }
 
@@ -63,20 +71,9 @@ class FlyingSphinx::API
   end
 
   def log(method, path, data = {}, option = {}, &block)
-    return block.call unless log?
-
-    log_message "API Request: #{method} '#{path}'; params: #{data.inspect}"
+    FlyingSphinx.logger.debug "API Request: #{method} '#{path}'; params: #{data.inspect}"
     response = block.call
-    log_message "API Response: #{response.body.inspect}"
+    FlyingSphinx.logger.debug "API Response: #{response.body.inspect}"
     return response
-  end
-
-  def log_message(message)
-    time = (Time.respond_to?(:zone) && Time.zone) ? Time.zone.now : Time.now.utc
-    puts "[#{time.to_s}] #{message}"
-  end
-
-  def log?
-    ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'].length > 0
   end
 end
