@@ -7,6 +7,17 @@ class FlyingSphinx::SettingFiles
       ThinkingSphinx::Configuration.instance.indices
   end
 
+  def to_hash
+    hash = {}
+
+    each_file_for_setting do |setting, file|
+      hash["#{setting}:#{File.basename(file)}"] = File.read(file)
+    end
+
+    hash['extra'] = hash.keys.join(';')
+    hash
+  end
+
   def upload_to(api)
     each_file_for_setting do |setting, file|
       api.post '/add_file',
