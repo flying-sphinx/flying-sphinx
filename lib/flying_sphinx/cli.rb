@@ -1,13 +1,19 @@
+require 'forwardable'
+
 class FlyingSphinx::CLI
+  extend Forwardable
+
   COMMANDS = {
     'configure' => [:configure],
     'index'     => [:index],
     'setup'     => [:configure, :index],
     'start'     => [:start],
     'stop'      => [:stop],
-    'restart'   => [:stop, :start],
-    'rebuild'   => [:stop, :configure, :index, :start]
+    'restart'   => [:restart],
+    'rebuild'   => [:rebuild]
   }
+
+  def_delegators :controller, :start, :stop, :restart
 
   def initialize(command, arguments = [])
     @command, @arguments = command, arguments
@@ -17,7 +23,13 @@ class FlyingSphinx::CLI
     methods = COMMANDS[@command]
     raise "Unknown command #{@command}" if methods.nil?
 
-    methods.all? { |method| send method }
+    methods.all? do |method|
+      FlyingSphinx.logger.info "Executing Action: #{method}"
+      result = send method
+      FlyingSphinx.logger.info "Action Finished: #{method}"
+
+      result
+    end
   end
 
   private
@@ -29,14 +41,13 @@ class FlyingSphinx::CLI
   def configure
     if @arguments.empty?
       load_rails
-      FlyingSphinx::SphinxConfiguration.new.upload_to configuration.api
-      FlyingSphinx::SettingFiles.new.upload_to configuration.api
+
+      controller.configure
     else
       FlyingSphinx::SphinxConfiguration.new.upload_file_to configuration.api,
         @arguments.first
     end
 
-    puts "Sent configuration to Sphinx"
     true
   end
 
@@ -59,11 +70,9 @@ class FlyingSphinx::CLI
     require 'flying_sphinx/delayed_delta'
   end
 
-  def start
-    controller.start
-  end
+  def rebuild
+    load_rails
 
-  def stop
-    controller.stop
+    controller.rebuild
   end
 end
