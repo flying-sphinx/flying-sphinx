@@ -38,7 +38,7 @@ class FlyingSphinx::Controller
   end
 
   def rebuild
-    FlyingSphinx::Action.perform api.identifier do
+    FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
       api.put 'rebuild', configuration_options
     end
   end
