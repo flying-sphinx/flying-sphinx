@@ -33,7 +33,7 @@ class FlyingSphinx::Configuration
   private
 
   attr_reader :identifier, :api_key
-  
+
   def change(initial, expected)
     api.post(initial)
 
@@ -74,6 +74,6 @@ class FlyingSphinx::Configuration
   end
 
   def port_from_env
-    (ENV['STAGED_SPHINX_PORT'] || ENV['FLYING_SPHINX_PORT'] || 9306).dup
+    (ENV['STAGED_SPHINX_PORT'] || ENV['FLYING_SPHINX_PORT'] || '9306').dup
   end
 end
