@@ -72,6 +72,8 @@ class FlyingSphinx::CLI
     else
       require File.expand_path('config/environment', Dir.pwd)
       require 'flying_sphinx/rails'
+
+      FlyingSphinx::Binary.load
     end
   end
 
