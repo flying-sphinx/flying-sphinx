@@ -14,7 +14,7 @@ class FlyingSphinx::Controller
   end
 
   def configure
-    FlyingSphinx::Action.perform do
+    FlyingSphinx::Action.perform api.identifier do
       api.put 'configure', configuration_options
     end
   end
