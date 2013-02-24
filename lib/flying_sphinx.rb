@@ -46,7 +46,6 @@ require 'flying_sphinx/controller'
 require 'flying_sphinx/index_request'
 require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinxql'
-require 'flying_sphinx/sphinx_configuration'
 require 'flying_sphinx/version'
 
 require 'flying_sphinx/railtie' if defined?(Rails)
