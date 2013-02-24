@@ -44,8 +44,7 @@ class FlyingSphinx::CLI
 
       controller.configure
     else
-      FlyingSphinx::SphinxConfiguration.new.upload_file_to configuration.api,
-        @arguments.first
+      controller.configure File.read(@arguments.first)
     end
 
     true

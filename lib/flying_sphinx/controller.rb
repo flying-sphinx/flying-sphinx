@@ -13,9 +13,12 @@ class FlyingSphinx::Controller
     @api = api
   end
 
-  def configure
+  def configure(file = nil)
+    options = file.nil? ? configuration_options :
+      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
+
     FlyingSphinx::Action.perform api.identifier do
-      api.put 'configure', configuration_options
+      api.put 'configure', options
     end
   end
 
