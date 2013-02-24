@@ -8,6 +8,10 @@ class FlyingSphinx::Configuration
     @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
 
+  def client_key
+    "#{identifier}:#{api_key}"
+  end
+
   def host
     @host ||= response_body.server rescue host_from_env
   end
