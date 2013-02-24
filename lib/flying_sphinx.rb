@@ -48,4 +48,8 @@ require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinxql'
 require 'flying_sphinx/version'
 
-require 'flying_sphinx/railtie' if defined?(Rails)
+if defined?(Rails) && defined?(Rails::Railtie)
+  require 'flying_sphinx/railtie'
+elsif defined?(Rails)
+  require 'flying_sphinx/rails'
+end
