@@ -63,15 +63,16 @@ class FlyingSphinx::CLI
     return unless ENV['RAILS_ENV']
 
     require File.expand_path('config/boot', Dir.pwd)
-    require File.expand_path('config/application', Dir.pwd)
 
     if defined?(Rails::Railtie)
+      require File.expand_path('config/application', Dir.pwd)
       require 'flying_sphinx/railtie'
+
+      Rails.application.require_environment!
     else
+      require File.expand_path('config/environment', Dir.pwd)
       require 'flying_sphinx/rails'
     end
-
-    Rails.application.require_environment!
   end
 
   def rebuild
