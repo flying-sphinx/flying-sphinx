@@ -64,9 +64,8 @@ class FlyingSphinx::CLI
 
     require File.expand_path('config/boot', Dir.pwd)
     require File.expand_path('config/application', Dir.pwd)
+    require 'flying_sphinx/railtie'
     Rails.application.require_environment!
-
-    require 'flying_sphinx/delayed_delta'
   end
 
   def rebuild
