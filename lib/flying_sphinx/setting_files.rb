@@ -3,8 +3,7 @@ class FlyingSphinx::SettingFiles
   SOURCE_SETTINGS = [:mysql_ssl_cert, :mysql_ssl_key, :mysql_ssl_ca]
 
   def initialize(indices = nil)
-    @indices = indices ||
-      ThinkingSphinx::Configuration.instance.indices
+    @indices = indices || FlyingSphinx.translator.sphinx_indices
   end
 
   def to_hash
