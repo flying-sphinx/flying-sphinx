@@ -66,7 +66,8 @@ class FlyingSphinx::Controller
 
   def configuration_options
     {
-      :configuration => FlyingSphinx::SettingFiles.new.to_hash.merge(
+      :sphinx_version => ThinkingSphinx::Configuration.instance.version,
+      :configuration  => FlyingSphinx::SettingFiles.new.to_hash.merge(
         'sphinx' => FlyingSphinx.translator.sphinx_configuration
       )
     }
