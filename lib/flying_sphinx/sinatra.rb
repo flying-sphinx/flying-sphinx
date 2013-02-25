@@ -1,10 +1,11 @@
 require 'flying_sphinx'
 
-config = FlyingSphinx::Configuration.new
+configuration = FlyingSphinx::Configuration.new
+controller    = FlyingSphinx::Controller.new configuration.api
 
-ThinkingSphinx::Configuration.instance.searchd.address    = config.host
-ThinkingSphinx::Configuration.instance.searchd.port       = config.port
-
-if ENV['DATABASE_URL'][/^mysql/].nil?
-  ThinkingSphinx.database_adapter = FlyingSphinx::HerokuSharedAdapter
-end
+ThinkingSphinx::Configuration.instance.controller = controller
+ThinkingSphinx::Configuration.instance.settings['connection_options'] = {
+  :host     => configuration.host,
+  :port     => 9306,
+  :username => configuration.username
+}
