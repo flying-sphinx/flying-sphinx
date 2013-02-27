@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_json',         ['>= 1.0.1']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7']
   s.add_runtime_dependency 'rash',               ['~> 0.3.0']
-  s.add_runtime_dependency 'pusher-client',      ['~> 0.2.1']
+  s.add_runtime_dependency 'pusher-client',      ['~> 0.2.2']
 
   s.add_development_dependency 'rake',            ['~> 0.9.2']
   s.add_development_dependency 'rspec',           ['~> 2.11']
