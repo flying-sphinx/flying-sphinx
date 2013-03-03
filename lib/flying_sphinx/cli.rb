@@ -64,7 +64,7 @@ class FlyingSphinx::CLI
 
     require File.expand_path('config/boot', Dir.pwd)
 
-    if defined?(Rails) && !defined(Rails::Railtie)
+    if defined?(Rails) && !defined?(Rails::Railtie)
       require File.expand_path('config/environment', Dir.pwd)
       require 'flying_sphinx/rails'
 
