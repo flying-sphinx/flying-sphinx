@@ -65,8 +65,13 @@ class FlyingSphinx::Controller
   attr_reader :api
 
   def configuration_options
+    version       = '2.0.4'
+    configuration = ThinkingSphinx::Configuration.instance
+
+    version = configuration.version if configuration.respond_to?(:version)
+
     {
-      :sphinx_version => ThinkingSphinx::Configuration.instance.version,
+      :sphinx_version => version,
       :configuration  => FlyingSphinx::SettingFiles.new.to_hash.merge(
         'sphinx' => FlyingSphinx.translator.sphinx_configuration
       )
