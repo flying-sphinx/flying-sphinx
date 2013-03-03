@@ -61,6 +61,6 @@ class FlyingSphinx::Configuration
   end
 
   def port_from_env
-    (ENV['STAGED_SPHINX_PORT'] || ENV['FLYING_SPHINX_PORT'] || 9306).dup
+    (ENV['STAGED_SPHINX_PORT'] || ENV['FLYING_SPHINX_PORT'] || '9306').dup
   end
 end
