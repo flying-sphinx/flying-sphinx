@@ -30,7 +30,9 @@ class FlyingSphinx::Controller
     if async
       api.post 'indices/unique', options
     else
-      FlyingSphinx::IndexRequest.cancel_jobs
+      ::Delayed::Job.delete_all(
+        "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
+      ) if defined?(::Delayed) && ::Delayed::Job.table_exists?
 
       FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
         api.post 'indices', options
