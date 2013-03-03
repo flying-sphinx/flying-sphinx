@@ -1,147 +1,93 @@
 require 'spec_helper'
 
 describe FlyingSphinx::DelayedDelta do
-  describe '.enqueue' do
+  describe '.enqueue_unless_duplicates' do
+    let(:config) { double('TS Configuration', :settings => {}) }
+    let(:job)    { double }
+
     before :each do
-      Delayed::Job.stub!(:count => 0)
+      stub_const 'ThinkingSphinx::Configuration', double(:instance => config)
+      stub_const 'Delayed::Job',                  double(:count => 0)
+
+      Delayed::Job.stub :where => Delayed::Job
+
+      config.settings['delayed_job_priority'] = 2
     end
 
     it "should enqueue if there's no existing jobs for the same index" do
-      Delayed::Job.should_receive(:enqueue)
+      Delayed::Job.should_receive(:enqueue).with(job, :priority => 2)
 
-      FlyingSphinx::DelayedDelta.enqueue(stub('object'))
+      FlyingSphinx::DelayedDelta.enqueue_unless_duplicates job
     end
 
     it "should not enqueue the job if there's an existing job already" do
-      Delayed::Job.stub!(:count => 1)
+      Delayed::Job.stub :count => 1
+
       Delayed::Job.should_not_receive(:enqueue)
 
-      FlyingSphinx::DelayedDelta.enqueue(stub('object'))
+      FlyingSphinx::DelayedDelta.enqueue_unless_duplicates job
+    end
+  end
+
+  describe '#delete' do
+    let(:delayed_delta) { FlyingSphinx::DelayedDelta.new double }
+    let(:config)        { double('TS::Configuration', :settings => {}) }
+    let(:index)         { double('Index', :name => 'foo_core',
+      :document_id_for_key => 54) }
+    let(:instance)      { double('AR::Base', :id => 15) }
+    let(:job)           { double('FADJ Job') }
+
+    before :each do
+      stub_const 'FlyingSphinx::FlagAsDeletedJob', double(:new => job)
+      stub_const 'Delayed::Job', double(:enqueue => true)
+      stub_const 'ThinkingSphinx::Configuration', double(:instance => config)
+
+      config.settings['delayed_job_priority'] = 4
+    end
+
+    it "converts the instance id to a document id" do
+      index.should_receive(:document_id_for_key).with(15).and_return(54)
+
+      delayed_delta.delete index, instance
+    end
+
+    it "creates a flag-as-deleted job" do
+      FlyingSphinx::FlagAsDeletedJob.should_receive(:new).with('foo_core', 54).
+        and_return(job)
+
+      delayed_delta.delete index, instance
+    end
+
+    it "queues up the job" do
+      Delayed::Job.should_receive(:enqueue).with(job, :priority => 4)
+
+      delayed_delta.delete index, instance
     end
   end
 
   describe '#index' do
-    let(:config)        { ThinkingSphinx::Configuration.instance }
-    let(:delayed_delta) { FlyingSphinx::DelayedDelta.new stub('instance'), {} }
-    let(:model)         {
-      stub 'foo',
-        :name              => 'foo',
-        :core_index_names  => ['foo_core'],
-        :delta_index_names => ['foo_delta']
-    }
-    let(:instance) { stub('instance', :sphinx_document_id => 42) }
+    let(:delayed_delta) { FlyingSphinx::DelayedDelta.new double }
+    let(:index)         { double('Index', :name => 'foo_delta') }
+    let(:job)           { double('Index Job') }
 
     before :each do
-      ThinkingSphinx.updates_enabled = true
-      ThinkingSphinx.deltas_enabled  = true
+      stub_const 'FlyingSphinx::IndexRequest', double(:new => job)
 
-      config.delayed_job_priority = 2
-
-      FlyingSphinx::DelayedDelta.stub!(:enqueue => true)
-      Delayed::Job.stub!(:enqueue => true, :inspect => 'Delayed::Job')
-
-      delayed_delta.stub!(:toggled => true)
+      FlyingSphinx::DelayedDelta.stub :enqueue_unless_duplicates => true
     end
 
-    context 'updates disabled' do
-      before :each do
-        ThinkingSphinx.updates_enabled = false
-      end
+    it "creates a new index request" do
+      FlyingSphinx::IndexRequest.should_receive(:new).with('foo_delta', true).
+        and_return(job)
 
-      it "should not enqueue a delta job" do
-        FlyingSphinx::DelayedDelta.should_not_receive(:enqueue)
-
-        delayed_delta.index model
-      end
-
-      it "should not enqueue a flag as deleted job" do
-        Delayed::Job.should_not_receive(:enqueue)
-
-        delayed_delta.index model
-      end
-    end
-
-    context 'deltas disabled' do
-      before :each do
-        ThinkingSphinx.deltas_enabled = false
-      end
-
-      it "should not enqueue a delta job" do
-        FlyingSphinx::DelayedDelta.should_not_receive(:enqueue)
-
-        delayed_delta.index model
-      end
-
-      it "should not enqueue a flag as deleted job" do
-        Delayed::Job.should_not_receive(:enqueue)
-
-        delayed_delta.index model
-      end
-    end
-
-    context "instance isn't toggled" do
-      before :each do
-        delayed_delta.stub!(:toggled => false)
-      end
-
-      it "should not enqueue a delta job" do
-        FlyingSphinx::DelayedDelta.should_not_receive(:enqueue)
-
-        delayed_delta.index model, instance
-      end
-
-      it "should not enqueue a flag as deleted job" do
-        Delayed::Job.should_not_receive(:enqueue)
-
-        delayed_delta.index model, instance
-      end
+      delayed_delta.index index
     end
 
     it "should enqueue a delta job for the appropriate indexes" do
-      FlyingSphinx::DelayedDelta.should_receive(:enqueue) do |job, priority|
-        job.indices.should == ['foo_delta']
-        job.async.should be_true
-      end
+      FlyingSphinx::DelayedDelta.should_receive(:enqueue_unless_duplicates).
+        with(job)
 
-      delayed_delta.index model
-    end
-
-    it "should use the defined priority for the delta job" do
-      FlyingSphinx::DelayedDelta.should_receive(:enqueue) do |job, priority|
-        priority.should == 2
-      end
-
-      delayed_delta.index model
-    end
-
-    it "should enqueue a flag-as-deleted job for the appropriate indexes" do
-      Delayed::Job.should_receive(:enqueue) do |job, options|
-        job.indices.should == ['foo_core']
-      end
-
-      delayed_delta.index model, instance
-    end
-
-    it "should enqueue a flag-as-deleted job for the appropriate id" do
-      Delayed::Job.should_receive(:enqueue) do |job, options|
-        job.document_id.should == 42
-      end
-
-      delayed_delta.index model, instance
-    end
-
-    it "should use the defined priority for the flag-as-deleted job" do
-      Delayed::Job.should_receive(:enqueue) do |job, options|
-        options[:priority].should == 2
-      end
-
-      delayed_delta.index model, instance
-    end
-
-    it "should not enqueue a flag-as-deleted job if no instance is provided" do
-      Delayed::Job.should_not_receive(:enqueue)
-
-      delayed_delta.index model
+      delayed_delta.index index
     end
   end
 end

@@ -17,11 +17,12 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.executables   = ['flying-sphinx']
 
-  s.add_runtime_dependency 'thinking-sphinx',    ['>= 0', '< 3.0.0']
-  s.add_runtime_dependency 'riddle',             ['>= 1.5.0']
+  s.add_runtime_dependency 'thinking-sphinx'
+  s.add_runtime_dependency 'riddle',             ['>= 1.5.5']
   s.add_runtime_dependency 'multi_json',         ['>= 1.0.1']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7']
   s.add_runtime_dependency 'rash',               ['~> 0.3.0']
+  s.add_runtime_dependency 'pusher-client',      ['~> 0.2.2']
 
   s.add_development_dependency 'rake',            ['~> 0.9.2']
   s.add_development_dependency 'rspec',           ['~> 2.11']
@@ -30,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'fakeweb',         ['~> 1.3.0']
   s.add_development_dependency 'fakeweb-matcher', ['~> 1.2.2']
   s.add_development_dependency 'delayed_job',     ['~> 2.1.4']
+  s.add_development_dependency 'mysql2',          ['>= 0.3.12b4']
 
   s.post_install_message = <<-MESSAGE
 If you're upgrading, you should rebuild your Sphinx setup when deploying:

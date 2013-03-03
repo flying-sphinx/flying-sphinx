@@ -22,8 +22,4 @@ namespace :fs do
   task :index_log => :environment do
     FlyingSphinx::IndexRequest.output_last_index
   end
-
-  task :actions => :environment do
-    FlyingSphinx::Configuration.new.output_recent_actions
-  end
 end

@@ -1,46 +1,35 @@
 require 'spec_helper'
+require 'mysql2/error'
 
 describe FlyingSphinx::FlagAsDeletedJob do
   describe '#perform' do
-    let(:client) { stub('client', :update => true) }
-    let(:job)    { FlyingSphinx::FlagAsDeletedJob.new(['foo_core'], 12) }
-    let(:connection) { double }
+    let(:job)        { FlyingSphinx::FlagAsDeletedJob.new('foo_core', 12) }
+    let(:config)     { double('TS::Configuration', :connection => connection) }
+    let(:connection) { stub('MySQL::Connection', :query => true) }
 
     before :each do
-      stub_const 'ThinkingSphinx::Connection', connection
-      connection.stub(:take).and_yield(client)
+      stub_const 'ThinkingSphinx::Configuration', double(:instance => config)
+      stub_const 'Riddle::Query', double(:update => 'UPDATE QUERY')
     end
 
-    it "should update the specified index" do
-      client.should_receive(:update) do |index, attributes, values|
-        index.should == 'foo_core'
-      end
+    it "builds the update query" do
+      Riddle::Query.should_receive(:update).
+        with('foo_core', 12, :sphinx_deleted => true).
+        and_return('UPDATE QUERY')
 
       job.perform
     end
 
-    it "should update all specified indexes" do
-      job.indices = ['foo_core', 'bar_core']
-      client.should_receive(:update).with('foo_core', anything, anything)
-      client.should_receive(:update).with('bar_core', anything, anything)
+    it "sends the query to the Sphinx connection" do
+      connection.should_receive(:query).with('UPDATE QUERY')
 
       job.perform
     end
 
-    it "should update the sphinx_deleted attribute" do
-      client.should_receive(:update) do |index, attributes, values|
-        attributes.should == ['sphinx_deleted']
-      end
+    it "does not care about MySQL errors" do
+      connection.stub(:query).and_raise(Mysql2::Error.new(''))
 
-      job.perform
-    end
-
-    it "should set sphinx_deleted for the given document to true" do
-      client.should_receive(:update) do |index, attributes, values|
-        values[12].should == [1]
-      end
-
-      job.perform
+      lambda { job.perform }.should_not raise_error
     end
   end
 end

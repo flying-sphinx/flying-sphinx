@@ -3,8 +3,18 @@ class FlyingSphinx::SettingFiles
   SOURCE_SETTINGS = [:mysql_ssl_cert, :mysql_ssl_key, :mysql_ssl_ca]
 
   def initialize(indices = nil)
-    @indices = indices ||
-      ThinkingSphinx::Configuration.instance.configuration.indices
+    @indices = indices || FlyingSphinx.translator.sphinx_indices
+  end
+
+  def to_hash
+    hash = {}
+
+    each_file_for_setting do |setting, file|
+      hash["#{setting}:#{File.basename(file)}"] = File.read(file)
+    end
+
+    hash['extra'] = hash.keys.join(';')
+    hash
   end
 
   def upload_to(api)

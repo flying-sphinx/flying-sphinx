@@ -1,39 +1,33 @@
 class FlyingSphinx::Configuration
-  attr_reader :host, :port, :ssh_server, :database_port
-
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
     @api_key    = api_key    || api_key_from_env
-
-    set_from_server
   end
 
   def api
     @api ||= FlyingSphinx::API.new(identifier, api_key)
   end
 
-  def start_sphinx
-    change 'starting', 'started'
-  end
-
-  def stop_sphinx
-    change 'stopping', 'stopped'
-  end
-
   def client_key
     "#{identifier}:#{api_key}"
   end
 
-  def output_recent_actions
-    api.get('actions').body.each do |action|
-      puts "#{action.created_at}  #{action.name}"
-    end
+  def host
+    @host ||= response_body.server rescue host_from_env
+  end
+
+  def port
+    @port ||= response_body.port rescue port_from_env
+  end
+
+  def username
+    "#{identifier}#{api_key}"
   end
 
   private
 
   attr_reader :identifier, :api_key
-  
+
   def change(initial, expected)
     api.post(initial)
 
@@ -46,19 +40,12 @@ class FlyingSphinx::Configuration
     response.body.status == expected
   end
 
-  def set_from_server
-    response = api.get '/'
-    raise 'Invalid Flying Sphinx credentials' if response.status == 403
-
-    @host          = response.body.server
-    @port          = response.body.port
-    @ssh_server    = response.body.ssh_server
-    @database_port = response.body.database_port
-  rescue
-    # If the central Flying Sphinx server is down, let's use the environment
-    # variables so searching is still going to work.
-    @host = host_from_env
-    @port = port_from_env
+  def response_body
+    @response_body ||= begin
+      response = api.get '/'
+      raise 'Invalid Flying Sphinx credentials' if response.status == 403
+      response.body
+    end
   end
 
   def identifier_from_env

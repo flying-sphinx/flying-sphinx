@@ -1,13 +1,19 @@
+require 'forwardable'
+
 class FlyingSphinx::CLI
+  extend Forwardable
+
   COMMANDS = {
     'configure' => [:configure],
     'index'     => [:index],
     'setup'     => [:configure, :index],
     'start'     => [:start],
     'stop'      => [:stop],
-    'restart'   => [:stop, :start],
-    'rebuild'   => [:stop, :configure, :index, :start]
+    'restart'   => [:restart],
+    'rebuild'   => [:rebuild]
   }
+
+  def_delegators :controller, :start, :stop, :restart
 
   def initialize(command, arguments = [])
     @command, @arguments = command, arguments
@@ -17,7 +23,13 @@ class FlyingSphinx::CLI
     methods = COMMANDS[@command]
     raise "Unknown command #{@command}" if methods.nil?
 
-    methods.all? { |method| send method }
+    methods.all? do |method|
+      FlyingSphinx.logger.info "Executing Action: #{method}"
+      result = send method
+      FlyingSphinx.logger.info "Action Finished: #{method}"
+
+      result
+    end
   end
 
   private
@@ -29,50 +41,45 @@ class FlyingSphinx::CLI
   def configure
     if @arguments.empty?
       load_rails
-      FlyingSphinx::SphinxConfiguration.new.upload_to configuration.api
-      FlyingSphinx::SettingFiles.new.upload_to configuration.api
+
+      controller.configure
     else
-      FlyingSphinx::SphinxConfiguration.new.upload_file_to configuration.api,
-        @arguments.first
+      controller.configure File.read(@arguments.first)
     end
 
-    puts "Sent configuration to Sphinx"
     true
   end
 
+  def controller
+    @controller ||= FlyingSphinx::Controller.new configuration.api
+  end
+
   def index
-    FlyingSphinx::IndexRequest.cancel_jobs
-
-    request = FlyingSphinx::IndexRequest.new @arguments
-    request.index
-    puts request.status_message
-
-    true
+    indices = @arguments + [{:verbose => true}]
+    controller.index *indices
   end
 
   def load_rails
     return unless ENV['RAILS_ENV']
 
     require File.expand_path('config/boot', Dir.pwd)
-    require File.expand_path('config/application', Dir.pwd)
-    Rails.application.require_environment!
 
-    require 'flying_sphinx/delayed_delta'
-  end
+    if defined?(Rails) && !defined?(Rails::Railtie)
+      require File.expand_path('config/environment', Dir.pwd)
+      require 'flying_sphinx/rails'
 
-  def start
-    if configuration.start_sphinx
-      puts "Started Sphinx"
-      true
+      FlyingSphinx::Binary.load
     else
-      puts "Sphinx failed to start... have you indexed first?"
-      false
+      require File.expand_path('config/application', Dir.pwd)
+      require 'flying_sphinx/railtie'
+
+      Rails.application.require_environment!
     end
   end
 
-  def stop
-    configuration.stop_sphinx
-    puts "Stopped Sphinx"
-    true
+  def rebuild
+    load_rails
+
+    controller.rebuild
   end
 end

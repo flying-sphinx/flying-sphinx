@@ -2,34 +2,26 @@ require 'light_spec_helper'
 require 'flying_sphinx/configuration'
 
 describe FlyingSphinx::Configuration do
-  let(:api)  { fire_double('FlyingSphinx::API',
+  let(:api)        { fire_double('FlyingSphinx::API',
     :get => double(:body => body, :status => 200)) }
-  let(:body) { double(:server => 'foo.bar.com', :port => 9319,
-    :ssh_server => 'ssh.bar.com', :database_port => 10319) }
+  let(:body)       { double(:server => 'foo.bar.com', :port => 9319) }
+  let(:api_key)    { 'foo-bar-baz' }
+  let(:identifier) { 'my-identifier' }
+  let(:config)     { FlyingSphinx::Configuration.new identifier, api_key }
 
   before :each do
     fire_class_double('FlyingSphinx::API', :new => api).as_replaced_constant
   end
 
-  describe '#initialize' do
-    let(:api_key)    { 'foo-bar-baz' }
-    let(:identifier) { 'my-identifier' }
-    let(:config)     { FlyingSphinx::Configuration.new identifier, api_key }
-
-    it "sets the host from the API information" do
+  describe '#host' do
+    it "reads the server from the API" do
       config.host.should == 'foo.bar.com'
     end
+  end
 
-    it "sets the port from the API information" do
+  describe '#port' do
+    it "reads the port from the API" do
       config.port.should == 9319
-    end
-
-    it "sets the ssh server address" do
-      config.ssh_server.should == 'ssh.bar.com'
-    end
-
-    it "sets the database port" do
-      config.database_port.should == 10319
     end
   end
 end
