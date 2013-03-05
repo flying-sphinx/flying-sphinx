@@ -27,6 +27,8 @@ class FlyingSphinx::Action
     FlyingSphinx.logger.warn "Action timed out. If this is happening regularly, please contact Flying Sphinx support: http://support.flying-sphinx.com"
 
     return false
+  ensure
+    socket.disconnect
   end
 
   private
