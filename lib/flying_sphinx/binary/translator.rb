@@ -18,7 +18,7 @@ class FlyingSphinx::Binary::Translator
 
   def sphinx_configuration
     @sphinx_configuration ||= begin
-      thinking_sphinx.generate
+      generate_configuration
       thinking_sphinx.configuration.searchd.client_key =
         FlyingSphinx::Configuration.new.client_key
       thinking_sphinx.configuration.render
@@ -26,12 +26,22 @@ class FlyingSphinx::Binary::Translator
   end
 
   def sphinx_indices
-    thinking_sphinx.configuration.indices
+    @sphinx_indices ||= begin
+      generate_configuration
+      thinking_sphinx.configuration.indices
+    end
   end
 
   private
 
   def thinking_sphinx
     ThinkingSphinx::Configuration.instance
+  end
+
+  def generate_configuration
+    return if @generated_configuration
+
+    thinking_sphinx.generate
+    @generated_configuration = true
   end
 end
