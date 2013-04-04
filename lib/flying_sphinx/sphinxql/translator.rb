@@ -10,10 +10,11 @@ class FlyingSphinx::SphinxQL::Translator
   end
 
   def sphinx_configuration
-    thinking_sphinx.render
+    @sphinx_configuration ||= thinking_sphinx.render
   end
 
   def sphinx_indices
+    sphinx_configuration
     thinking_sphinx.indices
   end
 
