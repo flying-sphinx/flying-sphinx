@@ -70,7 +70,9 @@ class FlyingSphinx::Controller
     version       = '2.0.4'
     configuration = ThinkingSphinx::Configuration.instance
 
-    version = configuration.version if configuration.respond_to?(:version)
+    if configuration.respond_to?(:version) && configuration.version.present?
+      version = configuration.version
+    end
 
     {
       :sphinx_version => version,
