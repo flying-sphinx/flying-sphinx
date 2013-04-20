@@ -65,7 +65,10 @@ class FlyingSphinx::Action
   end
 
   def start
-    @action_id = block.call.body.id
+    response = block.call
+    raise "Action blocked" if response.body.status == 'BLOCKED'
+
+    @action_id = response.body.id
   end
 
   def subscribe_to_events
