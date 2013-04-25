@@ -1,6 +1,9 @@
 class FlyingSphinx::Controller
   @index_timeout = 60 * 60 * 3 # 3 hours
 
+  # For backwards compatibility. These aren't actually used here.
+  attr_accessor :path, :bin_path, :searchd_binary_name, :indexer_binary_name
+
   def self.index_timeout
     @index_timeout
   end
@@ -52,6 +55,10 @@ class FlyingSphinx::Controller
     FlyingSphinx::Action.perform api.identifier do
       api.post 'restart'
     end
+  end
+
+  def sphinx_version
+    '2.0.4'
   end
 
   def start(options = {})

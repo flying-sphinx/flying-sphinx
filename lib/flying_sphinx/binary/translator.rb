@@ -2,8 +2,9 @@ class FlyingSphinx::Binary::Translator
   def initialize(configuration)
     ThinkingSphinx.remote_sphinx = true
 
-    thinking_sphinx.address = configuration.host
-    thinking_sphinx.port    = configuration.port
+    thinking_sphinx.controller = FlyingSphinx::Controller.new configuration.api
+    thinking_sphinx.address    = configuration.host
+    thinking_sphinx.port       = configuration.port
     thinking_sphinx.configuration.searchd.client_key =
       configuration.client_key
 
