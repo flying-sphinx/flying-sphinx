@@ -7,16 +7,20 @@ describe FlyingSphinx::API do
   let(:faraday)    { fire_class_double('Faraday', :new => connection) }
   let(:adapter)    { double('adapter') }
   let(:connection) { double('connection') }
+  let(:logger)     { double :debug => true }
+  let(:response)   { double :body => '' }
 
   before :each do
     faraday.as_replaced_constant
+
+    FlyingSphinx.stub :logger => logger
   end
 
   shared_examples_for 'an API call' do
     it "sets up a connection with the appropriate headers" do
       faraday.should_receive(:new) do |options|
         options[:headers].should == {
-          'Accept'                  => 'application/vnd.flying-sphinx-v3+json',
+          'Accept'                  => 'application/vnd.flying-sphinx-v4+json',
           'X-Flying-Sphinx-Token'   => 'foo:bar',
           'X-Flying-Sphinx-Version' => FlyingSphinx::Version
         }
@@ -40,10 +44,10 @@ describe FlyingSphinx::API do
 
   describe '#get' do
     let(:request)      { double('request', :url => true) }
-    let(:send_request) { api.get '/resource', 'param' => 'value'}
+    let(:send_request) { api.get '/resource', 'param' => 'value' }
 
     before :each do
-      connection.stub(:get).and_yield(request)
+      connection.stub(:get).and_yield(request).and_return(response)
     end
 
     it_should_behave_like 'an API call'
@@ -60,14 +64,15 @@ describe FlyingSphinx::API do
     let(:send_request) { api.post '/resource', 'param' => 'value' }
 
     before :each do
-      connection.stub(:post => true)
+      connection.stub(:post => response)
     end
 
     it_should_behave_like 'an API call'
 
     it "sends the POST request with the given path and data" do
       connection.should_receive(:post).
-        with('/api/my/app/resource', 'param' => 'value')
+        with('/api/my/app/resource', 'param' => 'value').
+        and_return(response)
 
       send_request
     end
@@ -77,14 +82,15 @@ describe FlyingSphinx::API do
     let(:send_request) { api.put '/resource', 'param' => 'value' }
 
     before :each do
-      connection.stub(:put => true)
+      connection.stub(:put => response)
     end
 
     it_should_behave_like 'an API call'
 
     it "sends the PUT request with the given path and data" do
       connection.should_receive(:put).
-        with('/api/my/app/resource', 'param' => 'value')
+        with('/api/my/app/resource', 'param' => 'value').
+        and_return(response)
 
       send_request
     end
