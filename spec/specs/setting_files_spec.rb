@@ -13,9 +13,7 @@ describe FlyingSphinx::SettingFiles do
     fire_double 'Riddle::Configuration::SQLSource', methods
   end
 
-  describe '#upload_to' do
-    let(:api) { fire_double('FlyingSphinx::API') }
-
+  describe '#to_hash' do
     before :each do
       File.stub :read => 'blah'
     end
@@ -24,32 +22,31 @@ describe FlyingSphinx::SettingFiles do
       it "uploads #{setting} files from indices" do
         indices << index_double(setting => '/my/file/foo.txt')
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah')
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt"
+        }
       end
 
       it "does not repeat same files for #{setting}" do
         indices << index_double(setting => '/my/file/foo.txt')
         indices << index_double(setting => '/my/file/foo.txt')
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah').once
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt"
+        }
       end
 
       it "accepts multiples files for #{setting}" do
         indices << index_double(
           setting => '/my/file/foo.txt /my/file/bar.txt')
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah').once
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'bar.txt', :content => 'blah').once
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          "#{setting}:bar.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt;#{setting}:bar.txt"
+        }
       end
     end
 
@@ -58,10 +55,10 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt')])
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah')
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt"
+        }
       end
 
       it "does not repeat same files for #{setting}" do
@@ -70,22 +67,21 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt')])
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah').once
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt"
+        }
       end
 
       it "accepts multiples files for #{setting}" do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt /my/file/bar.txt')])
 
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'foo.txt', :content => 'blah').once
-        api.should_receive(:post).with('/add_file', :setting => setting.to_s,
-          :file_name => 'bar.txt', :content => 'blah').once
-
-        files.upload_to(api)
+        files.to_hash.should == {
+          "#{setting}:foo.txt" => 'blah',
+          "#{setting}:bar.txt" => 'blah',
+          'extra'              => "#{setting}:foo.txt;#{setting}:bar.txt"
+        }
       end
     end
   end

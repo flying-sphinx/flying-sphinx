@@ -17,15 +17,6 @@ class FlyingSphinx::SettingFiles
     hash
   end
 
-  def upload_to(api)
-    each_file_for_setting do |setting, file|
-      api.post '/add_file',
-        :setting   => setting.to_s,
-        :file_name => File.basename(file),
-        :content   => File.read(file)
-    end
-  end
-
   private
 
   attr_reader :indices
