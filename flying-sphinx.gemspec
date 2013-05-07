@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yajl-ruby',       ['~> 0.8.2']
   s.add_development_dependency 'fakeweb',         ['~> 1.3.0']
   s.add_development_dependency 'fakeweb-matcher', ['~> 1.2.2']
-  s.add_development_dependency 'mysql2',          ['>= 0.3.12b4']
 
   s.post_install_message = <<-MESSAGE
 If you're upgrading, you should rebuild your Sphinx setup when deploying:
