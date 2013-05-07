@@ -71,6 +71,27 @@ describe FlyingSphinx::Action do
       lambda { perform_and_complete action }.should_not raise_error
     end
 
+    it "only retries four times" do
+      calls = 0
+      action = FlyingSphinx::Action.new 'abc123', 1 do
+        calls += 1
+        raise "Exception" if calls <= 5
+
+        response
+      end
+
+      lambda { perform_and_complete action }.should raise_error
+    end
+
+    it "logs a warning when the action fails" do
+      logger.should_receive(:warn).with("Action failed.")
+
+      thread = Thread.new { action.perform }
+      sleep 0.01
+      action.send :failure, '{"id":748}'
+      thread.join
+    end
+
     it "disconnects the socket" do
       socket.should_receive(:disconnect)
 
