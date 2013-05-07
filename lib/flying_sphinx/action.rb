@@ -59,13 +59,23 @@ class FlyingSphinx::Action
     end
   end
 
+  def response
+    attempts = 0
+    @response ||= begin
+      block.call
+    rescue
+      attempts += 1
+      retry if attempts <= 3
+      raise
+    end
+  end
+
   def socket
     @socket ||= PusherClient::Socket.new FlyingSphinx::API::PUSHER_KEY,
       :encrypted => true
   end
 
   def start
-    response = block.call
     raise "Action blocked" if response.body.status == 'BLOCKED'
 
     @action_id = response.body.id
