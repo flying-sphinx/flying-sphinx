@@ -1,3 +1,10 @@
+1.0.0 - 7th May 2012
+* Updating Riddle dependency to >= 1.5.6.
+* Support for Thinking Sphinx v1/2/3.
+* Delayed Job support pushed back to ts-delayed-delta.
+* Updating MultiJson dependency to ensure MultiJson.load is always available.
+* All actions are now tracked through Pusher, instead of polling or using slow HTTP requests.
+
 0.8.5 - 10th December 2012
 * Daemon actions (start/stop) are now asynchronous.
 * More forgiving when environment variables aren't around. Particularly helpful for Padrino and Sinatra.
