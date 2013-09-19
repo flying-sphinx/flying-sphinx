@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'riddle',             ['>= 1.5.6']
   s.add_runtime_dependency 'multi_json',         ['>= 1.3.0']
   s.add_runtime_dependency 'faraday_middleware', ['~> 0.7']
-  s.add_runtime_dependency 'rash',               ['~> 0.3.0']
+  s.add_runtime_dependency 'rash',               ['~> 0.3']
   s.add_runtime_dependency 'pusher-client',      ['~> 0.3']
 
   s.add_development_dependency 'rake',            ['~> 0.9.2']
