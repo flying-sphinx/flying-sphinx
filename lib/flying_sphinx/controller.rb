@@ -72,6 +72,12 @@ class FlyingSphinx::Controller
     end
   end
 
+  def rotate
+    FlyingSphinx::Action.perform api.identifier do
+      api.post 'rotate'
+    end
+  end
+
   def sphinx_version
     '2.0.4'
   end
