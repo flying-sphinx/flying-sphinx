@@ -23,4 +23,9 @@ namespace :fs do
   task :rebuild => :environment do
     FlyingSphinx::CLI.new('rebuild').run
   end
+
+  desc "Stop, clear, configure, start then populate Sphinx"
+  task :regenerate => :environment do
+    FlyingSphinx::CLI.new('rebuild').regenerate
+  end
 end

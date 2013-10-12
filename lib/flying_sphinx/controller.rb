@@ -51,6 +51,21 @@ class FlyingSphinx::Controller
     end
   end
 
+  def regenerate(file = nil)
+    reset file
+
+    ThinkingSphinx::RakeInterface.new.generate
+  end
+
+  def reset(file = nil)
+    options = file.nil? ? configuration_options :
+      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
+
+    FlyingSphinx::Action.perform api.identifier do
+      api.put 'reset', options
+    end
+  end
+
   def restart
     FlyingSphinx::Action.perform api.identifier do
       api.post 'restart'

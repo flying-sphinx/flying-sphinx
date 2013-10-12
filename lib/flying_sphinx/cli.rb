@@ -4,13 +4,14 @@ class FlyingSphinx::CLI
   extend Forwardable
 
   COMMANDS = {
-    'configure' => [:configure],
-    'index'     => [:index],
-    'setup'     => [:configure, :index],
-    'start'     => [:start],
-    'stop'      => [:stop],
-    'restart'   => [:restart],
-    'rebuild'   => [:rebuild]
+    'configure'  => [:configure],
+    'index'      => [:index],
+    'setup'      => [:configure, :index],
+    'start'      => [:start],
+    'stop'       => [:stop],
+    'restart'    => [:restart],
+    'rebuild'    => [:rebuild],
+    'regenerate' => [:regenerate]
   }
 
   def_delegators :controller, :start, :stop, :restart
@@ -81,5 +82,11 @@ class FlyingSphinx::CLI
     load_rails
 
     controller.rebuild
+  end
+
+  def regenerate
+    load_rails
+
+    controller.regenerate
   end
 end
