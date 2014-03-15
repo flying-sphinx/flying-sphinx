@@ -8,8 +8,7 @@ describe FlyingSphinx::Action do
   let(:socket)   { double 'socket', :connect => true, :disconnect => true,
     :subscribe => true, :[] => channel, :connected => true }
   let(:channel)  { double 'channel', :bind => true }
-  let(:response) { double 'response', :body => body }
-  let(:body)     { double 'body', :status => 'OK', :id => 748 }
+  let(:response) { {'status' => 'OK', 'id' => 748} }
   let(:logger)   { double 'logger', :debug => true }
 
   before :each do

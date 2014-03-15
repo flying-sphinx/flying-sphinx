@@ -2,9 +2,8 @@ require 'light_spec_helper'
 require 'flying_sphinx/configuration'
 
 describe FlyingSphinx::Configuration do
-  let(:api)        { fire_double('FlyingSphinx::API',
-    :get => double(:body => body, :status => 200)) }
-  let(:body)       { double(:server => 'foo.bar.com', :port => 9319) }
+  let(:api)        { fire_double('FlyingSphinx::API', :get => body) }
+  let(:body)       { {'server' => 'foo.bar.com', 'port' => 9319} }
   let(:api_key)    { 'foo-bar-baz' }
   let(:identifier) { 'my-identifier' }
   let(:config)     { FlyingSphinx::Configuration.new identifier, api_key }

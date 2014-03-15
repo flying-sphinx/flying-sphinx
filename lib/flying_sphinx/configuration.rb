@@ -13,11 +13,11 @@ class FlyingSphinx::Configuration
   end
 
   def host
-    @host ||= response_body.server rescue host_from_env
+    @host ||= response_body['server'] rescue host_from_env
   end
 
   def port
-    @port ||= response_body.port rescue port_from_env
+    @port ||= response_body['port'] rescue port_from_env
   end
 
   def username
@@ -32,20 +32,16 @@ class FlyingSphinx::Configuration
     api.post(initial)
 
     response = api.get('daemon')
-    while response.body.status == initial
+    while response['status'] == initial
       sleep 0.5
       response = api.get('daemon')
     end
 
-    response.body.status == expected
+    response['status'] == expected
   end
 
   def response_body
-    @response_body ||= begin
-      response = api.get '/'
-      raise 'Invalid Flying Sphinx credentials' if response.status == 403
-      response.body
-    end
+    @response_body ||= api.get '/'
   end
 
   def identifier_from_env

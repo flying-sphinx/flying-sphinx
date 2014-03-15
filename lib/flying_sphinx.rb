@@ -30,7 +30,6 @@ end
 
 require 'multi_json'
 require 'faraday'
-require 'faraday_middleware'
 require 'riddle'
 require 'riddle/0.9.9'
 require 'pusher-client'

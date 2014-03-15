@@ -64,8 +64,6 @@ class FlyingSphinx::API
 
     Faraday.new(options) do |builder|
       builder.use Faraday::Request::UrlEncoded
-      builder.use Faraday::Response::Rashify
-      builder.use Faraday::Response::ParseJson
       builder.adapter(adapter)
     end
   end
@@ -74,6 +72,8 @@ class FlyingSphinx::API
     FlyingSphinx.logger.debug "API Request: #{method} '#{path}'; params: #{data.inspect}"
     response = block.call
     FlyingSphinx.logger.debug "API Response: #{response.body.inspect}"
-    return response
+    raise 'Invalid Flying Sphinx credentials' if response.status == 403
+
+    MultiJson.load response.body
   end
 end

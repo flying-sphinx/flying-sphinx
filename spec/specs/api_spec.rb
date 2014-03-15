@@ -8,11 +8,12 @@ describe FlyingSphinx::API do
   let(:adapter)    { double('adapter') }
   let(:connection) { double('connection') }
   let(:logger)     { double :debug => true }
-  let(:response)   { double :body => '' }
+  let(:response)   { double :body => '', :status => 200 }
 
   before :each do
     faraday.as_replaced_constant
 
+    stub_const 'MultiJson', double(:load => {})
     FlyingSphinx.stub :logger => logger
   end
 
