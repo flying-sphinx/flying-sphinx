@@ -7,13 +7,15 @@ h2. Installation and Usage
 This is all covered pretty well on "the Flying Sphinx site":http://flying-sphinx.com/docs, but if you're reading this on Github, you're probably keen on using this repository as the source instead of the gem. Here's the code snippet for your @Gemfile@:
 
 <pre><code>gem 'flying-sphinx',
-  :git => 'git://github.com/flying-sphinx/flying-sphinx.git'</code></pre>
+  :git    => 'git://github.com/flying-sphinx/flying-sphinx.git',
+  :branch => 'master',
+  :ref    => '216f589d1f'</code></pre>
 
 h2. Compatibility and Limitations
 
 Flying Sphinx is built with support for Rails 2.3.6 and beyond. Sadly, earlier versions of Rails aren't supported due to a requirement of a recent version of Rack deep in the dependency tree.
 
-It works with Rails 1.8.7 and 1.9.2, and on both Heroku's Bamboo and Cedar stacks. You _do_ need to use it with Heroku at this point - allowing others hosting elsewhere to use Flying Sphinx is something I'm considering, but it's not possible right now.
+It works from Ruby 1.8.7 onwards, and on both Heroku's Bamboo and Cedar stacks. You _do_ need to use it with Heroku at this point - allowing others hosting elsewhere to use Flying Sphinx is something I'm considering, but it's not possible right now.
 
 There are limitations with Heroku's setup and Sphinx/Thinking Sphinx functionality - again, the official documentation "covers this":http://flying-sphinx.com/docs#limitations, so have a read there.
 
