@@ -1,3 +1,6 @@
+1.2.0 - 30th March 2014
+* All configuration files (Sphinx, wordforms, exceptions, etc) are now gzipped when sent to the API.
+
 1.1.0 - 15th March 2014
 * Updated Faraday dependency to require 0.9 or newer (and removed faraday_middleware dependency).
 * Added remote rotate support via custom controller.
