@@ -64,7 +64,7 @@ class FlyingSphinx::API
 
     Faraday.new(options) do |builder|
       builder.request :multipart
-      faraday.request :url_encoded
+      builder.request :url_encoded
       builder.adapter adapter
     end
   end
