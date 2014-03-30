@@ -17,7 +17,7 @@ class FlyingSphinx::Controller
   end
 
   def configure(file = nil)
-    options = file.nil? ? configuration_options :
+    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
       {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
 
     FlyingSphinx::Action.perform api.identifier do
@@ -47,7 +47,7 @@ class FlyingSphinx::Controller
 
   def rebuild
     FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
-      api.put 'rebuild', configuration_options
+      api.put 'rebuild', FlyingSphinx::ConfigurationOptions.new.to_hash
     end
   end
 
@@ -58,7 +58,7 @@ class FlyingSphinx::Controller
   end
 
   def reset(file = nil)
-    options = file.nil? ? configuration_options :
+    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
       {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
 
     FlyingSphinx::Action.perform api.identifier do
@@ -93,20 +93,4 @@ class FlyingSphinx::Controller
   private
 
   attr_reader :api
-
-  def configuration_options
-    version       = '2.0.4'
-    configuration = ThinkingSphinx::Configuration.instance
-
-    if configuration.respond_to?(:version) && configuration.version.present?
-      version = configuration.version
-    end
-
-    {
-      :sphinx_version => version,
-      :configuration  => FlyingSphinx::SettingFiles.new.to_hash.merge(
-        'sphinx' => FlyingSphinx.translator.sphinx_configuration
-      )
-    }
-  end
 end
