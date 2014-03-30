@@ -63,8 +63,9 @@ class FlyingSphinx::API
     }
 
     Faraday.new(options) do |builder|
-      builder.use Faraday::Request::UrlEncoded
-      builder.adapter(adapter)
+      builder.request :multipart
+      faraday.request :url_encoded
+      builder.adapter adapter
     end
   end
 
