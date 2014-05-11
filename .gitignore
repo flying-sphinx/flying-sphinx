@@ -2,4 +2,5 @@
 Gemfile.lock
 *.tmproj
 *.sublime-*
+gemfiles/*.lock
 pkg
