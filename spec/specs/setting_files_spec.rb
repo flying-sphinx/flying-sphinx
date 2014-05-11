@@ -1,5 +1,4 @@
-require 'light_spec_helper'
-require 'flying_sphinx/setting_files'
+require 'spec_helper'
 
 describe FlyingSphinx::SettingFiles do
   let(:files)   { FlyingSphinx::SettingFiles.new indices }

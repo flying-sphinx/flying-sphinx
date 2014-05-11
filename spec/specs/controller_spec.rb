@@ -1,8 +1,4 @@
-require 'light_spec_helper'
-require 'faraday'
-require 'flying_sphinx/controller'
-require 'flying_sphinx/configuration_options'
-require 'flying_sphinx/gzipped_hash'
+require 'spec_helper'
 
 describe FlyingSphinx::Controller do
   let(:controller)    { FlyingSphinx::Controller.new api }

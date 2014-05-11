@@ -1,5 +1,4 @@
-require 'light_spec_helper'
-require 'flying_sphinx/configuration'
+require 'spec_helper'
 
 describe FlyingSphinx::Configuration do
   let(:api)        { double('FlyingSphinx::API', :get => body) }

@@ -1,6 +1,4 @@
-require 'light_spec_helper'
-require 'multi_json'
-require 'flying_sphinx/action'
+require 'spec_helper'
 
 describe FlyingSphinx::Action do
   let(:action)   { FlyingSphinx::Action.new 'abc123', 1, &block }

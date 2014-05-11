@@ -1,6 +1,4 @@
-require 'light_spec_helper'
-require 'flying_sphinx/api'
-require 'flying_sphinx/version'
+require 'spec_helper'
 
 describe FlyingSphinx::API do
   let(:api)        { FlyingSphinx::API.new 'foo', 'bar', adapter }
