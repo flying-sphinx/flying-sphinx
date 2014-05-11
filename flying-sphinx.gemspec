@@ -29,6 +29,6 @@ Gem::Specification.new do |s|
   s.post_install_message = <<-MESSAGE
 If you're upgrading, you should rebuild your Sphinx setup when deploying:
 
-  $ heroku rake fs:rebuild
+  $ heroku run rake fs:rebuild
 MESSAGE
 end
