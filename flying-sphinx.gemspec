@@ -25,8 +25,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake',            ['~> 0.9.2']
   s.add_development_dependency 'rspec',           ['~> 2.11']
-  s.add_development_dependency 'rspec-fire',      ['~> 1.1.0']
-  s.add_development_dependency 'yajl-ruby',       ['~> 0.8.2']
   s.add_development_dependency 'fakeweb',         ['~> 1.3.0']
   s.add_development_dependency 'fakeweb-matcher', ['~> 1.2.2']
 

@@ -6,11 +6,11 @@ describe FlyingSphinx::SettingFiles do
   let(:indices) { [] }
 
   def index_double(methods)
-    fire_double 'Riddle::Configuration::Index', methods
+    double 'Riddle::Configuration::Index', methods
   end
 
   def source_double(methods)
-    fire_double 'Riddle::Configuration::SQLSource', methods
+    double 'Riddle::Configuration::SQLSource', methods
   end
 
   describe '#to_hash' do

@@ -4,16 +4,15 @@ require 'flying_sphinx/version'
 
 describe FlyingSphinx::API do
   let(:api)        { FlyingSphinx::API.new 'foo', 'bar', adapter }
-  let(:faraday)    { fire_class_double('Faraday', :new => connection) }
+  let(:faraday)    { double('Faraday', :new => connection) }
   let(:adapter)    { double('adapter') }
   let(:connection) { double('connection') }
   let(:logger)     { double :debug => true }
   let(:response)   { double :body => '', :status => 200 }
 
   before :each do
-    faraday.as_replaced_constant
-
     stub_const 'MultiJson', double(:load => {})
+    stub_const 'Faraday',   faraday
     FlyingSphinx.stub :logger => logger
   end
 
