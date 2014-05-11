@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'faraday',       ['>= 0.9']
   s.add_runtime_dependency 'pusher-client', ['~> 0.3']
 
-  s.add_development_dependency 'rake',            ['~> 0.9.2']
+  s.add_development_dependency 'bundler'
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec',           ['~> 2.11']
   s.add_development_dependency 'fakeweb',         ['~> 1.3.0']
   s.add_development_dependency 'fakeweb-matcher', ['~> 1.2.2']
