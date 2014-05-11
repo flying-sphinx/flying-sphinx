@@ -28,18 +28,6 @@ class FlyingSphinx::Configuration
 
   attr_reader :identifier, :api_key
 
-  def change(initial, expected)
-    api.post(initial)
-
-    response = api.get('daemon')
-    while response['status'] == initial
-      sleep 0.5
-      response = api.get('daemon')
-    end
-
-    response['status'] == expected
-  end
-
   def response_body
     @response_body ||= api.get '/'
   end
