@@ -1,9 +1,8 @@
 require 'logger'
 
 module FlyingSphinx
-  module Translators
-    #
-  end
+  module Response; end
+  module Translators; end
 
   @logger       = Logger.new(STDOUT)
   @logger.level = Logger::INFO
@@ -47,6 +46,10 @@ require 'flying_sphinx/gzipped_hash'
 require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinxql'
 require 'flying_sphinx/version'
+
+require 'flying_sphinx/response/invalid'
+require 'flying_sphinx/response/json'
+require 'flying_sphinx/response/logger'
 
 if defined?(Rails) && defined?(Rails::Railtie)
   require 'flying_sphinx/railtie'

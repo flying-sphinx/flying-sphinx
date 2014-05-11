@@ -29,7 +29,7 @@ class FlyingSphinx::Configuration
   attr_reader :identifier, :api_key
 
   def response_body
-    @response_body ||= api.get '/'
+    @response_body ||= api.get('/').body
   end
 
   def identifier_from_env

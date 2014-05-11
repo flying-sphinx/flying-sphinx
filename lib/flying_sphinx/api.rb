@@ -19,23 +19,17 @@ class FlyingSphinx::API
   end
 
   def get(path, data = {})
-    log('GET', path, data) do
-      connection.get do |request|
-        request.url normalize_path(path), data
-      end
+    connection.get do |request|
+      request.url normalize_path(path), data
     end
   end
 
   def post(path, data = {})
-    log('POST', path, data) do
-      connection.post normalize_path(path), data
-    end
+    connection.post normalize_path(path), data
   end
 
   def put(path, data = {})
-    log('PUT', path, data) do
-      connection.put normalize_path(path), data
-    end
+    connection.put normalize_path(path), data
   end
 
   private
@@ -63,18 +57,16 @@ class FlyingSphinx::API
     }
 
     Faraday.new(options) do |builder|
+      # Built-in middleware
       builder.request :multipart
       builder.request :url_encoded
+
+      # Local middleware
+      builder.use FlyingSphinx::Response::Logger
+      builder.use FlyingSphinx::Response::Invalid
+      builder.use FlyingSphinx::Response::JSON
+
       builder.adapter adapter
     end
-  end
-
-  def log(method, path, data = {}, option = {}, &block)
-    FlyingSphinx.logger.debug "API Request: #{method} '#{path}'; params: #{data.inspect}"
-    response = block.call
-    FlyingSphinx.logger.debug "API Response: #{response.body.inspect}"
-    raise 'Invalid Flying Sphinx credentials' if response.status == 403
-
-    MultiJson.load response.body
   end
 end
