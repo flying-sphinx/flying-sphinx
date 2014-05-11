@@ -1,8 +1,18 @@
 require 'rubygems'
 require 'bundler'
 
+require 'dotenv'
+require 'webmock/rspec'
+require 'em-websocket'
+
+Dotenv.load '.env.test'
+WebMock.disable_net_connect!
+
 require 'thinking_sphinx'
 require 'flying_sphinx'
-require 'webmock/rspec'
 
-WebMock.disable_net_connect!
+unless FlyingSphinx.logger.level == Logger::DEBUG
+  FlyingSphinx.logger.level = Logger::WARN
+end
+
+Dir["spec/support/**/*.rb"].each { |file| require File.expand_path(file) }

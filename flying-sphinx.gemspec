@@ -23,8 +23,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'faraday',            '>= 0.9'
   s.add_runtime_dependency 'pusher-client',      '~> 0.3'
 
-  s.add_development_dependency 'mysql2', '~> 0.3.15'
-  s.add_development_dependency 'rspec',  '~> 2.14'
+  s.add_development_dependency 'dotenv',       '~> 0.11.1'
+  s.add_development_dependency 'em-websocket', '~> 0.5.1'
+  s.add_development_dependency 'mysql2',       '~> 0.3.15'
+  s.add_development_dependency 'rspec',        '~> 2.14'
+  s.add_development_dependency 'webmock',      '~> 1.17.4'
 
   s.post_install_message = <<-MESSAGE
 If you're upgrading, you should rebuild your Sphinx setup when deploying:

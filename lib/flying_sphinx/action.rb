@@ -62,7 +62,7 @@ class FlyingSphinx::Action
   def response
     attempts = 0
     @response ||= begin
-      block.call
+      block.call.body
     rescue
       attempts += 1
       retry if attempts <= 3
@@ -72,7 +72,10 @@ class FlyingSphinx::Action
 
   def socket
     @socket ||= PusherClient::Socket.new FlyingSphinx::API::PUSHER_KEY,
-      :encrypted => true
+      :encrypted => ENV['FLYING_SPHINX_SOCKETS_INSECURE'].nil?,
+      :ws_host   => ENV['FLYING_SPHINX_SOCKETS_HOST'],
+      :wss_port  => ENV['FLYING_SPHINX_SOCKETS_PORT'],
+      :ws_port   => ENV['FLYING_SPHINX_SOCKETS_PORT']
   end
 
   def start
