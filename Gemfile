@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'appraisal', '~> 1.0.0',
+gem 'activesupport', '< 4.0.0' if RUBY_VERSION.to_f <= 1.8
+gem 'appraisal',     '~> 1.0.0',
   :git    => 'git://github.com/thoughtbot/appraisal',
   :branch => 'master',
   :ref    => 'bd6eef4b6a'
