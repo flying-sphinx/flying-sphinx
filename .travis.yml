@@ -22,3 +22,4 @@ matrix:
     - rvm: 2.1.2
       gemfile: gemfiles/rails_2.gemfile
 cache: bundler
+script: bundle exec rspec
