@@ -41,11 +41,11 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(
           setting => '/my/file/foo.txt /my/file/bar.txt')
 
-        files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          "#{setting}:bar.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt;#{setting}:bar.txt"
-        }
+        files.to_hash["#{setting}:foo.txt"].should == 'blah'
+        files.to_hash["#{setting}:bar.txt"].should == 'blah'
+        files.to_hash['extra'].split(';').should =~ [
+          "#{setting}:foo.txt", "#{setting}:bar.txt"
+        ]
       end
     end
 
@@ -76,11 +76,11 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt /my/file/bar.txt')])
 
-        files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          "#{setting}:bar.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt;#{setting}:bar.txt"
-        }
+        files.to_hash["#{setting}:foo.txt"].should == 'blah'
+        files.to_hash["#{setting}:bar.txt"].should == 'blah'
+        files.to_hash['extra'].split(';').should =~ [
+          "#{setting}:foo.txt", "#{setting}:bar.txt"
+        ]
       end
     end
   end
