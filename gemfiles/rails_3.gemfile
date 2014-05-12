@@ -2,7 +2,8 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "~> 1.0.0", :git => "git://github.com/thoughtbot/appraisal", :branch => "master", :ref => "bd6eef4b6a"
+gem "activesupport", "< 4.0.0"
+gem "appraisal", "~> 1.0.0", :ref => "bd6eef4b6a", :git => "git://github.com/thoughtbot/appraisal", :branch => "master"
 gem "rails", "~> 3.2.18"
 gem "faraday", "~> 0.8.0"
 
