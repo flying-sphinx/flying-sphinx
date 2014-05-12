@@ -8,7 +8,7 @@ class FlyingSphinx::GzippedHash
   def to_gzipped_hash
     hash['gzip'] = 'true'
 
-    keys.each { |key| hash[key] = gzip hash[key] }
+    keys.each { |key| hash[key] = gzip hash[key], key }
 
     hash
   end
@@ -23,11 +23,14 @@ class FlyingSphinx::GzippedHash
     keys
   end
 
-  def gzip(string)
+  def gzip(string, key)
     io     = StringIO.new 'w'
     writer = Zlib::GzipWriter.new io
     writer.write string
     writer.close
-    Faraday::UploadIO.new StringIO.new(io.string, 'rb'), 'application/gzip'
+
+    Faraday::UploadIO.new(
+      StringIO.new(io.string, 'rb'), 'application/gzip', key
+    )
   end
 end
