@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe 'Configuring Sphinx' do
-  let(:cli)        { FlyingSphinx::CLI.new 'configure' }
-  let(:translator) { double 'Translator', :sphinx_indices => [index],
+  let(:cli)           { FlyingSphinx::CLI.new 'configure' }
+  let(:translator)    { double 'Translator', :sphinx_indices => [index],
     :sphinx_configuration => 'searchd { }' }
-  let(:index)      { double 'Index' }
+  let(:index)         { double 'Index' }
+  let(:configuration) { double 'Configuration', :version => '2.0.6'}
 
   before :each do
+    stub_const 'ThinkingSphinx::Configuration', double(:instance => configuration)
     allow(FlyingSphinx).to receive(:translator).and_return(translator)
 
     stub_digest_request(:get, 'https://papyrus.flying-sphinx.com/').
@@ -26,6 +28,18 @@ describe 'Configuring Sphinx' do
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         ungzip(request.body) == 'searchd { }'
+      }
+    ).to have_been_made
+  end
+
+  it 'sends the Sphinx version to Papyrus' do
+    SuccessfulAction.new(953).matches? lambda { cli.run }
+
+    expect(
+      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
+      with { |request|
+        request.headers['Content-Type'] == 'application/gzip' &&
+        ungzip(request.body) == '2.0.6'
       }
     ).to have_been_made
   end
