@@ -33,4 +33,6 @@ matrix:
     - rvm: 2.1.2
       gemfile: gemfiles/rails_3.0.gemfile
 cache: bundler
+before_script:
+  - unset RAILS_ENV
 script: bundle exec rspec
