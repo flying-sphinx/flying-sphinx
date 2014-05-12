@@ -48,8 +48,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_request(:put, 'https://flying-sphinx.com/api/my/app').
-      with { |request| request.body.blank? }
+      a_request(:put, 'https://flying-sphinx.com/api/my/app')
     ).to have_been_made
   end
 
