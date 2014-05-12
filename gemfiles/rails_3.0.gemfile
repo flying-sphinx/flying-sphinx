@@ -3,7 +3,8 @@
 source "https://rubygems.org"
 
 gem "activesupport", "< 4.0.0"
-gem "appraisal", "~> 1.0.0", :ref => "bd6eef4b6a", :git => "git://github.com/thoughtbot/appraisal", :branch => "master"
+gem "appraisal", "~> 1.0.0", :ref => "bd6eef4b6a", :git => "git://github.com/thoughtbot/appraisal.git", :branch => "master"
+gem "faraday-digestauth", "~> 0.0.2", :ref => "45202179bd", :git => "git://github.com/pat/faraday-digestauth.git", :branch => "latest-faraday"
 gem "rails", "~> 3.0.20"
 gem "faraday", "~> 0.8.0"
 

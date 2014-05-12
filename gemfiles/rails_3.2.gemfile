@@ -2,7 +2,8 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "~> 1.0.0", :git => "git://github.com/thoughtbot/appraisal", :branch => "master", :ref => "bd6eef4b6a"
+gem "appraisal", "~> 1.0.0", :git => "git://github.com/thoughtbot/appraisal.git", :branch => "master", :ref => "bd6eef4b6a"
+gem "faraday-digestauth", "~> 0.0.2", :git => "git://github.com/pat/faraday-digestauth.git", :branch => "latest-faraday", :ref => "45202179bd"
 gem "rails", "~> 3.2.18"
 gem "faraday", "~> 0.8.0"
 
