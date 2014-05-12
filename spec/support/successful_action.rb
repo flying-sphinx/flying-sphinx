@@ -9,11 +9,13 @@ class SuccessfulAction
   def matches?(block)
     pusher.start
     thread = Thread.new { call block }
-    sleep 1.0
+    sleep 1.5
 
     pusher.send 'completion', 'id' => action_id
     thread.join
     pusher.stop
+
+    sleep 0.5
 
     result
   end
