@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'riddle',             '>= 1.5.6'
   s.add_runtime_dependency 'multi_json',         '>= 1.3.0'
   s.add_runtime_dependency 'faraday',            '>= 0.8'
+  s.add_runtime_dependency 'faraday-digestauth', '>= 0.0.2'
   s.add_runtime_dependency 'pusher-client',      '~> 0.3'
 
   s.add_development_dependency 'dotenv',       '~> 0.11.1'
