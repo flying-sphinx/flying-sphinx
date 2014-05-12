@@ -48,7 +48,7 @@ describe FlyingSphinx::Action do
       block.should_receive(:call).and_return(response)
 
       perform_and_complete action
-    end
+    end if RUBY_VERSION.to_f > 1.8
 
     it "raises an error if the response's status is BLOCKED" do
       response.stub :status => 'BLOCKED'
