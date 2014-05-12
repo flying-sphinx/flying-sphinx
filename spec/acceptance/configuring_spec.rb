@@ -9,16 +9,33 @@ describe 'Configuring Sphinx' do
   before :each do
     allow(FlyingSphinx).to receive(:translator).and_return(translator)
 
-    stub_request(:put, 'https://flying-sphinx.com/api/my/app/configure').
+    stub_digest_request(:get, 'https://papyrus.flying-sphinx.com/').
+      to_return(:status => 200, :body => '[]')
+    stub_digest_request(:put, %r{https://papyrus\.flying-sphinx\.com/}).
+      to_return(:status => 200, :body => '{}')
+
+    stub_request(:put, 'https://flying-sphinx.com/api/my/app').
       to_return(:status => 200, :body => '{"id":953, "status":"OK"}')
   end
 
-  it 'sends the configuration to the server' do
+  it 'sends the configuration to Papyrus' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_request(:put, 'https://flying-sphinx.com/api/my/app/configure').
-      with { |request| request.body.present? }
+      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
+      with { |request|
+        request.headers['Content-Type'] == 'application/gzip' &&
+        ungzip(request.body) == 'searchd { }'
+      }
+    ).to have_been_made
+  end
+
+  it 'informs Thebes that it should update the configuration' do
+    SuccessfulAction.new(953).matches? lambda { cli.run }
+
+    expect(
+      a_request(:put, 'https://flying-sphinx.com/api/my/app').
+      with { |request| request.body.blank? }
     ).to have_been_made
   end
 

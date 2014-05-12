@@ -17,11 +17,12 @@ class FlyingSphinx::Controller
   end
 
   def configure(file = nil)
-    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
-      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
+    # options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
+    #   {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
+    FlyingSphinx::Configure.new.call
 
     FlyingSphinx::Action.perform api.identifier do
-      api.put 'configure', options
+      api.put '/'
     end
   end
 

@@ -6,6 +6,11 @@ class FlyingSphinx::SettingFiles
     @indices = indices || FlyingSphinx.translator.sphinx_indices
   end
 
+  def each_file_for_setting(&block)
+    index_settings  &block
+    source_settings &block
+  end
+
   def to_hash
     hash = {}
 
@@ -20,11 +25,6 @@ class FlyingSphinx::SettingFiles
   private
 
   attr_reader :indices
-
-  def each_file_for_setting(&block)
-    index_settings  &block
-    source_settings &block
-  end
 
   def index_settings(&block)
     settings_in_list_from_collection INDEX_SETTINGS, indices, &block

@@ -1,4 +1,6 @@
 class FlyingSphinx::Configuration
+  attr_reader :identifier, :api_key
+
   def initialize(identifier = nil, api_key = nil)
     @identifier = identifier || identifier_from_env
     @api_key    = api_key    || api_key_from_env
@@ -25,8 +27,6 @@ class FlyingSphinx::Configuration
   end
 
   private
-
-  attr_reader :identifier, :api_key
 
   def response_body
     @response_body ||= api.get('/').body
