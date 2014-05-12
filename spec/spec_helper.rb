@@ -8,6 +8,7 @@ require 'em-websocket'
 Dotenv.load '.env.test'
 WebMock.disable_net_connect!
 
+require 'active_support/core_ext/object/blank'
 require 'thinking_sphinx'
 require 'flying_sphinx'
 
