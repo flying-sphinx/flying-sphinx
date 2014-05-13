@@ -72,7 +72,7 @@ class FlyingSphinx::Configure
   end
 
   def update_file(prefix, file)
-    path = File.join prefix, File.basename(file)
+    path = File.join prefix.to_s, File.basename(file)
 
     connection.put do |request|
       request.url "/#{path}"

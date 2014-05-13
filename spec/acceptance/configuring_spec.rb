@@ -5,7 +5,7 @@ describe 'Configuring Sphinx' do
   let(:translator)    { double 'Translator', :sphinx_indices => [index],
     :sphinx_configuration => 'searchd { }' }
   let(:index)         { double 'Index' }
-  let(:configuration) { double 'Configuration', :version => '2.0.6'}
+  let(:configuration) { double 'Configuration', :version => nil}
 
   before :each do
     stub_const 'ThinkingSphinx::Configuration', double(:instance => configuration)
@@ -39,7 +39,7 @@ describe 'Configuring Sphinx' do
       a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
-        ungzip(request.body) == '2.0.6'
+        ungzip(request.body) == '2.1.4'
       }
     ).to have_been_made
   end
@@ -49,6 +49,53 @@ describe 'Configuring Sphinx' do
 
     expect(
       a_request(:put, 'https://flying-sphinx.com/api/my/app')
+    ).to have_been_made
+  end
+
+  it 'allows for custom sphinx configuration' do
+    allow(File).to receive(:read).with('my/path.conf').and_return('indexer { }')
+
+    cli = FlyingSphinx::CLI.new 'configure', ['my/path.conf']
+    SuccessfulAction.new(953).matches? lambda { cli.run }
+
+    expect(
+      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
+      with { |request|
+        request.headers['Content-Type'] == 'application/gzip' &&
+        ungzip(request.body) == 'indexer { }'
+      }
+    ).to have_been_made
+  end
+
+  it 'allows for custom Sphinx versions' do
+    allow(configuration).to receive(:version).and_return('2.0.6')
+
+    SuccessfulAction.new(953).matches? lambda { cli.run }
+
+    expect(
+      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
+      with { |request|
+        request.headers['Content-Type'] == 'application/gzip' &&
+        ungzip(request.body) == '2.0.6'
+      }
+    ).to have_been_made
+  end
+
+  it 'uploads additional files' do
+    allow(index).to receive(:stopwords).and_return('all/stop.txt')
+    allow(File).to receive(:read).with('all/stop.txt').
+      and_return('stopping all the words')
+    allow(Digest::MD5).to receive(:file).with('all/stop.txt').
+      and_return(double(:hexdigest => 'something'))
+
+    SuccessfulAction.new(953).matches? lambda { cli.run }
+
+    expect(
+      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/stopwords/stop.txt').
+      with { |request|
+        request.headers['Content-Type'] == 'application/gzip' &&
+        ungzip(request.body) == 'stopping all the words'
+      }
     ).to have_been_made
   end
 
