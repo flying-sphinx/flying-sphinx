@@ -43,8 +43,10 @@ class FlyingSphinx::Controller
   end
 
   def rebuild
+    FlyingSphinx::Configure.new(contents).call
+
     FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
-      api.put 'rebuild', FlyingSphinx::ConfigurationOptions.new.to_hash
+      api.put 'rebuild'
     end
   end
 
@@ -55,8 +57,7 @@ class FlyingSphinx::Controller
   end
 
   def reset(file = nil)
-    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
-      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
+    FlyingSphinx::Configure.new(contents).call
 
     FlyingSphinx::Action.perform api.identifier do
       api.put 'reset', options
