@@ -5,15 +5,20 @@ class FlyingSphinx::Configure
     SERVER = 'https://papyrus-staging.flying-sphinx.com'
   end
 
+  def initialize(contents = nil)
+    @contents = contents || FlyingSphinx.translator.sphinx_configuration
+  end
+
   def call
-    update_contents 'sphinx/config.conf',
-      FlyingSphinx.translator.sphinx_configuration
+    update_contents 'sphinx/config.conf', contents
     update_contents 'sphinx/version.txt', version
 
     settings.each_file_for_setting { |setting, file| update_file setting, file }
   end
 
   private
+
+  attr_reader :contents
 
   def cache
     @cache ||= MultiJson.load connection.get('/').body
@@ -77,7 +82,7 @@ class FlyingSphinx::Configure
   end
 
   def version
-    version_defined? ? thinking_sphinx.version : '2.0.4'
+    version_defined? ? thinking_sphinx.version : '2.1.4'
   end
 
   def version_defined?

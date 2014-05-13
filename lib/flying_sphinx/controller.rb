@@ -16,10 +16,8 @@ class FlyingSphinx::Controller
     @api = api
   end
 
-  def configure(file = nil)
-    # options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
-    #   {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
-    FlyingSphinx::Configure.new.call
+  def configure(contents = nil)
+    FlyingSphinx::Configure.new(contents).call
 
     FlyingSphinx::Action.perform api.identifier do
       api.put '/'
