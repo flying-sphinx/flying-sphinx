@@ -1,5 +1,7 @@
-module GZipHelpers
-  def gzip(uncompressed)
+require 'zlib'
+
+module FlyingSphinx::GZipper
+  def self.encode(uncompressed)
     io = StringIO.new 'w'
     Zlib::GzipWriter.new(io).tap do |writer|
       writer.write uncompressed
@@ -8,13 +10,9 @@ module GZipHelpers
     io.string
   end
 
-  def ungzip(compressed)
+  def self.decode(compressed)
     io     = StringIO.new compressed, 'rb'
     reader = Zlib::GzipReader.new io
     reader.read
   end
-end
-
-RSpec.configure do |config|
-  config.include GZipHelpers
 end
