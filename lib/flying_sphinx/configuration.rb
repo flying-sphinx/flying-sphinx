@@ -29,7 +29,7 @@ class FlyingSphinx::Configuration
   private
 
   def response_body
-    @response_body ||= api.get('/').body
+    @response_body ||= api.get('').body
   end
 
   def identifier_from_env
