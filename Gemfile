@@ -10,4 +10,4 @@ gem 'appraisal',     '~> 1.0.0',
 gem 'faraday-digestauth', '~> 0.1.0',
   :git    => 'git://github.com/pat/faraday-digestauth.git',
   :branch => 'multi-version',
-  :ref    => '01551ae31d'
+  :ref    => 'eb5a564c3c'
