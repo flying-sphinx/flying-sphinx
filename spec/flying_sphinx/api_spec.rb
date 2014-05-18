@@ -16,8 +16,6 @@ describe FlyingSphinx::API do
   shared_examples_for 'an API call' do
     it "sets up a connection with the appropriate headers" do
       expect(faraday).to receive(:new).with(hash_including(:headers => {
-        'Accept'                  => 'application/vnd.flying-sphinx-v5+json',
-        'X-Flying-Sphinx-Token'   => 'foo:bar',
         'X-Flying-Sphinx-Version' => FlyingSphinx::Version
       })).and_return(connection)
 
@@ -45,7 +43,7 @@ describe FlyingSphinx::API do
 
     it "sends the GET request with the given path and data" do
       expect(connection).to receive(:get).
-        with('/api/my/app/resource', 'param' => 'value').
+        with('/api/my/app/v5/resource', 'param' => 'value').
         and_return(response)
 
       send_request
@@ -63,7 +61,7 @@ describe FlyingSphinx::API do
 
     it "sends the POST request with the given path and data" do
       expect(connection).to receive(:post).
-        with('/api/my/app/resource', 'param' => 'value').
+        with('/api/my/app/v5/resource', 'param' => 'value').
         and_return(response)
 
       send_request

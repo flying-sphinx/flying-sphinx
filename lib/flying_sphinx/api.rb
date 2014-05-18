@@ -7,8 +7,7 @@ class FlyingSphinx::API
     PUSHER_KEY = 'c5602d4909b5144321ce'
   end
 
-  PATH    = '/api/my/app'
-  VERSION = 5
+  PATH = '/api/my/app/v5'
 
   attr_reader :api_key, :identifier
 
@@ -31,20 +30,15 @@ class FlyingSphinx::API
     {
       :ssl     => {:verify => false},
       :url     => SERVER,
-      :headers => api_headers
-    }
-  end
-
-  def api_headers
-    {
-      'Accept' => "application/vnd.flying-sphinx-v#{VERSION}+json",
-      'X-Flying-Sphinx-Token'   => "#{identifier}:#{api_key}",
-      'X-Flying-Sphinx-Version' => FlyingSphinx::Version
+      :headers => {'X-Flying-Sphinx-Version' => FlyingSphinx::Version}
     }
   end
 
   def connection
     @connection ||= Faraday.new(connection_options) do |builder|
+      # Digest authentication
+      builder.request :digest, identifier, api_key
+
       # Built-in middleware
       builder.request :url_encoded
 
