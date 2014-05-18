@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 gem "activesupport", "< 4.0.0"
 gem "appraisal", "~> 1.0.0", :ref => "bd6eef4b6a", :git => "git://github.com/thoughtbot/appraisal.git", :branch => "master"
-gem "faraday-digestauth", "~> 0.0.2", :ref => "45202179bd", :git => "git://github.com/pat/faraday-digestauth.git", :branch => "latest-faraday"
+gem "faraday-digestauth", "~> 0.1.0", :ref => "01551ae31d", :git => "git://github.com/pat/faraday-digestauth.git", :branch => "multi-version"
 gem "rails", "~> 2.3.18"
 gem "faraday", "0.7.0"
 
