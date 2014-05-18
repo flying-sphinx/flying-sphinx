@@ -8,37 +8,31 @@ class FlyingSphinx::API
   end
 
   PATH    = '/api/my/app'
-  VERSION = 4
+  VERSION = 5
 
   attr_reader :api_key, :identifier
 
-  def initialize(identifier, api_key, adapter = Faraday.default_adapter)
+  def initialize(identifier, api_key)
     @api_key    = api_key
     @identifier = identifier
-    @adapter    = adapter
   end
 
   def get(path, data = {})
-    connection.get do |request|
-      request.url normalize_path(path), data
-    end
+    connection.get "#{PATH}#{path}", data
   end
 
   def post(path, data = {})
-    connection.post normalize_path(path), data
-  end
-
-  def put(path, data = {})
-    connection.put normalize_path(path), data
+    connection.post "#{PATH}#{path}", data
   end
 
   private
 
-  attr_reader :adapter
-
-  def normalize_path(path)
-    path = (path == '/' ? '' : "/#{path.gsub(/^\//, '')}")
-    "#{PATH}#{path}"
+  def connection_options
+    {
+      :ssl     => {:verify => false},
+      :url     => SERVER,
+      :headers => api_headers
+    }
   end
 
   def api_headers
@@ -49,24 +43,15 @@ class FlyingSphinx::API
     }
   end
 
-  def connection(connection_options = {})
-    options = {
-      :ssl     => {:verify => false},
-      :url     => SERVER,
-      :headers => api_headers
-    }
-
-    Faraday.new(options) do |builder|
+  def connection
+    @connection ||= Faraday.new(connection_options) do |builder|
       # Built-in middleware
-      builder.request :multipart
       builder.request :url_encoded
 
       # Local middleware
       builder.use FlyingSphinx::Response::Logger
       builder.use FlyingSphinx::Response::Invalid
       builder.use FlyingSphinx::Response::JSON
-
-      builder.adapter adapter
     end
   end
 end
