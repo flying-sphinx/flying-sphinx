@@ -52,6 +52,8 @@ class FlyingSphinx::API
       builder.use FlyingSphinx::Response::Logger
       builder.use FlyingSphinx::Response::Invalid
       builder.use FlyingSphinx::Response::JSON
+
+      builder.adapter :net_http
     end
   end
 end
