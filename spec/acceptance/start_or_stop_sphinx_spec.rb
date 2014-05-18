@@ -4,7 +4,8 @@ describe 'Starting Sphinx' do
   let(:cli) { FlyingSphinx::CLI.new 'start' }
 
   before :each do
-    stub_request(:post, 'https://flying-sphinx.com/api/my/app/start').
+    stub_request(:post, 'https://flying-sphinx.com/api/my/app/perform').
+      with(:body => {:action => 'start'}).
       to_return(:status => 200, :body => '{"id":429, "status":"OK"}')
   end
 
@@ -17,7 +18,8 @@ describe 'Stopping Sphinx' do
   let(:cli) { FlyingSphinx::CLI.new 'stop' }
 
   before :each do
-    stub_request(:post, 'https://flying-sphinx.com/api/my/app/stop').
+    stub_request(:post, 'https://flying-sphinx.com/api/my/app/perform').
+      with(:body => {:action => 'stop'}).
       to_return(:status => 200, :body => '{"id":537, "status":"OK"}')
   end
 
