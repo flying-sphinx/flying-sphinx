@@ -27,7 +27,7 @@ class FlyingSphinx::Controller
     options[:indices] = indices.join(',')
 
     if async
-      send_action 'index_async', options
+      send_action 'index', options.merge(:unique => 'true')
     else
       ThinkingSphinx.before_index_hooks.each { |hook| hook.call }
 
