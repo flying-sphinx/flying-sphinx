@@ -12,12 +12,12 @@ describe 'Configuring Sphinx' do
     allow(FlyingSphinx).to receive(:translator).and_return(translator)
     allow(Digest::MD5).to receive(:hexdigest).and_return('abc')
 
-    stub_digest_request(:get, 'https://papyrus.flying-sphinx.com/').
+    stub_hmac_request(:get, 'https://papyrus.flying-sphinx.com/').
       to_return(:status => 200, :body => '[]')
-    stub_digest_request(:put, %r{https://papyrus\.flying-sphinx\.com/}).
+    stub_hmac_request(:put, %r{https://papyrus\.flying-sphinx\.com/}).
       to_return(:status => 200, :body => '{}')
 
-    stub_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+    stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
       to_return(:status => 200, :body => '{"id":953, "status":"OK"}')
   end
 
@@ -25,7 +25,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
+      a_hmac_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         FlyingSphinx::GZipper.decode(request.body) == 'searchd { }'
@@ -37,7 +37,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
+      a_hmac_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         FlyingSphinx::GZipper.decode(request.body) == '2.1.4'
@@ -49,7 +49,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+      a_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
         with(:body => {:action => 'configure'})
     ).to have_been_made
   end
@@ -61,7 +61,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
+      a_hmac_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/config.conf').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         FlyingSphinx::GZipper.decode(request.body) == 'indexer { }'
@@ -75,7 +75,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
+      a_hmac_request(:put, 'https://papyrus.flying-sphinx.com/sphinx/version.txt').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         FlyingSphinx::GZipper.decode(request.body) == '2.0.6'
@@ -93,7 +93,7 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:put, 'https://papyrus.flying-sphinx.com/stopwords/stop.txt').
+      a_hmac_request(:put, 'https://papyrus.flying-sphinx.com/stopwords/stop.txt').
       with { |request|
         request.headers['Content-Type'] == 'application/gzip' &&
         FlyingSphinx::GZipper.decode(request.body) == 'stopping all the words'
@@ -102,7 +102,7 @@ describe 'Configuring Sphinx' do
   end
 
   it 'does not upload configuration when the cached version matches' do
-    stub_digest_request(:get, 'https://papyrus.flying-sphinx.com/').to_return(
+    stub_hmac_request(:get, 'https://papyrus.flying-sphinx.com/').to_return(
       :status => 200,
       :body   => '[{"key":"sphinx/config.conf","md5":"foo"}]'
     )
@@ -117,7 +117,7 @@ describe 'Configuring Sphinx' do
   end
 
   it 'does not upload additional files when cached version matches' do
-    stub_digest_request(:get, 'https://papyrus.flying-sphinx.com/').to_return(
+    stub_hmac_request(:get, 'https://papyrus.flying-sphinx.com/').to_return(
       :status => 200,
       :body   => '[{"key":"stopwords/stop.txt","md5":"foo"}]'
     )

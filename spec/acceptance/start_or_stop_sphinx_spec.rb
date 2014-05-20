@@ -4,7 +4,7 @@ describe 'Starting Sphinx' do
   let(:cli) { FlyingSphinx::CLI.new 'start' }
 
   before :each do
-    stub_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+    stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
       to_return(:status => 200, :body => '{"id":429, "status":"OK"}')
   end
 
@@ -12,7 +12,7 @@ describe 'Starting Sphinx' do
     SuccessfulAction.new(429).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+      a_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
         with(:body => {:action => 'start'})
     ).to have_been_made
   end
@@ -26,7 +26,7 @@ describe 'Stopping Sphinx' do
   let(:cli) { FlyingSphinx::CLI.new 'stop' }
 
   before :each do
-    stub_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+    stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
       to_return(:status => 200, :body => '{"id":537, "status":"OK"}')
   end
 
@@ -34,7 +34,7 @@ describe 'Stopping Sphinx' do
     SuccessfulAction.new(537).matches? lambda { cli.run }
 
     expect(
-      a_digest_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
+      a_hmac_request(:post, 'https://flying-sphinx.com/api/my/app/v5/perform').
         with(:body => {:action => 'stop'})
     ).to have_been_made
   end

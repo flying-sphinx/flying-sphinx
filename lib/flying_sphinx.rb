@@ -1,6 +1,7 @@
 require 'logger'
 
 module FlyingSphinx
+  module Request; end
   module Response; end
   module Translators; end
 
@@ -28,8 +29,8 @@ module FlyingSphinx
 end
 
 require 'multi_json'
+require 'ey-hmac'
 require 'faraday'
-require 'faraday/digestauth'
 require 'riddle'
 require 'riddle/0.9.9'
 require 'pusher-client'
@@ -48,6 +49,7 @@ require 'flying_sphinx/setting_files'
 require 'flying_sphinx/sphinxql'
 require 'flying_sphinx/version'
 
+require 'flying_sphinx/request/hmac'
 require 'flying_sphinx/response/invalid'
 require 'flying_sphinx/response/json'
 require 'flying_sphinx/response/logger'

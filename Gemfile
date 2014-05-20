@@ -7,7 +7,3 @@ gem 'appraisal',     '~> 1.0.0',
   :git    => 'git://github.com/thoughtbot/appraisal.git',
   :branch => 'master',
   :ref    => 'bd6eef4b6a'
-gem 'faraday-digestauth', '~> 0.1.0',
-  :git    => 'git://github.com/pat/faraday-digestauth.git',
-  :branch => 'multi-version',
-  :ref    => 'eb5a564c3c'

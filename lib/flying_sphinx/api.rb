@@ -36,13 +36,11 @@ class FlyingSphinx::API
 
   def connection
     @connection ||= Faraday.new(connection_options) do |builder|
-      # Digest authentication
-      builder.request :digest, identifier, api_key
-
       # Built-in middleware
       builder.request :url_encoded
 
       # Local middleware
+      builder.use FlyingSphinx::Request::HMAC, identifier, api_key, 'Thebes'
       builder.use FlyingSphinx::Response::Logger
       builder.use FlyingSphinx::Response::Invalid
       builder.use FlyingSphinx::Response::JSON

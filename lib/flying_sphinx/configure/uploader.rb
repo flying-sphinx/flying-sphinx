@@ -31,10 +31,9 @@ class FlyingSphinx::Configure::Uploader
 
   def connection
     @connection ||= Faraday.new(:url => SERVER) do |builder|
-      # Digest authentication
-      builder.request :digest, configuration.identifier, configuration.api_key
-
       # Local middleware
+      builder.use FlyingSphinx::Request::HMAC,
+        configuration.identifier, configuration.api_key, 'Papyrus'
       builder.use FlyingSphinx::Response::Logger
       builder.use FlyingSphinx::Response::Invalid
 
