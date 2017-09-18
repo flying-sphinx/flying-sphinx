@@ -78,6 +78,10 @@ class FlyingSphinx::Controller
     end
   end
 
+  def running?
+    true
+  end
+
   def sphinx_version
     '2.0.4'
   end
