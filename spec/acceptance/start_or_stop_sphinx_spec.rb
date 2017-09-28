@@ -8,12 +8,12 @@ describe 'Starting Sphinx' do
       to_return(:status => 200, :body => '{"id":429, "status":"OK"}')
   end
 
-  it 'makes the request to the server' do
+  it 'makes the request to the server', :retry => 3 do
     expect { cli.run }.to be_successful_with 429
   end
 end
 
-describe 'Stopping Sphinx' do
+describe 'Stopping Sphinx', :retry => 3 do
   let(:cli) { FlyingSphinx::CLI.new 'stop' }
 
   before :each do
@@ -21,7 +21,7 @@ describe 'Stopping Sphinx' do
       to_return(:status => 200, :body => '{"id":537, "status":"OK"}')
   end
 
-  it 'makes the request to the server' do
+  it 'makes the request to the server', :retry => 3 do
     expect { cli.run }.to be_successful_with 537
   end
 end
