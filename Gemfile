@@ -14,8 +14,3 @@ elsif RUBY_VERSION.to_f <= 2.0
   gem "public_suffix", "< 1.5.0"
   gem "nokogiri",      "< 1.7.0"
 end
-
-gem 'appraisal',     '~> 1.0.0',
-  :git    => 'https://github.com/thoughtbot/appraisal',
-  :branch => 'master',
-  :ref    => 'bd6eef4b6a'
