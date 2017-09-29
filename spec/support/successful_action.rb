@@ -15,6 +15,8 @@ class SuccessfulAction
     thread.join
     pusher.stop
 
+    sleep 0.5
+
     result
   end
 
