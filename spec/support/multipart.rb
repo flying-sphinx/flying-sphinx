@@ -44,7 +44,10 @@ class MultipartRequestToFile
   end
 
   def transformed_headers
-    request.headers.transform_keys { |key| key.underscore.upcase }
+    request.headers.keys.inject({}) do |hash, key|
+      hash[key.underscore.upcase] = request.headers[key]
+      hash
+    end
   end
 end
 
