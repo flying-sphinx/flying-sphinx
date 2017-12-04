@@ -24,6 +24,10 @@ class SuccessfulAction
     "Action failed"
   end
 
+  def supports_block_expectations?
+    true
+  end
+
   private
 
   attr_reader :action_id, :result
