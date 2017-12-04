@@ -1,4 +1,5 @@
 class FlyingSphinx::Controller
+  DEFAULT_TIMEOUT = 60
   @index_timeout = 60 * 60 * 3 # 3 hours
 
   # For backwards compatibility. These aren't actually used here.
@@ -20,9 +21,7 @@ class FlyingSphinx::Controller
     options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
       {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
 
-    FlyingSphinx::Action.perform api.identifier do
-      api.put 'configure', options
-    end
+    run_action 'configure', DEFAULT_TIMEOUT, options
   end
 
   def index(*indices)
@@ -31,24 +30,21 @@ class FlyingSphinx::Controller
     options[:indices] = indices.join(',')
 
     if async
-      api.post 'indices/unique', options
+      send_action 'index', options.merge('unique' => true)
     else
       ::Delayed::Job.delete_all(
         "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
       ) if defined?(::Delayed) && ::Delayed::Job.table_exists?
 
-      FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
-        api.post 'indices', options
-      end
+      run_action 'index', self.class.index_timeout, options
     end
 
     true
   end
 
   def rebuild
-    FlyingSphinx::Action.perform api.identifier, self.class.index_timeout do
-      api.put 'rebuild', FlyingSphinx::ConfigurationOptions.new.to_hash
-    end
+    run_action 'rebuild', self.class.index_timeout,
+      FlyingSphinx::ConfigurationOptions.new.to_hash
   end
 
   def regenerate(file = nil)
@@ -61,21 +57,15 @@ class FlyingSphinx::Controller
     options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
       {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
 
-    FlyingSphinx::Action.perform api.identifier do
-      api.put 'reset', options
-    end
+    run_action 'reset', DEFAULT_TIMEOUT, options
   end
 
   def restart
-    FlyingSphinx::Action.perform api.identifier do
-      api.post 'restart'
-    end
+    run_action 'restart'
   end
 
   def rotate
-    FlyingSphinx::Action.perform api.identifier do
-      api.post 'rotate'
-    end
+    run_action 'rotate'
   end
 
   def running?
@@ -87,14 +77,24 @@ class FlyingSphinx::Controller
   end
 
   def start(options = {})
-    FlyingSphinx::Action.perform(api.identifier) { api.post 'start' }
+    run_action 'start'
   end
 
   def stop
-    FlyingSphinx::Action.perform(api.identifier) { api.post 'stop' }
+    run_action 'stop'
   end
 
   private
 
   attr_reader :api
+
+  def run_action(action, timeout = DEFAULT_TIMEOUT, parameters = {})
+    FlyingSphinx::Action.perform api.identifier, timeout do
+      send_action action, parameters
+    end
+  end
+
+  def send_action(action, parameters = {})
+    api.post '/perform', parameters.merge(:action => action)
+  end
 end

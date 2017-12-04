@@ -30,14 +30,14 @@ describe FlyingSphinx::Controller do
 
   describe 'configure' do
     it 'sends data to the server' do
-      api.should_receive(:put)
+      api.should_receive(:post)
 
       controller.configure
     end
 
     it 'sends through gzipped configuration files' do
-      api.should_receive(:put) do |path, options|
-        path.should == 'configure'
+      api.should_receive(:post) do |path, options|
+        path.should == '/perform'
         options[:configuration]['gzip'].should == 'true'
         ungzip(options[:configuration]['sphinx'].read).should == 'indexer ...'
         ungzip(options[:configuration]['wordforms:txt.txt'].read).should == 'something'
@@ -47,7 +47,8 @@ describe FlyingSphinx::Controller do
     end
 
     it 'sends through file if provided' do
-      api.should_receive(:put).with 'configure',
+      api.should_receive(:post).with '/perform',
+        :action         => 'configure',
         :configuration  => {'sphinx' => 'searchd ...'},
         :sphinx_version => '2.0.6'
 

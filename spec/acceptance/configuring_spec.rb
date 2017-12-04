@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'cgi'
 
 describe 'Configuring Sphinx' do
   let(:cli)        { FlyingSphinx::CLI.new 'configure' }
@@ -9,7 +10,7 @@ describe 'Configuring Sphinx' do
   before :each do
     allow(FlyingSphinx).to receive(:translator).and_return(translator)
 
-    stub_request(:put, 'https://flying-sphinx.com/api/my/app/configure').
+    stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
       to_return(:status => 200, :body => '{"id":953, "status":"OK"}')
   end
 
@@ -17,8 +18,8 @@ describe 'Configuring Sphinx' do
     SuccessfulAction.new(953).matches? lambda { cli.run }
 
     expect(
-      a_request(:put, 'https://flying-sphinx.com/api/my/app/configure').
-      with { |request| request.body.present? }
+      a_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
+      with { |request| CGI::parse(request.body)["action"] == ["configure"] }
     ).to have_been_made
   end
 

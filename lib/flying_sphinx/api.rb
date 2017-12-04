@@ -7,8 +7,8 @@ class FlyingSphinx::API
     PUSHER_KEY = 'c5602d4909b5144321ce'
   end
 
-  PATH    = '/api/my/app'
-  VERSION = 4
+  PATH    = '/api/my/v5'
+  HEADERS = {'X-Flying-Sphinx-Version' => FlyingSphinx::Version}
 
   attr_reader :api_key, :identifier
 
@@ -28,10 +28,6 @@ class FlyingSphinx::API
     connection.post normalize_path(path), data
   end
 
-  def put(path, data = {})
-    connection.put normalize_path(path), data
-  end
-
   private
 
   attr_reader :adapter
@@ -41,27 +37,19 @@ class FlyingSphinx::API
     "#{PATH}#{path}"
   end
 
-  def api_headers
-    {
-      'Accept' => "application/vnd.flying-sphinx-v#{VERSION}+json",
-      'X-Flying-Sphinx-Token'   => "#{identifier}:#{api_key}",
-      'X-Flying-Sphinx-Version' => FlyingSphinx::Version
-    }
-  end
-
   def connection(connection_options = {})
     options = {
       :ssl     => {:verify => false},
       :url     => SERVER,
-      :headers => api_headers
+      :headers => HEADERS
     }
 
     Faraday.new(options) do |builder|
       # Built-in middleware
-      builder.request :multipart
       builder.request :url_encoded
 
       # Local middleware
+      builder.use FlyingSphinx::Request::HMAC, identifier, api_key, 'Thebes'
       builder.use FlyingSphinx::Response::Logger
       builder.use FlyingSphinx::Response::Invalid
       builder.use FlyingSphinx::Response::JSON

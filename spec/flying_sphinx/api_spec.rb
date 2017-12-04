@@ -18,8 +18,6 @@ describe FlyingSphinx::API do
     it "sets up a connection with the appropriate headers" do
       faraday.should_receive(:new) do |options|
         options[:headers].should == {
-          'Accept'                  => 'application/vnd.flying-sphinx-v4+json',
-          'X-Flying-Sphinx-Token'   => 'foo:bar',
           'X-Flying-Sphinx-Version' => FlyingSphinx::Version
         }
 
@@ -52,7 +50,7 @@ describe FlyingSphinx::API do
 
     it "sends the GET request with the given path and data" do
       request.should_receive(:url).
-        with('/api/my/app/resource', 'param' => 'value')
+        with('/api/my/v5/resource', 'param' => 'value')
 
       send_request
     end
@@ -69,25 +67,7 @@ describe FlyingSphinx::API do
 
     it "sends the POST request with the given path and data" do
       connection.should_receive(:post).
-        with('/api/my/app/resource', 'param' => 'value').
-        and_return(response)
-
-      send_request
-    end
-  end
-
-  describe '#put' do
-    let(:send_request) { api.put '/resource', 'param' => 'value' }
-
-    before :each do
-      connection.stub(:put => response)
-    end
-
-    it_should_behave_like 'an API call'
-
-    it "sends the PUT request with the given path and data" do
-      connection.should_receive(:put).
-        with('/api/my/app/resource', 'param' => 'value').
+        with('/api/my/v5/resource', 'param' => 'value').
         and_return(response)
 
       send_request
