@@ -1,11 +1,16 @@
 class FlyingSphinx::Configurer
+  PresignatureError = Class.new FlyingSphinx::Error
+  UploadError = Class.new FlyingSphinx::Error
+
   def initialize(api, input)
     @api   = api
     @input = input
   end
 
   def call
-    raise "Requesting presignature failed" unless presignature["status"] == "OK"
+    if presignature["status"] != "OK"
+      raise PresignatureError, "Requesting presignature failed"
+    end
 
     response = connection.post "", fields.merge(
       "file" => Faraday::UploadIO.new(file, 'application/gzip', 'sphinx.tar.gz')
@@ -14,7 +19,7 @@ class FlyingSphinx::Configurer
     if response.status == 200
       presignature["path"]
     else
-      raise "Uploading configuration failed"
+      raise UploadError, "Uploading configuration failed"
     end
   end
 

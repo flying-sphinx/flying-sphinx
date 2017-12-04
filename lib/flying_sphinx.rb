@@ -5,6 +5,8 @@ module FlyingSphinx
   module Response; end
   module Translators; end
 
+  Error = Class.new StandardError
+
   @logger       = Logger.new(STDOUT)
   @logger.level = Logger::INFO
   if ENV['VERBOSE_LOGGING'] && ENV['VERBOSE_LOGGING'] == 'true'
