@@ -1,3 +1,17 @@
+Edge
+* Fix call to generate real-time data for thinking-sphinx v3.4+.
+
+1.3.0 - 4th December 2017
+* Use v5 of the flying-sphinx.com API.
+* Drop support for Ruby 1.8.7 and REE.
+* Be clear about the reliance on thinking-sphinx v1.5 or better.
+
+1.2.1 - 29th September 2017
+* Fix population of real-time indices for thinking-sphinx v3.4+.
+* Remove post-install message.
+* Relax Faraday requirement to allow for v0.7.
+* Improved behaviour with Ruby 1.8.7.
+
 1.2.0 - 30th March 2014
 * All configuration files (Sphinx, wordforms, exceptions, etc) are now gzipped when sent to the API.
 
