@@ -46,7 +46,12 @@ class FlyingSphinx::Controller
   def regenerate(file = nil)
     reset file
 
-    ThinkingSphinx::RakeInterface.new.generate
+    interface = ThinkingSphinx::RakeInterface.new
+    if interface.respond_to?(:generate)
+      interface.generate
+    else
+      interface.rt.index
+    end
   end
 
   def reset(file = nil)
