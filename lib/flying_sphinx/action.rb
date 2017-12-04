@@ -62,7 +62,7 @@ class FlyingSphinx::Action
   def response
     attempts = 0
     @response ||= begin
-      block.call.body
+      block.call
     rescue
       attempts += 1
       retry if attempts <= 3

@@ -19,13 +19,11 @@ class FlyingSphinx::API
   end
 
   def get(path, data = {})
-    connection.get do |request|
-      request.url normalize_path(path), data
-    end
+    connection.get { |request| request.url normalize_path(path), data }.body
   end
 
   def post(path, data = {})
-    connection.post normalize_path(path), data
+    connection.post(normalize_path(path), data).body
   end
 
   private

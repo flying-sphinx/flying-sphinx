@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe FlyingSphinx::Configuration do
-  let(:api)        { double 'FlyingSphinx::API', :get => double(:body => body) }
+  let(:api)        { double 'FlyingSphinx::API', :get => body }
   let(:body)       { {'server' => 'foo.bar.com', 'port' => 9319} }
   let(:api_key)    { 'foo-bar-baz' }
   let(:identifier) { 'my-identifier' }
