@@ -18,12 +18,12 @@ describe FlyingSphinx::SettingFiles do
     end
 
     [:stopwords, :wordforms, :exceptions].each do |setting|
-      it "uploads #{setting} files from indices" do
+      it "collects #{setting} files from indices" do
         indices << index_double(setting => '/my/file/foo.txt')
 
         files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt"
+          "#{setting}/foo.txt" => 'blah',
+          'extra'              => "#{setting}/foo.txt"
         }
       end
 
@@ -32,8 +32,8 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(setting => '/my/file/foo.txt')
 
         files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt"
+          "#{setting}/foo.txt" => 'blah',
+          'extra'              => "#{setting}/foo.txt"
         }
       end
 
@@ -41,22 +41,22 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(
           setting => '/my/file/foo.txt /my/file/bar.txt')
 
-        files.to_hash["#{setting}:foo.txt"].should == 'blah'
-        files.to_hash["#{setting}:bar.txt"].should == 'blah'
+        files.to_hash["#{setting}/foo.txt"].should == 'blah'
+        files.to_hash["#{setting}/bar.txt"].should == 'blah'
         files.to_hash['extra'].split(';').should =~ [
-          "#{setting}:foo.txt", "#{setting}:bar.txt"
+          "#{setting}/foo.txt", "#{setting}/bar.txt"
         ]
       end
     end
 
     [:mysql_ssl_cert, :mysql_ssl_key, :mysql_ssl_ca].each do |setting|
-      it "uploads #{setting} files from indices" do
+      it "collects #{setting} files from sources" do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt')])
 
         files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt"
+          "#{setting}/foo.txt" => 'blah',
+          'extra'              => "#{setting}/foo.txt"
         }
       end
 
@@ -67,8 +67,8 @@ describe FlyingSphinx::SettingFiles do
           source_double(setting => '/my/file/foo.txt')])
 
         files.to_hash.should == {
-          "#{setting}:foo.txt" => 'blah',
-          'extra'              => "#{setting}:foo.txt"
+          "#{setting}/foo.txt" => 'blah',
+          'extra'              => "#{setting}/foo.txt"
         }
       end
 
@@ -76,10 +76,10 @@ describe FlyingSphinx::SettingFiles do
         indices << index_double(:sources => [
           source_double(setting => '/my/file/foo.txt /my/file/bar.txt')])
 
-        files.to_hash["#{setting}:foo.txt"].should == 'blah'
-        files.to_hash["#{setting}:bar.txt"].should == 'blah'
+        files.to_hash["#{setting}/foo.txt"].should == 'blah'
+        files.to_hash["#{setting}/bar.txt"].should == 'blah'
         files.to_hash['extra'].split(';').should =~ [
-          "#{setting}:foo.txt", "#{setting}:bar.txt"
+          "#{setting}/foo.txt", "#{setting}/bar.txt"
         ]
       end
     end

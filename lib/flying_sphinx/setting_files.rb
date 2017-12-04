@@ -10,7 +10,7 @@ class FlyingSphinx::SettingFiles
     hash = {}
 
     each_file_for_setting do |setting, file|
-      hash["#{setting}:#{File.basename(file)}"] = File.read(file)
+      hash["#{setting}/#{File.basename(file)}"] = File.read(file)
     end
 
     hash['extra'] = hash.keys.join(';')
