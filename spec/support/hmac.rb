@@ -4,7 +4,7 @@ class HMACRequestPattern < WebMock::RequestPattern
   end
 end
 
-module DigestHelpers
+module HMACHelpers
   def stub_hmac_request(method, uri)
     stub_request(method, uri).with { |request|
       request.headers['Authorization'].present?
@@ -19,5 +19,5 @@ module DigestHelpers
 end
 
 RSpec.configure do |config|
-  config.include DigestHelpers
+  config.include HMACHelpers
 end
