@@ -11,7 +11,12 @@ describe 'Configuring Sphinx' do
     allow(FlyingSphinx).to receive(:translator).and_return(translator)
 
     stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
-      to_return(:status => 200, :body => '{"id":953, "status":"OK"}')
+      to_return(:body => '{"id":953, "status":"OK"}')
+    stub_hmac_request(:get, "https://flying-sphinx.com/api/my/v5/presignature").
+      to_return(
+        :body => '{"url":"https://foo","path":"bar","fields":{},"status":"OK"}'
+      )
+    stub_request(:post, "https://foo/").to_return(:status => 200)
   end
 
   it 'sends the configuration to the server' do

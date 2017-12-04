@@ -18,10 +18,7 @@ class FlyingSphinx::Controller
   end
 
   def configure(file = nil)
-    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
-      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
-
-    run_action 'configure', DEFAULT_TIMEOUT, options
+    run_action_with_path 'configure', file
   end
 
   def index(*indices)
@@ -30,7 +27,7 @@ class FlyingSphinx::Controller
     options[:indices] = indices.join(',')
 
     if async
-      send_action 'index', options.merge('unique' => true)
+      send_action 'index', options.merge(:unique => 'true')
     else
       ::Delayed::Job.delete_all(
         "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
@@ -43,8 +40,7 @@ class FlyingSphinx::Controller
   end
 
   def rebuild
-    run_action 'rebuild', self.class.index_timeout,
-      FlyingSphinx::ConfigurationOptions.new.to_hash
+    run_action_with_path 'rebuild', nil, self.class.index_timeout
   end
 
   def regenerate(file = nil)
@@ -54,10 +50,7 @@ class FlyingSphinx::Controller
   end
 
   def reset(file = nil)
-    options = file.nil? ? FlyingSphinx::ConfigurationOptions.new.to_hash :
-      {:configuration => {'sphinx' => file}, :sphinx_version => '2.0.6'}
-
-    run_action 'reset', DEFAULT_TIMEOUT, options
+    run_action_with_path 'reset', file
   end
 
   def restart
@@ -92,6 +85,12 @@ class FlyingSphinx::Controller
     FlyingSphinx::Action.perform api.identifier, timeout do
       send_action action, parameters
     end
+  end
+
+  def run_action_with_path(action, file = nil, timeout = DEFAULT_TIMEOUT)
+    path = FlyingSphinx::Configurer.new(api, file).call
+
+    run_action action, timeout, :path => path
   end
 
   def send_action(action, parameters = {})

@@ -1,26 +1,23 @@
 class FlyingSphinx::ConfigurationOptions
-  def to_hash
-    {:sphinx_version => version, :configuration => gzipped_files_hash}
+  attr_reader :raw
+
+  def initialize(raw = nil, version = nil)
+    @raw     = raw || FlyingSphinx.translator.sphinx_configuration
+    @version = version || '2.2.3'
+  end
+
+  def settings
+    @settings ||= FlyingSphinx::SettingFiles.new.to_hash
+  end
+
+  def version
+    version_defined? ? configuration.version : @version
   end
 
   private
 
   def configuration
     @configuration ||= ThinkingSphinx::Configuration.instance
-  end
-
-  def files_hash
-    FlyingSphinx::SettingFiles.new.to_hash.merge(
-      'sphinx' => FlyingSphinx.translator.sphinx_configuration
-    )
-  end
-
-  def gzipped_files_hash
-    FlyingSphinx::GzippedHash.new(files_hash).to_gzipped_hash
-  end
-
-  def version
-    version_defined? ? configuration.version : '2.0.4'
   end
 
   def version_defined?
