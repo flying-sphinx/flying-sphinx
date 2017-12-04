@@ -28,7 +28,11 @@ class MultipartRequestToFile
   attr_reader :request
 
   def parsed
-    Rack::Multipart.extract_multipart rack_request
+    if Rack::Multipart.respond_to? :extract_multipart
+      Rack::Multipart.extract_multipart rack_request
+    else
+      Rack::Multipart.parse_multipart rack_env
+    end
   end
 
   def rack_env
