@@ -64,7 +64,7 @@ class FlyingSphinx::CLI
     return unless ENV['RAILS_ENV']
 
     boot = File.expand_path('config/boot', Dir.pwd)
-    return unless File.exist? boot
+    return unless File.exist?("#{boot}.rb")
     require boot
 
     if defined?(Rails) && !defined?(Rails::Railtie)
