@@ -2,6 +2,10 @@ class FlyingSphinx::Configurer
   PresignatureError = Class.new FlyingSphinx::Error
   UploadError = Class.new FlyingSphinx::Error
 
+  def self.call(api, input = nil)
+    new(api, input).call
+  end
+
   def initialize(api, input = nil)
     @api   = api
     @input = input
