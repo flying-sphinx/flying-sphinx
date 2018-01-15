@@ -6,8 +6,6 @@ class FlyingSphinx::Railtie < Rails::Railtie
   initializer "flying_sphinx.set_sphinx_host_and_port" do |app|
     configuration = FlyingSphinx::Configuration.new
 
-    ThinkingSphinx::Configuration.instance.controller =
-      FlyingSphinx::Controller.new configuration.api
     ThinkingSphinx::Configuration.instance.settings['connection_options'] = {
       :host     => configuration.host,
       :port     => 9306,

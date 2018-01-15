@@ -40,7 +40,6 @@ require 'flying_sphinx/commands'
 require 'flying_sphinx/configuration'
 require 'flying_sphinx/configuration_options'
 require 'flying_sphinx/configurer'
-require 'flying_sphinx/controller'
 require 'flying_sphinx/rake_interface'
 require 'flying_sphinx/setting_files'
 
