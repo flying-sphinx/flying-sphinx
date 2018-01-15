@@ -8,6 +8,10 @@ require_relative "tasks/replaced"
 require_relative "tasks/deprecated"
 
 # Replaced ts tasks
+FlyingSphinx::Tasks::Replaced.call "ts:clear" do
+  interface.clear
+end
+
 FlyingSphinx::Tasks::Replaced.call "ts:rebuild",
   ["ts:sql:rebuild", "ts:rt:index"]
 

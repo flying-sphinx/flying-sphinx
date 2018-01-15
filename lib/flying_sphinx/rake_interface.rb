@@ -1,4 +1,8 @@
 class FlyingSphinx::RakeInterface < ThinkingSphinx::RakeInterface
+  def clear
+    command :clear
+  end
+
   def rebuild
     command :rebuild
   end

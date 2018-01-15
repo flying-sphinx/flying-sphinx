@@ -2,6 +2,7 @@ module FlyingSphinx::Commands
 end
 
 require "flying_sphinx/commands/base"
+require "flying_sphinx/commands/clear"
 require "flying_sphinx/commands/configure"
 require "flying_sphinx/commands/index_sql"
 require "flying_sphinx/commands/prepare"
@@ -13,8 +14,9 @@ require "flying_sphinx/commands/start_attached"
 require "flying_sphinx/commands/stop"
 
 ThinkingSphinx::Commander.registry.merge!(
-  # :clear_real_time => FlyingSphinx::Commands::ClearRealTime,
-  # :clear_sql       => FlyingSphinx::Commands::ClearSQL,
+  :clear           => FlyingSphinx::Commands::Clear,
+  :clear_real_time => FlyingSphinx::Commands::Clear,
+  :clear_sql       => FlyingSphinx::Commands::Clear,
   :configure       => FlyingSphinx::Commands::Configure,
   :index_sql       => FlyingSphinx::Commands::IndexSQL,
   :prepare         => FlyingSphinx::Commands::Prepare,
