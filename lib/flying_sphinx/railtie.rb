@@ -4,10 +4,14 @@ class FlyingSphinx::Railtie < Rails::Railtie
   end
 
   initializer "flying_sphinx.set_sphinx_host_and_port" do |app|
-    if ThinkingSphinx::Configuration.instance.respond_to?(:settings)
-      FlyingSphinx::SphinxQL.load
-    else
-      FlyingSphinx::Binary.load
-    end
+    configuration = FlyingSphinx::Configuration.new
+
+    ThinkingSphinx::Configuration.instance.controller =
+      FlyingSphinx::Controller.new configuration.api
+    ThinkingSphinx::Configuration.instance.settings['connection_options'] = {
+      :host     => configuration.host,
+      :port     => 9306,
+      :username => configuration.username
+    }
   end if ENV['FLYING_SPHINX_IDENTIFIER'] || ENV['STAGED_SPHINX_IDENTIFIER']
 end
