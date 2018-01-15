@@ -2,7 +2,7 @@ require "spec_helper"
 
 RSpec.describe FlyingSphinx::Commands::Restart do
   let(:subject) do
-    FlyingSphinx::Commands::Restart.new double, :api => api
+    FlyingSphinx::Commands::Restart.new configuration_double, :api => api
   end
   let(:api)          { double 'API', :identifier => 'foo', :post => true }
   let(:action_class) { double }

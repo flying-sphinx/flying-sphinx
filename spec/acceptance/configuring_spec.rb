@@ -3,9 +3,8 @@ require 'cgi'
 
 describe 'Configuring Sphinx' do
   let(:interface)     { ThinkingSphinx.rake_interface.new }
-  let(:configuration) { double 'ThinkingSphinx::Configuration',
-    :indices => [double('Index')], :render => 'searchd { }',
-    :version => '2.2.11' }
+  let(:configuration) { configuration_double :indices => [double('Index')],
+    :render => 'searchd { }', :version => '2.2.11' }
 
   before :each do
     allow(ThinkingSphinx::Configuration).to receive(:instance).
