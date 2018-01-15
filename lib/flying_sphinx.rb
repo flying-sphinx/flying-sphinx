@@ -26,8 +26,7 @@ require 'multi_json'
 require 'ey-hmac'
 require 'faraday'
 require 'gzipped_tar'
-require 'riddle'
-require 'riddle/0.9.9'
+require 'thinking_sphinx'
 require 'pusher-client'
 
 PusherClient.logger = FlyingSphinx.logger
