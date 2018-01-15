@@ -19,7 +19,7 @@ class FlyingSphinx::RakeInterface < ThinkingSphinx::RakeInterface
 
   def command(command, extra_options = {})
     ThinkingSphinx::Commander.call(
-      command, configuration, options.merge(extra_options), stream
+      command, configuration, options.merge(extra_options)
     )
   end
 end
