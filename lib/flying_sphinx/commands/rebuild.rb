@@ -2,6 +2,6 @@
 
 class FlyingSphinx::Commands::Rebuild < FlyingSphinx::Commands::Base
   def call
-    run_action_with_path 'rebuild'
+    run_action_with_path 'rebuild', index_timeout
   end
 end

@@ -23,10 +23,6 @@ class FlyingSphinx::Commands::IndexSQL < FlyingSphinx::Commands::Base
     ) if defined?(::Delayed) && ::Delayed::Job.table_exists?
   end
 
-  def index_timeout
-    60 * 60 * 3 # 3 hours
-  end
-
   def indexing_options
     {:indices => indices.join(",")}
   end
