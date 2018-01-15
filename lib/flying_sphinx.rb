@@ -60,6 +60,4 @@ require 'flying_sphinx/response/logger'
 
 if defined?(Rails) && defined?(Rails::Railtie)
   require 'flying_sphinx/railtie'
-elsif defined?(Rails) && defined?(Rails::Plugin)
-  require 'flying_sphinx/rails'
 end
