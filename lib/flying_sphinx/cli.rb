@@ -25,5 +25,7 @@ behaviour for both local and Flying Sphinx environments). In this case:
 
     heroku run rake #{task}
     MESSAGE
+
+    `bundle exec rake #{task}`
   end
 end
