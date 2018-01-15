@@ -10,6 +10,7 @@ require "flying_sphinx/commands/rebuild"
 require "flying_sphinx/commands/reset"
 require "flying_sphinx/commands/restart"
 require "flying_sphinx/commands/rotate"
+require "flying_sphinx/commands/running"
 require "flying_sphinx/commands/start"
 require "flying_sphinx/commands/start_attached"
 require "flying_sphinx/commands/stop"
@@ -25,6 +26,7 @@ ThinkingSphinx::Commander.registry.merge!(
   :reset           => FlyingSphinx::Commands::Reset,
   :restart         => FlyingSphinx::Commands::Restart,
   :rotate          => FlyingSphinx::Commands::Rotate,
+  :running         => FlyingSphinx::Commands::Running,
   :start_attached  => FlyingSphinx::Commands::StartAttached,
   :start_detached  => FlyingSphinx::Commands::Start,
   :stop            => FlyingSphinx::Commands::Stop

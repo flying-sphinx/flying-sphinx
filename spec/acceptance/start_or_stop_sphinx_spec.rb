@@ -4,6 +4,9 @@ describe 'Starting Sphinx' do
   let(:interface) { ThinkingSphinx.rake_interface.new.daemon }
 
   before :each do
+    stub_hmac_request(:get, 'https://flying-sphinx.com/api/my/v5/running').
+      to_return(:status => 200, :body => '{"running":false, "status":"OK"}')
+
     stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
       to_return(:status => 200, :body => '{"id":429, "status":"OK"}')
   end
