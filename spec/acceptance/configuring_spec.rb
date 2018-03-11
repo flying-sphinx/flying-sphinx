@@ -2,13 +2,13 @@ require 'spec_helper'
 require 'cgi'
 
 describe 'Configuring Sphinx' do
-  let(:cli)        { FlyingSphinx::CLI.new 'configure' }
-  let(:translator) { double 'Translator', :sphinx_indices => [index],
-    :sphinx_configuration => 'searchd { }' }
-  let(:index)      { double 'Index' }
+  let(:interface)     { ThinkingSphinx.rake_interface.new }
+  let(:configuration) { configuration_double :indices => [double('Index')],
+    :render => 'searchd { }', :version => '2.2.11' }
 
   before :each do
-    allow(FlyingSphinx).to receive(:translator).and_return(translator)
+    allow(ThinkingSphinx::Configuration).to receive(:instance).
+      and_return(configuration)
 
     stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
       to_return(:body => '{"id":953, "status":"OK"}')
@@ -20,7 +20,7 @@ describe 'Configuring Sphinx' do
   end
 
   it 'sends the configuration to the server' do
-    SuccessfulAction.new(953).matches? lambda { cli.run }
+    SuccessfulAction.new(953).matches? lambda { interface.configure }
 
     expect(
       a_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
@@ -29,6 +29,6 @@ describe 'Configuring Sphinx' do
   end
 
   it 'handles the full request successfully' do
-    expect { cli.run }.to be_successful_with 953
+    expect { interface.configure }.to be_successful_with 953
   end
 end

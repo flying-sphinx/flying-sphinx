@@ -2,7 +2,11 @@ class FlyingSphinx::Configurer
   PresignatureError = Class.new FlyingSphinx::Error
   UploadError = Class.new FlyingSphinx::Error
 
-  def initialize(api, input)
+  def self.call(api, input = nil)
+    new(api, input).call
+  end
+
+  def initialize(api, input = nil)
     @api   = api
     @input = input
   end
@@ -51,7 +55,7 @@ class FlyingSphinx::Configurer
 
     config.settings["extra"].split(";").each do |key|
       writer.add key, config.settings[key]
-    end unless config.settings["extra"].empty?
+    end unless config.settings["extra"].blank?
 
     StringIO.new writer.output
   end
