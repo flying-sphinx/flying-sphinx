@@ -3,11 +3,24 @@
 class FlyingSphinx::Commands::Base < ThinkingSphinx::Commands::Base
   DEFAULT_TIMEOUT = 60
   INDEX_TIMEOUT   = 60 * 60 * 3 # 3 hours
+  ERROR_MESSAGES  = {
+    "BLOCKED"      => <<-TXT,
+BLOCKED: Single-index processing is not permitted for your plan level
+    TXT
+    "UNCONFIGURED" => <<-TXT,
+UNCONFIGURED: This command can only be run once you have provided your Sphinx
+configuration (via the ts:configure or ts:rebuild tasks).
+    TXT
+    "INVALID PATH" => <<-TXT
+INVALID PATH: Something has gone wrong with the uploading of your configuration.
+Please contact Flying Sphinx Support: http://support.flying-sphinx.com
+    TXT
+  }.freeze
 
   def call_with_handling
     call
   rescue FlyingSphinx::Error => error
-    handle_failure error.command_result
+    handle_failure error
   end
 
   private
@@ -18,6 +31,21 @@ class FlyingSphinx::Commands::Base < ThinkingSphinx::Commands::Base
 
   def flying_sphinx_settings
     configuration.settings.fetch("flying_sphinx", {})
+  end
+
+  def handle_failure(error)
+    stream.puts <<-TXT
+
+The Flying Sphinx command failed:
+  Class: #{self.class.name}
+  Error: #{error.message}
+
+If everything looks to be in order, please try the command again. If the error
+persists, please contact Flying Sphinx Support: http://support.flying-sphinx.com
+
+    TXT
+
+    raise error
   end
 
   def index_timeout
@@ -39,7 +67,17 @@ class FlyingSphinx::Commands::Base < ThinkingSphinx::Commands::Base
   end
 
   def send_action(action, parameters = {})
-    api.post '/perform', parameters.merge(:action => action)
+    response = api.post '/perform', parameters.merge(:action => action)
+
+    if ERROR_MESSAGES.keys.include?(response["status"])
+      raise FlyingSphinx::Error, ERROR_MESSAGES[response["status"]]
+    end
+
+    if response["status"] != "OK"
+      raise FlyingSphinx::Error, "Unknown Exception: #{response["status"]}"
+    end
+
+    response
   end
 
   def default_timeout

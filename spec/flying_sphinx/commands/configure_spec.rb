@@ -4,7 +4,9 @@ RSpec.describe FlyingSphinx::Commands::Configure do
   let(:subject) do
     FlyingSphinx::Commands::Configure.new configuration_double, :api => api
   end
-  let(:api)          { double 'API', :identifier => 'foo', :post => true }
+  let(:api) do
+    double 'API', :identifier => 'foo', :post => {'status' => 'OK'}
+  end
   let(:action_class) { double }
 
   before :each do
@@ -20,5 +22,17 @@ RSpec.describe FlyingSphinx::Commands::Configure do
       :path   => "/foo"
 
     subject.call
+  end
+
+  it "raises an exception if an invalid path error is returned" do
+    allow(api).to receive(:post).and_return('status' => 'INVALID PATH')
+
+    expect { subject.call }.to raise_error(FlyingSphinx::Error)
+  end
+
+  it "raises an exception if an unknown error is returned" do
+    allow(api).to receive(:post).and_return('status' => nil)
+
+    expect { subject.call }.to raise_error(FlyingSphinx::Error)
   end
 end

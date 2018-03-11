@@ -72,7 +72,7 @@ describe FlyingSphinx::Action do
       calls = 0
       action = FlyingSphinx::Action.new 'abc123', 1 do
         calls += 1
-        raise "Exception" if calls <= 5
+        raise StandardError, "Exception" if calls <= 5
 
         response
       end

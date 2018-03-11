@@ -4,7 +4,9 @@ RSpec.describe FlyingSphinx::Commands::IndexSQL do
   let(:subject) do
     FlyingSphinx::Commands::IndexSQL.new configuration_double, :api => api
   end
-  let(:api)          { double 'API', :identifier => 'foo', :post => true }
+  let(:api) do
+    double 'API', :identifier => 'foo', :post => {'status' => 'OK'}
+  end
   let(:action_class) { double }
 
   before :each do
@@ -50,6 +52,18 @@ RSpec.describe FlyingSphinx::Commands::IndexSQL do
       expect(action_class).not_to receive(:perform)
 
       subject.call
+    end
+
+    it "raises an exception if a blocked error is returned" do
+      allow(api).to receive(:post).and_return('status' => 'BLOCKED')
+
+      expect { subject.call }.to raise_error(FlyingSphinx::Error)
+    end
+
+    it "raises an exception if an unconfigured error is returned" do
+      allow(api).to receive(:post).and_return('status' => 'UNCONFIGURED')
+
+      expect { subject.call }.to raise_error(FlyingSphinx::Error)
     end
   end
 end

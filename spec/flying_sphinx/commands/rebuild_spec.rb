@@ -4,7 +4,9 @@ RSpec.describe FlyingSphinx::Commands::Rebuild do
   let(:subject) do
     FlyingSphinx::Commands::Rebuild.new configuration_double, :api => api
   end
-  let(:api)          { double 'API', :identifier => 'foo', :post => true }
+  let(:api) do
+    double 'API', :identifier => 'foo', :post => {'status' => 'OK'}
+  end
   let(:action_class) { double }
 
   before :each do
