@@ -3,7 +3,7 @@ class FlyingSphinx::ConfigurationOptions
 
   def initialize(raw = nil, version = nil)
     @raw     = raw || configuration.render
-    @version = version || '2.2.3'
+    @version = version || '2.2.11'
   end
 
   def settings
