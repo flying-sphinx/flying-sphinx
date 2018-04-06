@@ -51,6 +51,7 @@ class FlyingSphinx::Configurer
 
     writer.add "sphinx/raw.conf",    config.raw
     writer.add "sphinx/version.txt", config.version
+    writer.add "sphinx/engine.txt",  config.engine
     writer.add "sphinx/extra.txt",   config.settings["extra"]
 
     config.settings["extra"].split(";").each do |key|

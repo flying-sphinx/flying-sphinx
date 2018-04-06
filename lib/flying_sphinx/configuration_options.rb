@@ -1,9 +1,10 @@
 class FlyingSphinx::ConfigurationOptions
-  attr_reader :raw
+  attr_reader :raw, :engine
 
   def initialize(raw = nil, version = nil)
     @raw     = raw || configuration.render
     @version = version || '2.2.11'
+    @engine  = configuration.settings["engine"] || "sphinx"
   end
 
   def settings

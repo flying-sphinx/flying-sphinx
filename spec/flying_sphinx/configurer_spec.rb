@@ -10,7 +10,7 @@ RSpec.describe FlyingSphinx::Configurer do
     "fields" => {"message" => "something"}
   } }
   let(:configuration_options) { double "conf options", :version => "2.2.3",
-    :raw => "indexer ...", :settings => settings }
+    :raw => "indexer ...", :settings => settings, :engine => "manticore" }
   let(:settings) { {
     "extra"             => "wordforms/txt.txt",
     "wordforms/txt.txt" => "something"
@@ -57,6 +57,18 @@ RSpec.describe FlyingSphinx::Configurer do
       with_file { |contents|
         reader = GZippedTar::Reader.new contents
         reader.read("sphinx/version.txt") == "2.2.3"
+      }
+    ).to have_been_made
+  end
+
+  it "includes the Sphinx engine in the file" do
+    subject.call
+
+    expect(
+      a_multipart_request(:post, "https://confserver").
+      with_file { |contents|
+        reader = GZippedTar::Reader.new contents
+        reader.read("sphinx/engine.txt") == "manticore"
       }
     ).to have_been_made
   end
