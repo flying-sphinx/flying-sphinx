@@ -1,31 +1,38 @@
-namespace :fs do
-  desc "Upload Sphinx configuration and process indices"
-  task :index => :environment do
-    FlyingSphinx::CLI.new('setup').run
-  end
-
-  desc "Start the Sphinx daemon on Flying Sphinx servers"
-  task :start => :environment do
-    FlyingSphinx::CLI.new('start').run
-  end
-
-  desc "Stop the Sphinx daemon on Flying Sphinx servers"
-  task :stop  => :environment do
-    FlyingSphinx::CLI.new('stop').run
-  end
-
-  desc "Restart the Sphinx daemon on Flying Sphinx servers"
-  task :restart => :environment do
-    FlyingSphinx::CLI.new('restart').run
-  end
-
-  desc "Stop, configure, index and then start Sphinx"
-  task :rebuild => :environment do
-    FlyingSphinx::CLI.new('rebuild').run
-  end
-
-  desc "Stop, clear, configure, start then populate Sphinx"
-  task :regenerate => :environment do
-    FlyingSphinx::CLI.new('regenerate').run
+module FlyingSphinx
+  module Tasks
+    #
   end
 end
+
+require_relative "tasks/replaced"
+require_relative "tasks/deprecated"
+
+# Replaced ts tasks
+FlyingSphinx::Tasks::Replaced.call "ts:clear" do
+  interface.clear
+end
+
+FlyingSphinx::Tasks::Replaced.call "ts:rebuild",
+  ["ts:sql:rebuild", "ts:rt:index"]
+
+FlyingSphinx::Tasks::Replaced.call "ts:restart" do
+  interface.restart
+end
+
+FlyingSphinx::Tasks::Replaced.call "ts:sql:rebuild" do
+  interface.rebuild
+end
+
+FlyingSphinx::Tasks::Replaced.call "ts:rt:rebuild" do
+  interface.reset
+
+  Rake::Task["ts:rt:index"].invoke
+end
+
+# Deprecated tasks in the fs namespace
+FlyingSphinx::Tasks::Deprecated.call :index
+FlyingSphinx::Tasks::Deprecated.call :start
+FlyingSphinx::Tasks::Deprecated.call :stop
+FlyingSphinx::Tasks::Deprecated.call :restart
+FlyingSphinx::Tasks::Deprecated.call :rebuild
+FlyingSphinx::Tasks::Deprecated.call :regenerate, :rebuild

@@ -22,8 +22,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'gzipped_tar',        '~> 0.0.3'
   s.add_runtime_dependency 'multi_json',         '>= 1.3.0'
   s.add_runtime_dependency 'pusher-client',      '~> 0.3'
-  s.add_runtime_dependency 'riddle',             '>= 1.5.6'
-  s.add_runtime_dependency 'thinking-sphinx',    '>= 1.5.0'
+  s.add_runtime_dependency 'thinking-sphinx',    '>= 4.0.0'
 
   s.add_development_dependency 'appraisal',    '~> 2.2'
   s.add_development_dependency 'dotenv',       '~> 0.11.1'

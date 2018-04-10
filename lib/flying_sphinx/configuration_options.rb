@@ -1,13 +1,14 @@
 class FlyingSphinx::ConfigurationOptions
-  attr_reader :raw
+  attr_reader :raw, :engine
 
   def initialize(raw = nil, version = nil)
-    @raw     = raw || FlyingSphinx.translator.sphinx_configuration
-    @version = version || '2.2.3'
+    @raw     = raw || configuration.render
+    @version = version || '2.2.11'
+    @engine  = configuration.settings["engine"] || "sphinx"
   end
 
   def settings
-    @settings ||= FlyingSphinx::SettingFiles.new.to_hash
+    @settings ||= FlyingSphinx::SettingFiles.new(indices).to_hash
   end
 
   def version
@@ -20,7 +21,12 @@ class FlyingSphinx::ConfigurationOptions
     @configuration ||= ThinkingSphinx::Configuration.instance
   end
 
+  def indices
+    configuration.render
+    configuration.indices
+  end
+
   def version_defined?
-    configuration.respond_to?(:version) && configuration.version.present?
+    configuration.version.present?
   end
 end

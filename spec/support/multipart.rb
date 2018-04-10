@@ -6,20 +6,24 @@ end
 
 class MultipartRequestPattern < WebMock::RequestPattern
   def with_file(&block)
-    with { |request| block.call MultipartRequestToFile.call(request) }
+    with { |request| block.call MultipartRequest.new(request).file }
+  end
+
+  def with_params(&block)
+    with { |request| block.call MultipartRequest.new(request).params }
   end
 end
 
-class MultipartRequestToFile
-  def self.call(request)
-    new(request).call
-  end
-
+class MultipartRequest
   def initialize(request)
     @request = request
   end
 
-  def call
+  def params
+    parsed
+  end
+
+  def file
     parsed["file"][:tempfile].read
   end
 

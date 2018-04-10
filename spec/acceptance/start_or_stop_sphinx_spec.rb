@@ -1,15 +1,18 @@
 require 'spec_helper'
 
 describe 'Starting Sphinx' do
-  let(:cli) { FlyingSphinx::CLI.new 'start' }
+  let(:interface) { ThinkingSphinx.rake_interface.new.daemon }
 
   before :each do
+    stub_hmac_request(:get, 'https://flying-sphinx.com/api/my/v5/running').
+      to_return(:status => 200, :body => '{"running":false, "status":"OK"}')
+
     stub_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
       to_return(:status => 200, :body => '{"id":429, "status":"OK"}')
   end
 
   it 'makes the request to the server', :retry => 3 do
-    expect { cli.run }.to be_successful_with 429
+    expect { interface.start }.to be_successful_with 429
 
     expect(
       a_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
@@ -19,7 +22,7 @@ describe 'Starting Sphinx' do
 end
 
 describe 'Stopping Sphinx', :retry => 3 do
-  let(:cli) { FlyingSphinx::CLI.new 'stop' }
+  let(:interface) { ThinkingSphinx.rake_interface.new.daemon }
 
   before :each do
     stub_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
@@ -27,7 +30,7 @@ describe 'Stopping Sphinx', :retry => 3 do
   end
 
   it 'makes the request to the server', :retry => 3 do
-    expect { cli.run }.to be_successful_with 537
+    expect { interface.stop }.to be_successful_with 537
 
     expect(
       a_hmac_request(:post, 'https://flying-sphinx.com/api/my/v5/perform').
