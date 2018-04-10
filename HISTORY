@@ -1,4 +1,4 @@
-Unreleased
+2.0.0 - 10th April 2018
 * Add support for Manticore (via engine setting in config/thinking_sphinx.yml).
 * Drop support for Thinking Sphinx 3.x or older.
 * Drop support for ActiveRecord/Rails 3.1 or older.
