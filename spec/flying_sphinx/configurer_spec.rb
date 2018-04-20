@@ -2,13 +2,14 @@ require "spec_helper"
 
 RSpec.describe FlyingSphinx::Configurer do
   let(:subject) { FlyingSphinx::Configurer.new api }
-  let(:api)     { double :get => presignature }
+  let(:api)     { double "API" }
   let(:presignature) { {
     "status" => "OK",
     "path"   => "a/path/of/my/own",
     "url"    => "https://confserver",
     "fields" => {"message" => "something"}
   } }
+  let(:version_check) { {"status" => "OK"} }
   let(:configuration_options) { double "conf options", :version => "2.2.3",
     :raw => "indexer ...", :settings => settings, :engine => "manticore" }
   let(:settings) { {
@@ -18,6 +19,10 @@ RSpec.describe FlyingSphinx::Configurer do
 
   before :each do
     stub_request(:post, "https://confserver").to_return(:status => 200)
+
+    allow(api).to receive(:get).with("/versions/manticore-2.2.3").
+      and_return(version_check)
+    allow(api).to receive(:get).with("/presignature").and_return(presignature)
 
     allow(FlyingSphinx::ConfigurationOptions).to receive(:new).
       and_return(configuration_options)
@@ -142,6 +147,29 @@ RSpec.describe FlyingSphinx::Configurer do
       expect { subject.call }.to raise_error(
         FlyingSphinx::Configurer::UploadError
       )
+    end
+  end
+
+  context "version failure" do
+    before :each do
+      version_check["status"] = "NOT FOUND"
+    end
+
+    it "raises an InvalidVersionError exception" do
+      expect { subject.call }.to raise_error(
+        FlyingSphinx::Configurer::InvalidVersionError
+      )
+    end
+
+    it "does not attempt to upload" do
+      begin
+        subject.call
+      rescue FlyingSphinx::Configurer::InvalidVersionError
+      end
+
+      expect(
+        a_multipart_request(:post, "https://confserver")
+      ).not_to have_been_made
     end
   end
 end
