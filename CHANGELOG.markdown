@@ -2,6 +2,16 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## Unreleased
+
+### Added
+
+* Check Sphinx/Manticore version against what's available on the Flying Sphinx servers as part of the configuration process.
+
+### Changed
+
+* Update gzipped_tar dependency.
+
 ## 2.0.0 - 2018-04-10
 
 ### Added
