@@ -1,6 +1,7 @@
 class FlyingSphinx::Configurer
-  PresignatureError = Class.new FlyingSphinx::Error
-  UploadError = Class.new FlyingSphinx::Error
+  InvalidVersionError = Class.new FlyingSphinx::Error
+  PresignatureError   = Class.new FlyingSphinx::Error
+  UploadError         = Class.new FlyingSphinx::Error
 
   def self.call(api, input = nil)
     new(api, input).call
@@ -12,6 +13,11 @@ class FlyingSphinx::Configurer
   end
 
   def call
+    if invalid_version?
+      raise InvalidVersionError,
+        "Unknown Sphinx engine/version: #{config.engine}-#{config.version}"
+    end
+
     if presignature["status"] != "OK"
       raise PresignatureError, "Requesting presignature failed"
     end
@@ -31,6 +37,10 @@ class FlyingSphinx::Configurer
 
   attr_reader :api, :input
 
+  def config
+    @config ||= FlyingSphinx::ConfigurationOptions.new input
+  end
+
   def connection
     Faraday.new(:url => presignature["url"]) do |builder|
       builder.request :multipart
@@ -46,7 +56,6 @@ class FlyingSphinx::Configurer
   end
 
   def file
-    config = FlyingSphinx::ConfigurationOptions.new input
     writer = GZippedTar::Writer.new
 
     writer.add "sphinx/raw.conf",    config.raw
@@ -59,6 +68,10 @@ class FlyingSphinx::Configurer
     end unless config.settings["extra"].blank?
 
     StringIO.new writer.output
+  end
+
+  def invalid_version?
+    api.get("/versions/#{config.engine}-#{config.version}")["status"] != "OK"
   end
 
   def presignature

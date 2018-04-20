@@ -16,6 +16,10 @@ describe 'Configuring Sphinx' do
       to_return(
         :body => '{"url":"https://foo","path":"bar","fields":{},"status":"OK"}'
       )
+    stub_hmac_request(
+      :get, "https://flying-sphinx.com/api/my/v5/versions/sphinx-2.2.11"
+    ).to_return(:body => '{"status":"OK"}')
+
     stub_request(:post, "https://foo/").to_return(:status => 200)
   end
 
