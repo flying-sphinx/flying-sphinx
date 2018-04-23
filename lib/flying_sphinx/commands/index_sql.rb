@@ -18,9 +18,9 @@ class FlyingSphinx::Commands::IndexSQL < FlyingSphinx::Commands::Base
   end
 
   def clear_jobs
-    ::Delayed::Job.delete_all(
-      "handler LIKE '--- !ruby/object:FlyingSphinx::%'"
-    ) if defined?(::Delayed) && ::Delayed::Job.table_exists?
+    ::Delayed::Job.
+      where("handler LIKE '--- !ruby/object:FlyingSphinx::%'").
+      delete_all if defined?(::Delayed) && ::Delayed::Job.table_exists?
   end
 
   def indexing_options
