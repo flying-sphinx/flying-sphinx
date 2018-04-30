@@ -2,6 +2,12 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## 2.1.1 - 2018-04-30
+
+### Fixed
+
+* Fixed clearing of Delayed Jobs to work with Rails 3+ syntax only ([#19](https://github.com/flying-sphinx/flying-sphinx/pull/19) via [Kiril Mitov](https://github.com/thebravoman)).
+
 ## 2.1.0 - 2018-04-20
 
 ### Added
