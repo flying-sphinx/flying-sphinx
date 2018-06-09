@@ -9,7 +9,7 @@ This is all covered pretty well on "the Flying Sphinx site":http://flying-sphinx
 <pre><code>gem 'flying-sphinx',
   :git    => 'git://github.com/flying-sphinx/flying-sphinx.git',
   :branch => 'master',
-  :ref    => '95acb39052'</code></pre>
+  :ref    => 'e8a4aa6b1d'</code></pre>
 
 h2. Compatibility and Limitations
 
