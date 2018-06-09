@@ -2,6 +2,12 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## Upcoming
+
+### Fixed
+
+* Does not override Thinking Sphinx rake tasks when in a non-Flying Sphinx environment (as determined by the presence of the FLYING_SPHINX_IDENTIFIER environment variable). This fixed behaviour is the same as pre-v2.0 releases.
+
 ## 2.1.1 - 2018-04-30
 
 ### Fixed
