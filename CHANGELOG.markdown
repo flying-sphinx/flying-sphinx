@@ -2,7 +2,7 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
-## Upcoming
+## 2.1.2 - 2018-06-09
 
 ### Fixed
 
