@@ -12,6 +12,9 @@ WebMock.disable_net_connect!
 require 'thinking_sphinx'
 require 'flying_sphinx'
 
+require 'flying_sphinx/commands'
+ThinkingSphinx.rake_interface = FlyingSphinx::RakeInterface
+
 unless FlyingSphinx.logger.level == Logger::DEBUG
   FlyingSphinx.logger.level = Logger::WARN
 end

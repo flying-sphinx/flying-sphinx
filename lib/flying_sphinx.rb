@@ -35,7 +35,6 @@ require 'flying_sphinx/version'
 require 'flying_sphinx/action'
 require 'flying_sphinx/api'
 require 'flying_sphinx/cli'
-require 'flying_sphinx/commands'
 require 'flying_sphinx/configuration'
 require 'flying_sphinx/configuration_options'
 require 'flying_sphinx/configurer'
@@ -50,5 +49,3 @@ require 'flying_sphinx/response/logger'
 if defined?(Rails) && defined?(Rails::Railtie)
   require 'flying_sphinx/railtie'
 end
-
-ThinkingSphinx.rake_interface = FlyingSphinx::RakeInterface
