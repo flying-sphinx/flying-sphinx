@@ -2,6 +2,12 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## 2.1.3 - 2018-12-12
+
+### Fixed
+
+* Sinatra loader now works correctly (it had been missed in the other v2 updates).
+
 ## 2.1.2 - 2018-06-09
 
 ### Fixed
