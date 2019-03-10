@@ -39,4 +39,4 @@ h2. Contributors
 
 h2. Licence
 
-Copyright &copy; 2011-2018 Pat Allan, released under an MIT licence.
+Copyright &copy; 2011-2019 Pat Allan, released under an MIT licence.
