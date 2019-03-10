@@ -2,6 +2,12 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## 2.1.4 - 2019-03-10
+
+### Fixed
+
+* Fixed the overriding of Flying Sphinx connection details by Thinking Sphinx's new prepare hook (added in Thinking Sphinx v4.2.0).
+
 ## 2.1.3 - 2018-12-12
 
 ### Fixed
