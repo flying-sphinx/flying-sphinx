@@ -12,7 +12,7 @@ This is all covered pretty well on "the Flying Sphinx site":http://flying-sphinx
 
 h2. Compatibility and Limitations
 
-The current (2.x) releases support Thinking Sphinx v4+, ActiveRecord/Rails 3.2+, and Ruby 2.2+.
+The current (2.x) releases support Thinking Sphinx v4+, ActiveRecord/Rails 3.2+, and Ruby 2.3+. Ruby 2.2.x will probably work well too, but is not tested against, and thus not officially supported.
 
 If you are using older versions of any of these, please use v1.3.1 (which supports Thinking Sphinx v1.5+, ActiveRecord/Rails 2.3.6+, and Ruby 1.9.3+).
 
