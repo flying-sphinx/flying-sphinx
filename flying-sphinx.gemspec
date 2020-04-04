@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'appraisal',    '~> 2.2'
   s.add_development_dependency 'dotenv',       '~> 0.11.1'
   s.add_development_dependency 'em-websocket', '~> 0.5.1'
-  s.add_development_dependency 'mysql2',       '~> 0.3.15'
+  s.add_development_dependency 'mysql2',       '>= 0.3.15'
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rspec',        '~> 2.14'
   s.add_development_dependency 'rspec-retry',  '~> 0.4'
