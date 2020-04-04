@@ -4,7 +4,7 @@ require 'cgi'
 describe 'Configuring Sphinx' do
   let(:interface)     { ThinkingSphinx.rake_interface.new }
   let(:configuration) { configuration_double :indices => [double('Index')],
-    :render => 'searchd { }', :version => '2.2.11' }
+    :render => 'searchd { }', :version => '2.2.11', :common => double('common', lemmatizer_base: nil) }
 
   before :each do
     allow(ThinkingSphinx::Configuration).to receive(:instance).
