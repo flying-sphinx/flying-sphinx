@@ -31,5 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rspec',        '~> 2.14'
   s.add_development_dependency 'rspec-retry',  '~> 0.4'
-  s.add_development_dependency 'webmock',      '~> 1.17.4'
+  s.add_development_dependency 'webmock',      '~> 3.8'
 end
