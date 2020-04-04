@@ -1,3 +1,3 @@
 module FlyingSphinx
-  Version = '2.1.4'
+  Version = '2.2.0'
 end
