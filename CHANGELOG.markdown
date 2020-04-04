@@ -2,6 +2,16 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## 2.2.0 - 2020-04-04
+
+### Added
+
+* The `lemmatizer_base` option is now respected and files in that specified directory are copied to the Flying Sphinx servers as part of the configure command.
+
+### Changed
+
+* Official support for Ruby 2.2 has ended. The gem may continue to work, but there is no guarantee of ongoing compatibility.
+
 ## 2.1.4 - 2019-03-10
 
 ### Fixed

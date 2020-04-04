@@ -8,7 +8,10 @@ class FlyingSphinx::ConfigurationOptions
   end
 
   def settings
-    @settings ||= FlyingSphinx::SettingFiles.new(indices).to_hash
+    @settings ||= begin
+      configuration.render
+      FlyingSphinx::SettingFiles.new(configuration).to_hash
+    end
   end
 
   def version
@@ -19,11 +22,6 @@ class FlyingSphinx::ConfigurationOptions
 
   def configuration
     @configuration ||= ThinkingSphinx::Configuration.instance
-  end
-
-  def indices
-    configuration.render
-    configuration.indices
   end
 
   def version_defined?
