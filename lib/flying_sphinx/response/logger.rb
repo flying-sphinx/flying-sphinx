@@ -1,4 +1,4 @@
-class FlyingSphinx::Response::Logger < Faraday::Response::Middleware
+class FlyingSphinx::Response::Logger < Faraday::Middleware
   extend Forwardable
 
   def call(environment)

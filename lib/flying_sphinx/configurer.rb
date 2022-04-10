@@ -1,3 +1,5 @@
+require "faraday/multipart"
+
 class FlyingSphinx::Configurer
   InvalidVersionError = Class.new FlyingSphinx::Error
   PresignatureError   = Class.new FlyingSphinx::Error

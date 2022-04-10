@@ -1,33 +1,23 @@
-appraise 'rails-3.2' do
-  gem 'rails',   '~> 3.2.18'
-  gem 'faraday', '~> 0.8.0'
-end if RUBY_VERSION.to_f <= 2.3
-
-appraise 'rails-4.0' do
-  gem 'rails',   '~> 4.0.5'
-  gem 'faraday', '~> 0.9.0'
-end if RUBY_VERSION.to_f <= 2.3
-
-appraise 'rails-4.1' do
-  gem 'rails', '~> 4.1.16'
-end if RUBY_VERSION.to_f <= 2.3
-
-appraise 'rails-4.2' do
-  gem 'rails', '~> 4.2.10'
-end if RUBY_VERSION.to_f <= 2.3
-
 appraise 'rails-5.0' do
   gem 'rails', '~> 5.0.6'
-end
+end if RUBY_VERSION.to_f <= 2.7
 
 appraise 'rails-5.1' do
   gem 'rails', '~> 5.1.4'
-end
+end if RUBY_VERSION.to_f <= 2.7
 
 appraise 'rails-5.2' do
   gem 'rails', '~> 5.2.0'
-end
+end if RUBY_VERSION.to_f <= 2.7
 
 appraise 'rails_6_0' do
-  gem 'rails',  '~> 6.0.0.beta2'
-end if RUBY_VERSION.to_f >= 2.5
+  gem 'rails',  '~> 6.0.0'
+end if RUBY_VERSION.to_f <= 3.0
+
+appraise 'rails_6_1' do
+  gem 'rails',  '~> 6.1.0'
+end
+
+appraise 'rails_7_0' do
+  gem 'rails',  '~> 7.0.0'
+end if RUBY_VERSION.to_f >= 2.7
