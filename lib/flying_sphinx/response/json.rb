@@ -1,4 +1,4 @@
-class FlyingSphinx::Response::JSON < Faraday::Response::Middleware
+class FlyingSphinx::Response::JSON < Faraday::Middleware
   def on_complete(environment)
     return if environment[:request_headers]['Authorization'].nil?
 

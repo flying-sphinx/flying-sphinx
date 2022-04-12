@@ -1,48 +1,75 @@
+require "socket"
+
 class LocalPusher
   attr_reader :connections
 
   def initialize
-    @connections = []
+    mutex.synchronize do
+      @connections = []
+      @alive = true
+    end
   end
 
   def start
+    Thread.report_on_exception = false
     @server_thread ||= Thread.new do
-      EM.run { socket_server }
+      socket_server
     end
   end
 
   def stop
-    server_thread.kill
+    mutex.synchronize do
+      connections.each(&:close)
+      @alive = false
+    end
+
+    server_thread.join(5)
   end
 
   def send(event, data)
-    connections.each do |connection|
-      connection.send({
-        'event'   => event,
-        'data'    => data.to_json,
-        'channel' => ENV['FLYING_SPHINX_IDENTIFIER']
-      }.to_json)
+    mutex.synchronize do
+      connections.each do |connection|
+        connection.write_json(
+          'event'   => event,
+          'data'    => data.to_json,
+          'channel' => ENV['FLYING_SPHINX_IDENTIFIER']
+        )
+      end
     end
   end
 
   private
 
-  attr_reader :server_thread
+  attr_reader :server_thread, :alive
+
+  def mutex
+    @mutex ||= Mutex.new
+  end
 
   def socket_server
-    EM::WebSocket.run(
-      :host => ENV['FLYING_SPHINX_SOCKETS_HOST'],
-      :port => ENV['FLYING_SPHINX_SOCKETS_PORT']
-    ) do |connection|
-      connection.onopen do |handshake|
-        connections << connection
-        connection.send({
-          'event' => 'pusher:connection_established',
-          'data'  => {'socket_id' => 101}.to_json
-        }.to_json)
-      end
+    server = TCPServer.new(
+      ENV['FLYING_SPHINX_SOCKETS_HOST'],
+      ENV['FLYING_SPHINX_SOCKETS_PORT'].to_i
+    )
 
-      connection.onclose { connections.delete connection }
+    loop do
+      break unless mutex.synchronize { alive }
+      connection = LocalPusherConnection.new(server.accept_nonblock)
+      mutex.synchronize { connections << connection }
+
+      loop do
+        break unless mutex.synchronize { alive }
+        connection.parse
+      end
+    rescue IO::WaitReadable, Errno::EINTR
+      IO.select([server])
+      retry
     end
+  rescue Errno::EADDRINUSE
+    puts "Socket failure, retrying..."
+    sleep 1
+    retry
+  ensure
+    server.close
   end
 end

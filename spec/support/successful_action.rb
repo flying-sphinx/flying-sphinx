@@ -8,6 +8,7 @@ class SuccessfulAction
 
   def matches?(block)
     pusher.start
+    Thread.report_on_exception = false
     thread = Thread.new { call block }
     sleep 1.5
 
