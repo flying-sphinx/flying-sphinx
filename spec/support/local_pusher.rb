@@ -4,36 +4,47 @@ class LocalPusher
   attr_reader :connections
 
   def initialize
-    @connections = []
-    @alive = true
+    mutex.synchronize do
+      @connections = []
+      @alive = true
+    end
   end
 
   def start
-    Thread.report_on_exception = false
+    # Thread.report_on_exception = false
     @server_thread ||= Thread.new do
       socket_server
     end
   end
 
   def stop
-    connections.each(&:close)
-    @alive = false
+    mutex.synchronize do
+      connections.each(&:close)
+      @alive = false
+    end
+
     server_thread.kill
   end
 
   def send(event, data)
-    connections.each do |connection|
-      connection.write_json(
-        'event'   => event,
-        'data'    => data.to_json,
-        'channel' => ENV['FLYING_SPHINX_IDENTIFIER']
-      )
+    mutex.synchronize do
+      connections.each do |connection|
+        connection.write_json(
+          'event'   => event,
+          'data'    => data.to_json,
+          'channel' => ENV['FLYING_SPHINX_IDENTIFIER']
+        )
+      end
     end
   end
 
   private
 
   attr_reader :server_thread, :alive
+
+  def mutex
+    @mutex ||= Mutex.new
+  end
 
   def socket_server
     server = TCPServer.new(
@@ -42,14 +53,17 @@ class LocalPusher
     )
 
     loop do
-      break unless alive
-      connection = LocalPusherConnection.new(server.accept)
-      connections << connection
+      break unless mutex.synchronize { alive }
+      connection = LocalPusherConnection.new(server.accept_nonblock)
+      mutex.synchronize { connections << connection }
 
       loop do
-        break unless alive
+        break unless mutex.synchronize { alive }
         connection.parse
       end
+    rescue IO::WaitReadable, Errno::EINTR
+      IO.select([server])
+      retry
     end
   rescue Errno::EADDRINUSE
     puts "Socket failure, retrying..."
