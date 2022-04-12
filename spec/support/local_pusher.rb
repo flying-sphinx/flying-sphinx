@@ -11,7 +11,7 @@ class LocalPusher
   end
 
   def start
-    # Thread.report_on_exception = false
+    Thread.report_on_exception = false
     @server_thread ||= Thread.new do
       socket_server
     end
@@ -69,7 +69,7 @@ class LocalPusher
     puts "Socket failure, retrying..."
     sleep 1
     retry
-  rescue IOError
+  ensure
     server.close
   end
 end
