@@ -3,7 +3,6 @@ require 'bundler'
 
 require 'dotenv'
 require 'webmock/rspec'
-require 'em-websocket'
 require 'rack'
 
 Dotenv.load '.env.test'

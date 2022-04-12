@@ -17,6 +17,7 @@ describe FlyingSphinx::Action do
   end
 
   def perform_and_complete(action)
+    Thread.report_on_exception = false
     thread = Thread.new { action.perform }
     sleep 0.01
     action.send :completion, '{"id":748}'
@@ -83,6 +84,7 @@ describe FlyingSphinx::Action do
     it "logs a warning when the action fails" do
       logger.should_receive(:warn).with("Action failed.")
 
+      Thread.report_on_exception = false
       thread = Thread.new { action.perform }
       sleep 0.01
       action.send :failure, '{"id":748}'
