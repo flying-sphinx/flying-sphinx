@@ -23,7 +23,7 @@ class LocalPusher
       @alive = false
     end
 
-    server_thread.kill
+    server_thread.join(5)
   end
 
   def send(event, data)

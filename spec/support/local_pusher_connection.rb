@@ -19,6 +19,7 @@ class LocalPusherConnection
 
   def parse
     driver.parse(socket.gets)
+  rescue IOError
   end
 
   def write(string)
