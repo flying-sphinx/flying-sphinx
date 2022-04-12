@@ -2,6 +2,16 @@
 
 All notable changes to this project (at least, from v0.4.0 onwards) are documented in this file.
 
+## 3.0.0 - 2022-04-12
+
+### Changed
+
+* Supports (and requires) Faraday v2+.
+* Dropped support for Ruby 2.5 and older.
+* Dropped support for Rails 4.2 and older.
+
+No functional changes to the gem beyond the Faraday changes, though the tests and CI have had some improvements.
+
 ## 2.2.0 - 2020-04-04
 
 ### Added
